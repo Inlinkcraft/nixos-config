@@ -28,6 +28,8 @@
         "SUPER_SHIFT,J,movewindow,d"
 
         "SUPER,B,exec,pkill -SIGUSR1 waybar || waybar"
+	"SUPER,T,exec,teams-for-linux"
+	"SUPER,N,exec,alacritty -e nvim"
 
       ];
 

@@ -18,7 +18,10 @@
     viAlias = true;
     vimAlias = true;
     extraConfig = ''
+      set number
       set number relativenumber
+      syntax enable
+      colorscheme gruvbox
     '';
   };
 
