@@ -8,7 +8,11 @@
 
     settings = {
 
-      monitor = [ "eDP-1,1920x1080@60,0x0,1" ];
+      monitor = [ 
+        "eDP-1,1920x1080@60,0x0,1"
+	"HDMI-A-3,1920x1080@60,0x0,1"
+	"DP-3,1920x1080@60,1920x0,1"
+      ];
 
       # Just a couple of basic binds
       bind = [
@@ -27,11 +31,14 @@
         "SUPER_SHIFT,K,movewindow,u"
         "SUPER_SHIFT,J,movewindow,d"
 
-        "SUPER,B,exec,pkill -SIGUSR1 waybar || waybar"
+        "SUPER,B,exec,pkill -SIGUSR1 waybar || wa<D-v>ybar"
 	"SUPER,T,exec,teams-for-linux"
 	"SUPER,N,exec,alacritty -e nvim"
 
-      ];
+	"SUPER_SHIFT,I,togglefloating"
+	
+	"SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
+     ];
 
       input = {
         kb_layout = "ca";
@@ -43,6 +50,11 @@
         "swww img /home/inlinkcraft/Wallpapers/Master_sword.jpg"
         "waybar"
         "wofi --show drun"
+      ];
+     
+      windowrule = [
+	"nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+	"suppressevent maximize, class:.*"
       ];
 
     };
