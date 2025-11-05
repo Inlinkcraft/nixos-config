@@ -31,6 +31,11 @@
         "SUPER_SHIFT,K,movewindow,u"
         "SUPER_SHIFT,J,movewindow,d"
 
+	"SUPER_CTRL,H,resizeactive,-10 0"
+	"SUPER_CTRL,L,resizeactive,10 0"
+	"SUPER_CTRL,J,resizeactive,0 -10"
+	"SUPER_CTRL,K,resizeactive,0 10"
+
         "SUPER,B,exec,pkill -SIGUSR1 waybar || wa<D-v>ybar"
 	"SUPER,T,exec,teams-for-linux"
 	"SUPER,N,exec,alacritty -e nvim"

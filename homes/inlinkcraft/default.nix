@@ -3,6 +3,7 @@
   
   imports = [
     ./../../modules/home/wayland/default.nix
+    ./../../modules/home/nvim/default.nix
   ];
 
   home.packages = with pkgs; [
@@ -13,21 +14,9 @@
     ledger
     spotify
     hyprshot
+    netbeans
+    zoom-us
   ];
-
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    extraConfig = ''
-      set number
-      set number relativenumber
-      set tabstop=4
-      set shiftwidth=4
-      set expandtab
-      syntax enable
-    '';
-  };
 
   programs.waybar = {
     enable = true;

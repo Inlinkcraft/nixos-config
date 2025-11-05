@@ -115,6 +115,7 @@
     swww
     teams-for-linux
     pywal
+    cifs-utils
   ];
 
   fonts.packages = with pkgs; [
