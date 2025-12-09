@@ -14,8 +14,9 @@
     ledger
     spotify
     hyprshot
-    netbeans
     zoom-us
+    discord
+    jetbrains.idea-ultimate
   ];
 
   programs.waybar = {
@@ -25,7 +26,7 @@
     settings.main = {
       layer = "top";
       position = "top";
-      height = 30;
+      height = 20;
       modules-left = [ "hyprland/workspaces" "hyprland/window" ];
       modules-center = [ "clock" ];
       modules-right = [ "network" "pulseaudio" "battery" "tray" ];

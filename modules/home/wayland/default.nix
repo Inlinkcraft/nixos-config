@@ -41,8 +41,11 @@
 	"SUPER,N,exec,alacritty -e nvim"
 
 	"SUPER_SHIFT,I,togglefloating"
+	"SUPER_SHIFT,F,fullscreen"
 	
 	"SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
+
+	"SUPER,D,exec,discord"
      ];
 
       input = {
