@@ -17,6 +17,8 @@
     zoom-us
     discord
     jetbrains.idea-ultimate
+    cmake
+    libgcc
   ];
 
   programs.waybar = {
