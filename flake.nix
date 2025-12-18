@@ -36,7 +36,7 @@
         ];
       };
 
-      laptop = { config, pkgs, ...} {
+      laptop = { config, pkgs, ...}: {
         imports = [
           ./hosts/laptop/configuration.nix
           home-manager.nixosModules.home-manager
