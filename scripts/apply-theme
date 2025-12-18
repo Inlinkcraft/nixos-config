@@ -1,17 +1,28 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-THEME="$1"
-
-if [ -z "$THEME" ]; then
-    echo "Usage: apply-theme <theme>"
-    exit 1
-fi
-
+THEME="${1:-default}"
 THEME_DIR="$HOME/Configuration/themes/$THEME"
 
 if [ ! -d "$THEME_DIR" ]; then
-    echo "Theme not found: $THEME"
-    exit 1
+  echo "Theme '$THEME' not found in $THEME_DIR"
+  exit 1
 fi
 
-bash "$THEME_DIR/theme.sh"
+IMAGE="$(find "$THEME_DIR" -type f \( -iname '*.jpg' -o -iname '*.png' \) | head -n 1)"
+
+if [ -z "$IMAGE" ]; then
+  echo "No wallpaper found in $THEME_DIR"
+  exit 1
+fi
+
+echo "Applying theme '$THEME'"
+echo "Wallpaper: $IMAGE"
+
+wal -i "$IMAGE" -n
+
+swww img "$IMAGE" --transition-type any
+
+hyprctl reload
+pkill -SIGUSR2 waybar || true
+

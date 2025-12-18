@@ -7,7 +7,6 @@ swww img "$WALLPAPER" --transition-type grow
 
 # generate palette
 wal -i "$WALLPAPER" \
-    --contrast \
     --backend wal \
     --saturate 0.8
 
