@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Inlinkcraft's config";
 
   inputs = {
     
@@ -30,7 +30,6 @@
           modules = [
 
             ./hosts/laptop/configuration.nix
-            ./hosts/laptop/hardware-configuration.nix
             
             home-manager.nixosModules.home-manager
             {
@@ -63,7 +62,6 @@
           modules = [
             
             ./hosts/pc/configuration.nix
-            ./hosts/pc/hardware-configuration.nix
 
             home-manager.nixosModules.home-manager
             {
