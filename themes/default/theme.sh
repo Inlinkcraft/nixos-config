@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-WALLPAPER="$(dirname "$0")/wallhave-mdjrqy.jpg"
+WALLPAPER="$(dirname "$0")/wallpaper.jpg"
 
 # set wallpaper
 swww img "$WALLPAPER" --transition-type grow

@@ -61,10 +61,11 @@
 
       exec-once = [
 	    "swww-daemon"
-        "wal -i ~/Configuration/themes/default/wallhaven-mdjrqy.jpg"
+        "wal -i ~/Configuration/themes/default/wallpaper.jpg"
         "waybar"
         "wofi --show drun"
         "hyprlctl reload"
+        "/home/inlinkcraft/Configuration/scripts/apply-theme default"
       ];
      
       windowrule = [
