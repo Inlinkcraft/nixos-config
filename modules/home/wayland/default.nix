@@ -51,7 +51,7 @@
 
 	    "SUPER,D,exec,discord"
         
-        "SUPER_SHIFT,T,exec,apply-theme default"
+        "SUPER_SHIFT,t,exec,apply-theme default"
      ];
 
       input = {
