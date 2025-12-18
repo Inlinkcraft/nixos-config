@@ -51,7 +51,7 @@
 
 	    "SUPER,D,exec,discord"
         
-        "SUPER_SHIFT,T,exec,apply-theme.sh default"
+        "SUPER_SHIFT,T,exec,apply-theme default"
      ];
 
       input = {
@@ -64,7 +64,7 @@
         "wal -i ~/Configuration/themes/default/wallhaven-mdjrqy.jpg"
         "waybar"
         "wofi --show drun"
-
+        "hyprlctl reload"
       ];
      
       windowrule = [
