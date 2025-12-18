@@ -18,7 +18,19 @@
     zoom-us
     discord
     jetbrains.idea-ultimate
+    swaylock-effects
   ];
+
+  home.file.".config/wal/templates/colors-hyprland.conf".text = ''
+    $background = {background}
+    $foreground = {foreground}
+    $color0 = {color0}
+    $color1 = {color1}
+  '';
+
+  programs.swaylock.settings = {
+    color = "#00000000";
+  };
 
   programs.direnv = {
     enable = true;

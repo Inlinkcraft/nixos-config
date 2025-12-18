@@ -7,6 +7,10 @@
     portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
     settings = {
+    
+      source = [
+        "~/.cache/wal/colors-hyprland.conf"
+      ];
 
       monitor = [ 
         "eDP-1,1920x1080@60,0x0,1"
@@ -18,7 +22,7 @@
       bind = [
         "SUPER,Return,exec,alacritty"
         "SUPER,Q,killactive,"
-	"SUPER,F,exec,firefox"
+	    "SUPER,F,exec,firefox"
         "SUPER,SPACE,exec,wofi --show drun"
 
         "SUPER,H,movefocus,l"
@@ -31,21 +35,23 @@
         "SUPER_SHIFT,K,movewindow,u"
         "SUPER_SHIFT,J,movewindow,d"
 
-	"SUPER_CTRL,H,resizeactive,-10 0"
-	"SUPER_CTRL,L,resizeactive,10 0"
-	"SUPER_CTRL,J,resizeactive,0 -10"
-	"SUPER_CTRL,K,resizeactive,0 10"
+	    "SUPER_CTRL,H,resizeactive,-10 0"
+	    "SUPER_CTRL,L,resizeactive,10 0"
+	    "SUPER_CTRL,J,resizeactive,0 -10"
+	    "SUPER_CTRL,K,resizeactive,0 10"
 
-        "SUPER,B,exec,pkill -SIGUSR1 waybar || wa<D-v>ybar"
-	"SUPER,T,exec,teams-for-linux"
-	"SUPER,N,exec,alacritty -e nvim"
+        "SUPER,B,exec,pkill -SIGUSR2 waybar || waybar"
+	    "SUPER,T,exec,teams-for-linux"
+	    "SUPER,N,exec,alacritty -e nvim"
 
-	"SUPER_SHIFT,I,togglefloating"
-	"SUPER_SHIFT,F,fullscreen"
+	    "SUPER_SHIFT,I,togglefloating"
+	    "SUPER_SHIFT,F,fullscreen"
 	
-	"SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
+	    "SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
 
-	"SUPER,D,exec,discord"
+	    "SUPER,D,exec,discord"
+        
+        "SUPER,T,exec,apply-theme.sh default"
      ];
 
       input = {
@@ -54,8 +60,7 @@
       };
 
       exec-once = [
-	"swww-daemon"
-        "swww img /home/inlinkcraft/Wallpapers/Master_sword.jpg"
+	    "swww-daemon"
         "waybar"
         "wofi --show drun"
       ];
