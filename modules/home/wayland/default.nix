@@ -22,7 +22,7 @@
       bind = [
         "SUPER,Return,exec,alacritty"
         "SUPER,Q,killactive,"
-	    "SUPER,F,exec,firefox"
+	    "SUPER,B,exec,firefox"
         "SUPER,SPACE,exec,wofi --show drun"
 
         "SUPER,H,movefocus,l"
@@ -40,18 +40,18 @@
 	    "SUPER_CTRL,J,resizeactive,0 -10"
 	    "SUPER_CTRL,K,resizeactive,0 10"
 
-        "SUPER,B,exec,pkill -SIGUSR2 waybar || waybar"
+        "SUPER,W,exec,pkill -SIGUSR2 waybar || waybar"
 	    "SUPER,T,exec,teams-for-linux"
 	    "SUPER,N,exec,alacritty -e nvim"
 
-	    "SUPER_SHIFT,I,togglefloating"
-	    "SUPER_SHIFT,F,fullscreen"
+	    "SUPER,F,togglefloating"
+	    "SUPER,f,fullscreen"
 	
 	    "SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
 
 	    "SUPER,D,exec,discord"
         
-        "SUPER,T,exec,apply-theme.sh default"
+        "SUPER_SHIFT,T,exec,apply-theme.sh default"
      ];
 
       input = {
