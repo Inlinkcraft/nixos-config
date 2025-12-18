@@ -9,7 +9,7 @@
     settings = {
     
       source = [
-        "~/.cache/wal/colors-hyprland.conf"
+        "/home/inlinkcraft/.cache/wal/colors-hyprland.conf"
       ];
 
       monitor = [ 
@@ -61,8 +61,10 @@
 
       exec-once = [
 	    "swww-daemon"
+        "wal -i ~/Configuration/themes/default/wallhaven-mdjrqy.jpg"
         "waybar"
         "wofi --show drun"
+
       ];
      
       windowrule = [
