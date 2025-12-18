@@ -10,7 +10,7 @@
     firefox
     wofi
     swww
-    pywall
+    pywal
     tmux
     ledger
     spotify
