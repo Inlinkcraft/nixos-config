@@ -15,78 +15,45 @@
   };
   
   outputs = { self, nixpkgs, home-manager, hyprland, ... }@inputs: 
-    
-    let
-      system = "x86_64-linux";
-    in {
+  {
+    nixosModules = {
+      
+      default = { config, pkgs, ... }: {
+        imports = [
+          ./hosts/pc/configuration.nix
+          home-manager.nixosModules.home-manager
+          {    
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.inlinkcraft = {    
+              home.username = "inlinkcraft";
+              home.homeDirectory = "/home/inlinkcraft";
+              home.stateVersion = "24.05";
+              imports = [ ./homes/inlinkcraft/default.nix ];  
+            };
+          }
+        ];
+      };
 
-      nixosConfigurations = {
-
-        Laptop = nixpkgs.lib.nixosSystem {
-
-          inherit system;
-          specialArgs = { inherit inputs; };
-
-          modules = [
-
-            ./hosts/laptop/configuration.nix
-            
-            home-manager.nixosModules.home-manager
-            {
-
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-
-              home-manager.users.inlinkcraft = {
-
-                home.username = "inlinkcraft";
-                home.homeDirectory = "/home/inlinkcraft";
-                home.stateVersion = "24.05";                
-
-                imports = [ ./homes/inlinkcraft/default.nix ];
-
-              };
-
-            }
-
-          ];
-
-        };
-
-	PC = nixpkgs.lib.nixosSystem {
-        
-     	  inherit system;
-	  specialArgs = { inherit inputs; };
-
-          modules = [
-            
-            ./hosts/pc/configuration.nix
-
-            home-manager.nixosModules.home-manager
-            {
-              
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-
-              home-manager.users.inlinkcraft = {
-                
-                home.username = "inlinkcraft";
-                home.homeDirectory = "/home/inlinkcraft";
-                home.stateVersion = "24.05";
-
-                imports = [ ./homes/inlinkcraft/default.nix ];
-                
-              };
-
-            }
-
-          ];
-
-        };
+      laptop = { config, pkgs, ...} {
+        imports = [
+          ./hosts/laptop/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.inlinkcraft = {
+              home.username = "inlinkcraft";
+              home.homeDirectory = "/home/inlinkcraft";
+              home.stateVersion = "24.05";                
+              imports = [ ./homes/inlinkcraft/default.nix ];
+            };
+          }
+        ];
       };
 
     };
-
+  };
 }
