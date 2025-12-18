@@ -17,9 +17,12 @@
     zoom-us
     discord
     jetbrains.idea-ultimate
-    cmake
-    libgcc
   ];
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   programs.waybar = {
     enable = true;
