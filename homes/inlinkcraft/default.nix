@@ -17,7 +17,6 @@
     hyprshot
     zoom-us
     discord
-    jetbrains.idea-ultimate
     swaylock-effects
   ];
 
