@@ -21,6 +21,7 @@
     zoom-us
     discord
     swaylock-effects
+    kitty
   ];
 
   ########################################
