@@ -20,6 +20,23 @@
     swaylock-effects
   ];
 
+
+  systemd.user.services.pywal = {
+    Unit = {
+      Description = "Restore pywal colors";
+      After = [ "graphical-session.target" ];
+    };
+
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.pywal}/bin/wal -R";
+    };
+
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
   home.file.".config/wal/templates/colors-hyprland.conf".text = ''
     $background = {background}
     $foreground = {foreground}
@@ -63,10 +80,12 @@
         font-family: "JetBrainsMono Nerd Font";
         font-size: 14px;
       }
+      
+      @import url("file:///home/antoine/.cache/wal/colors-waybar.css");
 
       #waybar {
-        background: rgba(0, 0, 0, 0.5);
-        color: #ffffff;
+        background: @background;
+        color: @foreground;
       }
     '';
 
@@ -74,26 +93,12 @@
 
   programs.alacritty = {
     enable = true;
+    
     settings = {
-      font = {
-        normal = {
-          family = "JetBrainsMono Nerd Font"; # Replace with the actual font name
-          style = "Regular";
-        };
-        bold = {
-          family = "JetBrainsMonoNerdFont";
-          style = "Bold";
-        };
-        italic = {
-          family = "JetBrainsMonoNerdFont";
-          style = "Italic";
-        };
-        bold_italic = {
-          family = "JetBrainsMonoNerdFont";
-          style = "Bold Italic";
-        };
-        size = 12; # Adjust font size as needed
-      };
+      general.import = [
+        "~/.cache/wal/alacritty.yml"
+      ];
     };
+
   };
 }

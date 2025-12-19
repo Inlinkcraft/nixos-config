@@ -19,10 +19,13 @@ fi
 echo "Applying theme '$THEME'"
 echo "Wallpaper: $IMAGE"
 
-wal -i "$IMAGE" -n
+# Generate + export pywal colors
+wal -i "$IMAGE"
 
+# Wallpaper
 swww img "$IMAGE" --transition-type any
 
+# Reload apps
 hyprctl reload
 pkill -SIGUSR2 waybar || true
-
+alacritty msg config reload 2>/dev/null || true
