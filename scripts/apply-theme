@@ -1,31 +1,66 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+########################################
+# Single-writer guarantee (important)
+########################################
+exec 9>"$HOME/.cache/apply-theme.lock"
+flock -n 9 || exit 0
+
+########################################
+# Resolve theme
+########################################
 THEME="${1:-default}"
-THEME_DIR="$HOME/Configuration/themes/$THEME"
+THEMES_DIR="$HOME/Configuration/themes"
+THEME_DIR="$THEMES_DIR/$THEME"
 
 if [ ! -d "$THEME_DIR" ]; then
-  echo "Theme '$THEME' not found in $THEME_DIR"
+  echo "Theme '$THEME' not found in $THEMES_DIR"
   exit 1
 fi
 
-IMAGE="$(find "$THEME_DIR" -type f \( -iname '*.jpg' -o -iname '*.png' \) | head -n 1)"
+########################################
+# Find wallpaper
+########################################
+IMAGE="$(find "$THEME_DIR" -maxdepth 1 -type f \
+  \( -iname '*.jpg' -o -iname '*.png' \) | head -n 1)"
 
 if [ -z "$IMAGE" ]; then
   echo "No wallpaper found in $THEME_DIR"
   exit 1
 fi
 
-echo "Applying theme '$THEME'"
+echo "Applying theme: $THEME"
 echo "Wallpaper: $IMAGE"
 
-# Generate + export pywal colors
-wal -i "$IMAGE"
+########################################
+# 1️⃣ Generate pywal colors (ONLY PLACE)
+########################################
+wal -i "$IMAGE" --backend wal --saturate 0.8
 
-# Wallpaper
+########################################
+# 2️⃣ Set wallpaper
+########################################
 swww img "$IMAGE" --transition-type any
 
-# Reload apps
-hyprctl reload
-pkill -SIGUSR2 waybar || true
+########################################
+# 3️⃣ Reload wal consumers
+########################################
+# Hyprland: re-source wal variables
+hyprctl keyword source "$HOME/.cache/wal/colors-hyprland.conf"
+
+# Waybar
+pkill -USR2 waybar || true
+
+# Alacritty (all running instances)
 alacritty msg config reload 2>/dev/null || true
+
+########################################
+# 4️⃣ Run optional theme hook
+########################################
+if [ -x "$THEME_DIR/theme.sh" ]; then
+  echo "Running theme hook for '$THEME'"
+  WAL_THEME="$THEME" "$THEME_DIR/theme.sh"
+fi
+
+echo "Theme '$THEME' applied successfully"
