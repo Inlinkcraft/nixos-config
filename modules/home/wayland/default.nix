@@ -80,6 +80,7 @@
       exec-once = [
         "swww-daemon"
         "waybar"
+        "sleep 1 && alacritty msg config reload"
       ];
 
       ####################################
