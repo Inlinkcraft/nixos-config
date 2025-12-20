@@ -94,25 +94,29 @@
   programs.waybar = {
     enable = true;
 
-    settings.main = {
-      layer = "top";
-      position = "top";
-      height = 20;
+    # Define the settings for the waybar panels
+    settings = {
+      main = {
+        layer = "top";
+        position = "top";
+        height = 20;
 
-      modules-left = [ "hyprland/workspaces" "hyprland/window" ];
-      modules-center = [ "clock" ];
-      modules-right = [ "network" "pulseaudio" "battery" "tray" ];
+        modules-left = [ "hyprland/workspaces" "hyprland/window" ];
+        modules-center = [ "clock" ];
+        modules-right = [ "network" "pulseaudio" "battery" "tray" ];
 
-      "hyprland/workspaces".format = "{name}";
+        "hyprland/workspaces".format = "{name}";
 
-      "clock" = {
-        format = "{:%H:%M:%S}";
-        tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+        "clock" = {
+          format = "{:%H:%M:%S}";
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+        };
       };
+
     };
 
-    
-    programs.waybar.style = ''
+    # Style settings (pywal aware)
+    style = ''
       @import url("file://~/.cache/wal/colors-waybar.css");
 
       #waybar {
@@ -120,8 +124,8 @@
         color: @foreground;
       }
     '';
-
   };
+
 
   ########################################
   # Wofi (OPAQUE, arrow-navigation, search-first)
