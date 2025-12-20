@@ -63,7 +63,7 @@
         "SUPER,D,exec,discord"
 
         # Theme switch (portable)
-        "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/apply-theme default"
+        "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
       ];
 
       ####################################
