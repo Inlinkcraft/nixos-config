@@ -111,21 +111,16 @@
       };
     };
 
-    style = ''
-      * {
-        font-family: "JetBrainsMono Nerd Font";
-        font-size: 14px;
-      }
-
-
-      @import url("file://$HOME/.cache/wal/colors-waybar.css");
+    
+    programs.waybar.style = ''
+      @import url("file://${config.home.homeDirectory}/.cache/wal/colors-waybar.css");
 
       #waybar {
-        background: #1e1e2e;
-        color: #cdd6f4;
+        background: @background;
+        color: @foreground;
       }
-
     '';
+
   };
 
   ########################################
