@@ -138,6 +138,7 @@
       font-size: 14px;
     }
 
+    /* Opaque launcher surface */
     window {
       background-color: rgba(18, 18, 18, 0.97);
       color: @foreground;
@@ -154,16 +155,25 @@
       color: @foreground;
     }
 
+    #inner-box {
+      margin-top: 8px;
+    }
+
     #entry {
-      padding: 6px;
+      padding: 8px;
       border-radius: 6px;
     }
 
+    /* 🔥 CLEAR KEYBOARD SELECTION */
     #entry:selected {
       background-color: @color4;
-      color: #000000;
+      color: @background;
+
+      /* left indicator bar */
+      border-left: 4px solid @color2;
+      padding-left: 6px;
     }
-  '';
+'';
 
   ########################################
   # Wofi config (FIXED: dmenu mode + arrows)
