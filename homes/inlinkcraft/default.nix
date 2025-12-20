@@ -138,7 +138,6 @@
       font-size: 14px;
     }
 
-    /* FORCE opaque launcher surface */
     window {
       background-color: rgba(18, 18, 18, 0.97);
       color: @foreground;
@@ -166,8 +165,11 @@
     }
   '';
 
+  ########################################
+  # Wofi config (FIXED: dmenu mode + arrows)
+  ########################################
   home.file.".config/wofi/config".text = ''
-    show=drun
+    show=dmenu
     prompt=Select theme
     insensitive=true
     allow_images=false
@@ -176,8 +178,6 @@
 
     key_up=Up
     key_down=Down
-    key_left=Left
-    key_right=Right
     key_accept=Return
     key_exit=Escape
   '';
