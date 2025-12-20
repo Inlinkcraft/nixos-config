@@ -113,7 +113,7 @@
 
     
     programs.waybar.style = ''
-      @import url("file://${config.home.homeDirectory}/.cache/wal/colors-waybar.css");
+      @import url("file://~/.cache/wal/colors-waybar.css");
 
       #waybar {
         background: @background;
