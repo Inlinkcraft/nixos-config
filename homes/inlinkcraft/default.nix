@@ -25,16 +25,6 @@
   ];
 
   ########################################
-  # paywal config
-  ########################################
-
-  programs.pywal = {
-    enable = true;
-    colorSchemeFile = "~/.cache/wal/colors.json";  # Ensure colors are written to this file
-    generateAlacrittyColors = true;  # Ensure Alacritty colors are generated
-  };
-
-  ########################################
   # Restore pywal at login
   ########################################
   systemd.user.services.pywal = {
@@ -122,18 +112,6 @@
     '';
   };
 
-  ########################################
-  # Alacritty (pywal-native)
-  ########################################
-  programs.alacritty = {
-    enable = true;
-
-    settings = {
-      general.import = [
-        "~/.cache/wal/alacritty.yml"
-      ];
-    };
-  };
 
   ########################################
   # Wofi (pywal-aware, portable)
