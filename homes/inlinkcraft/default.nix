@@ -127,10 +127,9 @@
   };
 
   ########################################
-  # Wofi (FIXED: opaque + keyboard-friendly)
+  # Wofi (OPAQUE, arrow-navigation, search-first)
   ########################################
 
-  # Wofi style (no transparency, visible selection)
   home.file.".config/wofi/style.css".text = ''
     @import "$HOME/.cache/wal/colors-waybar.css";
 
@@ -139,17 +138,17 @@
       font-size: 14px;
     }
 
+    /* FORCE opaque launcher surface */
     window {
-      background-color: @background;
+      background-color: rgba(18, 18, 18, 0.97);
       color: @foreground;
       border: 2px solid @color4;
-      border-radius: 10px;
-      padding: 10px;
-      opacity: 1.0;
+      border-radius: 12px;
+      padding: 12px;
     }
 
     #input {
-      margin: 5px;
+      margin: 6px;
       padding: 6px;
       border-radius: 6px;
       background-color: @color0;
@@ -163,11 +162,10 @@
 
     #entry:selected {
       background-color: @color4;
-      color: @background;
+      color: #000000;
     }
   '';
 
-  # Wofi config (force keyboard navigation)
   home.file.".config/wofi/config".text = ''
     show=drun
     prompt=Select theme
