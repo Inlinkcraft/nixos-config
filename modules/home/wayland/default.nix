@@ -79,7 +79,7 @@
       ####################################
       exec-once = [
         "swww-daemon"
-        "waybar"
+        "sh -c 'while [! -f ~/.cache/wal/colors-waybar.css ]; do sleep 0.2; done; waybar'"
       ];
 
       ####################################

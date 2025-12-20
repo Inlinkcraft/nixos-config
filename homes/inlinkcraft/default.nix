@@ -117,12 +117,14 @@
         font-size: 14px;
       }
 
+
       @import url("file://$HOME/.cache/wal/colors-waybar.css");
 
       #waybar {
-        background: @background;
-        color: @foreground;
+        background: #1e1e2e;
+        color: #cdd6f4;
       }
+
     '';
   };
 
