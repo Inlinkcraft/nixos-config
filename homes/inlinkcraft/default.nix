@@ -89,12 +89,11 @@
   };
 
   ########################################
-  # Waybar (pywal-aware, portable)
+  # Waybar (pywal-aware, GTK-safe)
   ########################################
   programs.waybar = {
     enable = true;
 
-    # Define the settings for the waybar panels
     settings = {
       main = {
         layer = "top";
@@ -112,12 +111,10 @@
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         };
       };
-
     };
 
-    # Style settings (pywal aware)
     style = ''
-      @import url("file://~/.cache/wal/colors-waybar.css");
+      @import "/home/inlinkcraft/.cache/wal/colors-waybar.css";
 
       #waybar {
         background: @background;
@@ -126,20 +123,17 @@
     '';
   };
 
-
   ########################################
-  # Wofi (OPAQUE, arrow-navigation, search-first)
+  # Wofi (opaque, keyboard-highlighted)
   ########################################
-
   home.file.".config/wofi/style.css".text = ''
-    @import "$HOME/.cache/wal/colors-waybar.css";
+    @import "/home/inlinkcraft/.cache/wal/colors-waybar.css";
 
     * {
       font-family: "JetBrainsMono Nerd Font";
       font-size: 14px;
     }
 
-    /* Opaque launcher surface */
     window {
       background-color: rgba(18, 18, 18, 0.97);
       color: @foreground;
@@ -165,19 +159,16 @@
       border-radius: 6px;
     }
 
-    /* 🔥 CLEAR KEYBOARD SELECTION */
     #entry:selected {
       background-color: @color4;
       color: @background;
-
-      /* left indicator bar */
       border-left: 4px solid @color2;
       padding-left: 6px;
     }
-'';
+  '';
 
   ########################################
-  # Wofi config (FIXED: dmenu mode + arrows)
+  # Wofi config (dmenu + arrows)
   ########################################
   home.file.".config/wofi/config".text = ''
     show=dmenu
