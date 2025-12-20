@@ -36,7 +36,7 @@ echo "Wallpaper: $IMAGE"
 ########################################
 # 1️⃣ Generate pywal colors (ONLY PLACE)
 ########################################
-wal -i "$IMAGE" --backend wal --saturate 0.8
+wal -i "$IMAGE" -n --backend wal --saturate 0.8
 
 ########################################
 # 2️⃣ Set wallpaper
@@ -46,14 +46,15 @@ swww img "$IMAGE" --transition-type any
 ########################################
 # 3️⃣ Reload wal consumers
 ########################################
+
 # Hyprland: re-source wal variables
 hyprctl keyword source "$HOME/.cache/wal/colors-hyprland.conf"
 
 # Waybar
 pkill -USR2 waybar || true
 
-# Alacritty (all running instances)
-alacritty msg config reload 2>/dev/null || true
+# Kitty (all running instances)
+kitty @ set-colors --all "$HOME/.cache/wal/colors-kitty.conf" 2>/dev/null || true
 
 ########################################
 # 4️⃣ Run optional theme hook

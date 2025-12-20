@@ -21,8 +21,22 @@
     zoom-us
     discord
     swaylock-effects
-    kitty
   ];
+
+  ########################################
+  # Kitty (terminal)
+  ########################################
+  programs.kitty = {
+    enable = true;
+
+    extraConfig = ''
+      # Load pywal colors
+      include ~/.cache/wal/colors-kitty.conf
+
+      # Allow live reload from theme scripts
+      allow_remote_control yes
+    '';
+  };
 
   ########################################
   # Restore pywal at login
@@ -111,7 +125,6 @@
       }
     '';
   };
-
 
   ########################################
   # Wofi (pywal-aware, portable)

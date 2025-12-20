@@ -32,7 +32,7 @@
       # Keybindings
       ####################################
       bind = [
-        "SUPER,Return,exec,alacritty"
+        "SUPER,Return,exec,kitty"
         "SUPER,Q,killactive"
         "SUPER,B,exec,firefox"
         "SUPER,SPACE,exec,wofi --show drun"
@@ -80,7 +80,6 @@
       exec-once = [
         "swww-daemon"
         "waybar"
-        "sleep 1 && alacritty msg config reload"
       ];
 
       ####################################
