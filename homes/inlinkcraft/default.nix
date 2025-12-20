@@ -127,19 +127,60 @@
   };
 
   ########################################
-  # Wofi (pywal-aware, portable)
+  # Wofi (FIXED: opaque + keyboard-friendly)
   ########################################
+
+  # Wofi style (no transparency, visible selection)
   home.file.".config/wofi/style.css".text = ''
     @import "$HOME/.cache/wal/colors-waybar.css";
+
+    * {
+      font-family: "JetBrainsMono Nerd Font";
+      font-size: 14px;
+    }
 
     window {
       background-color: @background;
       color: @foreground;
+      border: 2px solid @color4;
+      border-radius: 10px;
+      padding: 10px;
+      opacity: 1.0;
+    }
+
+    #input {
+      margin: 5px;
+      padding: 6px;
+      border-radius: 6px;
+      background-color: @color0;
+      color: @foreground;
+    }
+
+    #entry {
+      padding: 6px;
+      border-radius: 6px;
     }
 
     #entry:selected {
-      background-color: @color2;
+      background-color: @color4;
       color: @background;
     }
+  '';
+
+  # Wofi config (force keyboard navigation)
+  home.file.".config/wofi/config".text = ''
+    show=drun
+    prompt=Select theme
+    insensitive=true
+    allow_images=false
+    width=400
+    lines=8
+
+    key_up=Up
+    key_down=Down
+    key_left=Left
+    key_right=Right
+    key_accept=Return
+    key_exit=Escape
   '';
 }
