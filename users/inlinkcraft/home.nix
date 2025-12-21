@@ -1,7 +1,6 @@
-{ pkgs, config, ... }:
+{ pkgs, config, inputs, ... }:
 
 {
-
   home.username = "inlinkcraft";
   home.homeDirectory = "/home/inlinkcraft";
   home.stateVersion = "24.05";
@@ -33,10 +32,14 @@
     zoom-us
     discord
     swaylock-effects
+    wl-clipboard
+    grim
+    slurp
+    cliphist
   ];
 
   ########################################
-  # Swaylock
+  # Swaylock (or Hyprlock if you want)
   ########################################
   programs.swaylock.settings = {
     color = "#00000000";
