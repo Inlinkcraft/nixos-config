@@ -14,8 +14,6 @@
       cifs-utils
     ];
 
-    programs.thunar.enable = true;
-
   };
 }
 
