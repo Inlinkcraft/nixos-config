@@ -10,7 +10,7 @@
     ../modules/pywal
     ../modules/pywal/hyprland-style
     ../modules/pywal/waybar-style
-    ../modules/pywal/wodi-style
+    ../modules/pywal/wofi-style
   ];
 
   ########################################
