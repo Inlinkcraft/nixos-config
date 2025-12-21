@@ -92,16 +92,9 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.inlinkcraft = {
-    isNormalUser = true;
-    description = "Inlinkcraft";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      kdePackages.kate
-    #  thunderbird
-    ];
-  };
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
 
   # Install firefox.
   programs.firefox.enable = true;
