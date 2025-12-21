@@ -9,7 +9,13 @@
     extraGroups = [ "wheel" "networkmanager" ];
 
     packages = with pkgs; [
-      kdePackages.kate
+      git
+      swww
+      cifs-utils
+    ];
+
+    fonts.packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
     ];
   };
 }
