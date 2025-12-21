@@ -1,6 +1,11 @@
 { pkgs, config, ... }:
 
 {
+
+  home.username = "inlinkcraft";
+  home.homeDirectory = "/home/inlinkcraft";
+  home.stateVersion = "24.05";
+
   imports = [
     ../modules/wayland
     ../modules/nvim
