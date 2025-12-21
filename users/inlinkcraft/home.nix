@@ -7,15 +7,15 @@
   home.stateVersion = "24.05";
 
   imports = [
-    ../modules/wayland
-    ../modules/nvim
-    ../modules/kitty
-    ../modules/waybar
-    ../modules/wofi
-    ../modules/pywal
-    ../modules/pywal/hyprland-style
-    ../modules/pywal/waybar-style
-    ../modules/pywal/wofi-style
+    ../../modules/wayland
+    ../../modules/nvim
+    ../../modules/kitty
+    ../../modules/waybar
+    ../../modules/wofi
+    ../../modules/pywal
+    ../../modules/pywal/hyprland-style
+    ../../modules/pywal/waybar-style
+    ../../modules/pywal/wofi-style
   ];
 
   ########################################
