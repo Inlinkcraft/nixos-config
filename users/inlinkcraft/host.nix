@@ -12,6 +12,7 @@
       git
       swww
       cifs-utils
+      thunar
     ];
 
   };
