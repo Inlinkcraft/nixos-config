@@ -30,7 +30,7 @@
               home.username = "inlinkcraft";
               home.homeDirectory = "/home/inlinkcraft";
               home.stateVersion = "24.05";
-              imports = [ ./homes/inlinkcraft/default.nix ];  
+              imports = [ ./users/inlinkcraft.nix ];  
             };
           }
         ];
@@ -48,7 +48,7 @@
               home.username = "inlinkcraft";
               home.homeDirectory = "/home/inlinkcraft";
               home.stateVersion = "24.05";                
-              imports = [ ./homes/inlinkcraft/default.nix ];
+              imports = [ ./users/inlinkcraft.nix ];
             };
           }
         ];
