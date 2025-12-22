@@ -13,7 +13,7 @@
     settings = {
 
       ####################################
-      # Pywal → Hyprland (portable)
+      # Pywal → Hyprland
       ####################################
       source = [
         "~/.cache/wal/colors-hyprland.conf"
@@ -21,49 +21,12 @@
 
       ####################################
       # Monitors
+      # (Can be removed later if auto-detecting)
       ####################################
       monitor = [
         "eDP-1,1920x1080@60,0x0,1"
         "HDMI-A-3,1920x1080@60,0x0,1"
         "DP-3,1920x1080@60,1920x0,1"
-      ];
-
-      ####################################
-      # Keybindings
-      ####################################
-      bind = [
-        "SUPER,Return,exec,kitty"
-        "SUPER,Q,killactive"
-        "SUPER,B,exec,firefox"
-        "SUPER,SPACE,exec,wofi --show drun"
-
-        "SUPER,H,movefocus,l"
-        "SUPER,L,movefocus,r"
-        "SUPER,K,movefocus,u"
-        "SUPER,J,movefocus,d"
-
-        "SUPER_SHIFT,H,movewindow,l"
-        "SUPER_SHIFT,L,movewindow,r"
-        "SUPER_SHIFT,K,movewindow,u"
-        "SUPER_SHIFT,J,movewindow,d"
-
-        "SUPER_CTRL,H,resizeactive,-10 0"
-        "SUPER_CTRL,L,resizeactive,10 0"
-        "SUPER_CTRL,J,resizeactive,0 -10"
-        "SUPER_CTRL,K,resizeactive,0 10"
-
-        "SUPER,W,exec,pkill -SIGUSR2 waybar || waybar"
-        "SUPER,N,exec,alacritty -e nvim"
-
-        "SUPER,F,togglefloating"
-        "SUPER,f,fullscreen"
-
-        "SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
-
-        "SUPER,D,exec,discord"
-
-        # Theme switch (portable)
-        "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
       ];
 
       ####################################
@@ -75,12 +38,85 @@
       };
 
       ####################################
-      # Startup (clean & deterministic)
+      # Keybindings
+      ####################################
+      bind = [
+        # Apps
+        "SUPER,Return,exec,kitty"
+        "SUPER,B,exec,firefox"
+        "SUPER,SPACE,exec,wofi --show drun"
+        "SUPER,N,exec,alacritty -e nvim"
+
+        # Dashboard (special workspace)
+        "SUPER,D,togglespecialworkspace,dashboard"
+
+        # Window management
+        "SUPER,Q,killactive"
+        "SUPER,F,togglefloating"
+        "SUPER,f,fullscreen"
+
+        # Focus
+        "SUPER,H,movefocus,l"
+        "SUPER,L,movefocus,r"
+        "SUPER,K,movefocus,u"
+        "SUPER,J,movefocus,d"
+
+        # Move windows
+        "SUPER_SHIFT,H,movewindow,l"
+        "SUPER_SHIFT,L,movewindow,r"
+        "SUPER_SHIFT,K,movewindow,u"
+        "SUPER_SHIFT,J,movewindow,d"
+
+        # Resize
+        "SUPER_CTRL,H,resizeactive,-10 0"
+        "SUPER_CTRL,L,resizeactive,10 0"
+        "SUPER_CTRL,J,resizeactive,0 -10"
+        "SUPER_CTRL,K,resizeactive,0 10"
+
+        # Waybar reload
+        "SUPER,W,exec,pkill -SIGUSR2 waybar || waybar"
+
+        # Screenshot
+        "SUPER,P,exec,hyprshot -m window -m active --clipboard-only"
+
+        # Theme switcher
+        "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
+      ];
+
+      ####################################
+      # Startup
       ####################################
       exec-once = [
         "swww-daemon"
-        "sh -c 'while [! -f ~/.cache/wal/colors-waybar.css ]; do sleep 0.2; done; waybar'"
+        "sh -c 'while [ ! -f ~/.cache/wal/colors-waybar.css ]; do sleep 0.2; done; waybar'"
       ];
+
+      ####################################
+      # Special workspace
+      ####################################
+      workspace = [
+        "special:dashboard"
+      ];
+
+      ####################################
+      # Layer rules (Waybar blur)
+      ####################################
+      layerrule = [
+        "blur, waybar"
+        "ignorezero, waybar"
+        "xray 0, waybar"
+      ];
+
+      ####################################
+      # Decorations (required for blur)
+      ####################################
+      decoration = {
+        blur = {
+          enabled = true;
+          size = 8;
+          passes = 2;
+        };
+      };
 
       ####################################
       # Window rules
