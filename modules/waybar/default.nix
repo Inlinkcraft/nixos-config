@@ -28,7 +28,7 @@
         };
 
         "custom/dashboard" = {
-          format = "";
+          format = " ";
           tooltip = false;
           on-click = "hyprctl dispatch togglespecialworkspace dashboard";
         };
