@@ -6,7 +6,7 @@
       main = {
         layer = "top";
         position = "top";
-        height = 22;
+        height = 26;
 
         modules-left = [
           "hyprland/workspaces"
@@ -46,7 +46,7 @@
         };
 
         "clock" = {
-          format = "{:%H:%M}";
+          format = "{:%H:%M:%S}";
           tooltip = false;
         };
       };

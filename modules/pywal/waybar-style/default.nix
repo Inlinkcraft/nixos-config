@@ -8,31 +8,66 @@
         font-size: 11px;
       }
 
-      #waybar {
-        background: @background;
-        color: @foreground;
-        border-bottom: 1px solid @color2;
+      /* Bar itself */
+      window#waybar {
+        background: transparent;
       }
 
-      /* Workspaces */
+      #waybar {
+        background: transparent;
+        margin: 6px 10px;
+      }
+
+      /* Generic module "island" */
+      #workspaces,
+      #custom-dashboard,
+      #pulseaudio,
+      #network,
+      #clock {
+        background: @background;
+        color: @foreground;
+        padding: 4px 8px;
+        margin: 0 4px;
+        border: 1px solid @color2;
+        border-radius: 6px;
+
+        /* Animation */
+        transition:
+          background-color 150ms ease,
+          color 150ms ease,
+          transform 150ms ease,
+          border-color 150ms ease;
+      }
+
+      /* Hover animation */
+      #workspaces:hover,
+      #custom-dashboard:hover,
+      #pulseaudio:hover,
+      #network:hover,
+      #clock:hover {
+        background: @color0;
+        border-color: @color1;
+        transform: scale(1.05);
+      }
+
+      /* Workspaces buttons */
       #workspaces button {
-        padding: 0 6px;
         background: transparent;
         color: @color4;
-        border-bottom: 2px solid transparent;
+        padding: 0 5px;
+        border: none;
+        transition: color 120ms ease;
       }
 
       #workspaces button.active {
         color: @color1;
-        border-bottom: 2px solid @color1;
         font-weight: bold;
       }
 
-      /* Center dashboard (workspace 00) */
+      /* Dashboard button */
       #custom-dashboard {
-        padding: 0 10px;
-        color: @color3;
         font-weight: bold;
+        color: @color3;
       }
 
       #custom-dashboard:hover {
@@ -43,7 +78,6 @@
       #pulseaudio,
       #network,
       #clock {
-        padding: 0 6px;
         color: @color6;
       }
     '';
