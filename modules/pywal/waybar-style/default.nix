@@ -8,6 +8,10 @@
         font-size: 11px;
       }
 
+      window#waybar {
+        background-color: alpha(background, 0.2);
+      }
+
       /* Floating islands */
       #workspaces,
       #custom-dashboard,
