@@ -8,15 +8,6 @@
         font-size: 11px;
       }
 
-      window#waybar {
-        background: transparent;
-      }
-
-      #waybar {
-        background: transparent;
-        margin: 6px 10px;
-      }
-
       /* Floating islands */
       #workspaces,
       #custom-dashboard,
