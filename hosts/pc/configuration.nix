@@ -49,6 +49,10 @@
   ###############################################################
   # Hyprland
   ###############################################################
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.modesetting.enable = true;
+
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
