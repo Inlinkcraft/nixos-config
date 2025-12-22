@@ -66,7 +66,7 @@
         min-height: 22px;
 
         background-color: @color3; /* pywal color */
-        -gtk-mask-image: url("/home/inlinkcraft/.config/waybar/icons/nixos-symbolic.svg");
+        -gtk-mask-image: url("/home/inlinkcraft/Configuration/nixos.svg");
         -gtk-mask-repeat: no-repeat;
         -gtk-mask-position: center;
         -gtk-mask-size: 14px 14px;
