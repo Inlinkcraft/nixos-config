@@ -65,11 +65,10 @@
         min-width: 22px;
         min-height: 22px;
 
-        background-color: @color3; /* pywal color */
-        -gtk-mask-image: url("/home/inlinkcraft/Configuration/nixos.svg");
-        -gtk-mask-repeat: no-repeat;
-        -gtk-mask-position: center;
-        -gtk-mask-size: 14px 14px;
+        background-image: url("/home/inlinkcraft/Configuration/nixos.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px 14px;
       }
 
 
