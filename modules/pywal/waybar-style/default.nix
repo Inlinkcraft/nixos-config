@@ -9,7 +9,7 @@
       }
 
       window#waybar {
-        background-color: alpha(background, 0.2);
+        background-color: alpha(@background, 0.2);
       }
 
       /* Floating islands */
