@@ -6,18 +6,48 @@
       main = {
         layer = "top";
         position = "top";
-        height = 20;
+        height = 22;
 
-        modules-left = [ "hyprland/workspaces" "hyprland/window" ];
-        modules-center = [ "clock" ];
-        modules-right = [ "network" "pulseaudio" "battery" "tray" ];
+        modules-left = [
+          "hyprland/workspaces"
+        ];
 
-        "hyprland/workspaces".format = "{name}";
+        modules-center = [
+          "custom/dashboard"
+        ];
+
+        modules-right = [
+          "pulseaudio"
+          "network"
+          "clock"
+        ];
+
+        "hyprland/workspaces" = {
+          format = "{id}";
+          disable-scroll = true;
+        };
+
+        "custom/dashboard" = {
+          format = "00";
+          tooltip = false;
+          on-click = "hyprctl dispatch togglespecialworkspace dashboard";
+        };
+
+        "pulseaudio" = {
+          format = "VOL {volume}%";
+          tooltip = false;
+        };
+
+        "network" = {
+          format-wifi = "NET";
+          format-ethernet = "ETH";
+          format-disconnected = "OFF";
+          tooltip = false;
+        };
 
         "clock" = {
-          format = "{:%H:%M:%S}";
-          tooltip-format =
-            "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          format = "{:%H:%M}";
+          tooltip = false;
         };
       };
     };
