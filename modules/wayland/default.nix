@@ -80,6 +80,26 @@
 
         # Theme switcher
         "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
+
+        # Workspaces
+        "SUPER, 1, workspace, name:1"
+        "SUPER, 2, workspace, name:2"
+        "SUPER, 3, workspace, name:3"
+        "SUPER, 4, workspace, name:4"
+        "SUPER, 5, workspace, name:5"
+        "SUPER, 6, workspace, name:6"
+        "SUPER, 7, workspace, name:7"
+        "SUPER, 8, workspace, name:8"
+        "SUPER, 9, workspace, name:9"
+        "SUPER_SHIFT, 1, movetoworkspace, name:1"
+        "SUPER_SHIFT, 2, movetoworkspace, name:2"
+        "SUPER_SHIFT, 3, movetoworkspace, name:3"
+        "SUPER_SHIFT, 4, movetoworkspace, name:4"
+        "SUPER_SHIFT, 5, movetoworkspace, name:5"
+        "SUPER_SHIFT, 6, movetoworkspace, name:6"
+        "SUPER_SHIFT, 7, movetoworkspace, name:7"
+        "SUPER_SHIFT, 8, movetoworkspace, name:8"
+        "SUPER_SHIFT, 9, movetoworkspace, name:9"
       ];
 
       ####################################
@@ -118,7 +138,7 @@
       };
 
       ####################################
-      # Experiments
+      # Gap modification
       ####################################
       general = {
         gaps_in = 1;
