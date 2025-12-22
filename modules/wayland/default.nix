@@ -82,24 +82,27 @@
         "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
 
         # Workspaces
-        "SUPER, 1, workspace, name:1"
-        "SUPER, 2, workspace, name:2"
-        "SUPER, 3, workspace, name:3"
-        "SUPER, 4, workspace, name:4"
-        "SUPER, 5, workspace, name:5"
-        "SUPER, 6, workspace, name:6"
-        "SUPER, 7, workspace, name:7"
-        "SUPER, 8, workspace, name:8"
-        "SUPER, 9, workspace, name:9"
-        "SUPER_SHIFT, 1, movetoworkspace, name:1"
-        "SUPER_SHIFT, 2, movetoworkspace, name:2"
-        "SUPER_SHIFT, 3, movetoworkspace, name:3"
-        "SUPER_SHIFT, 4, movetoworkspace, name:4"
-        "SUPER_SHIFT, 5, movetoworkspace, name:5"
-        "SUPER_SHIFT, 6, movetoworkspace, name:6"
-        "SUPER_SHIFT, 7, movetoworkspace, name:7"
-        "SUPER_SHIFT, 8, movetoworkspace, name:8"
-        "SUPER_SHIFT, 9, movetoworkspace, name:9"
+        # Switch workspace
+        "SUPER,1,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 1"
+        "SUPER,2,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 2"
+        "SUPER,3,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 3"
+        "SUPER,4,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 4"
+        "SUPER,5,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 5"
+        "SUPER,6,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 6"
+        "SUPER,7,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 7"
+        "SUPER,8,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 8"
+        "SUPER,9,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 9"
+
+        # Move window to workspace
+        "SUPER_SHIFT,1,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 1"
+        "SUPER_SHIFT,2,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 2"
+        "SUPER_SHIFT,3,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 3"
+        "SUPER_SHIFT,4,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 4"
+        "SUPER_SHIFT,5,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 5"
+        "SUPER_SHIFT,6,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 6"
+        "SUPER_SHIFT,7,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 7"
+        "SUPER_SHIFT,8,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 8"
+        "SUPER_SHIFT,9,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 9"
       ];
 
       ####################################
@@ -108,6 +111,7 @@
       exec-once = [
         "swww-daemon"
         "sh -c 'while [ ! -f ~/.cache/wal/colors-waybar.css ]; do sleep 0.2; done; waybar'"
+        "$HOME/Configuration/scripts/setup-workspaces.sh"
       ];
 
       ####################################
