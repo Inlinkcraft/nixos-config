@@ -10,6 +10,7 @@
 
       window#waybar {
         background-color: alpha(@background, 0.2);
+        padding: 5px 2px
       }
 
       /* Floating islands */
