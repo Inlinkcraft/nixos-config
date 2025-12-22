@@ -8,7 +8,6 @@
         font-size: 11px;
       }
 
-      /* Bar itself */
       window#waybar {
         background: transparent;
       }
@@ -18,20 +17,19 @@
         margin: 6px 10px;
       }
 
-      /* Generic module "island" */
+      /* Floating islands */
       #workspaces,
       #custom-dashboard,
       #pulseaudio,
       #network,
       #clock {
-        background: @background;
+        background: alpha(@background, 0.85);
         color: @foreground;
         padding: 4px 8px;
-        margin: 0 4px;
+        margin: 0 2px;
         border: 1px solid @color2;
         border-radius: 6px;
 
-        /* GTK-safe animation */
         transition:
           background-color 150ms ease,
           color 150ms ease,
@@ -39,7 +37,6 @@
           box-shadow 150ms ease;
       }
 
-      /* Hover effect (NO transform) */
       #workspaces:hover,
       #custom-dashboard:hover,
       #pulseaudio:hover,
@@ -50,13 +47,12 @@
         box-shadow: 0 0 6px alpha(@color1, 0.35);
       }
 
-      /* Workspaces buttons */
+      /* Workspace buttons */
       #workspaces button {
         background: transparent;
         color: @color4;
         padding: 0 5px;
         border: none;
-        transition: color 120ms ease;
       }
 
       #workspaces button.active {
@@ -64,14 +60,15 @@
         font-weight: bold;
       }
 
-      /* Dashboard button */
+      /* NixOS logo dashboard button */
       #custom-dashboard {
-        font-weight: bold;
-        color: @color3;
-      }
+        min-width: 22px;
+        min-height: 22px;
 
-      #custom-dashboard:hover {
-        color: @color1;
+        background-image: url("/home/inlinkcraft/Configuration/nixos.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px 14px;
       }
 
       /* Right side */

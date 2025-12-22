@@ -6,7 +6,7 @@
       main = {
         layer = "top";
         position = "top";
-        height = 26;
+        height = 34;
 
         modules-left = [
           "hyprland/workspaces"
@@ -28,7 +28,7 @@
         };
 
         "custom/dashboard" = {
-          format = "00";
+          format = "";
           tooltip = false;
           on-click = "hyprctl dispatch togglespecialworkspace dashboard";
         };
@@ -46,7 +46,7 @@
         };
 
         "clock" = {
-          format = "{:%H:%M:%S}";
+          format = "{:%H:%M}";
           tooltip = false;
         };
       };
