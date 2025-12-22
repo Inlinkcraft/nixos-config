@@ -31,15 +31,15 @@
         border: 1px solid @color2;
         border-radius: 6px;
 
-        /* Animation */
+        /* GTK-safe animation */
         transition:
           background-color 150ms ease,
           color 150ms ease,
-          transform 150ms ease,
-          border-color 150ms ease;
+          border-color 150ms ease,
+          box-shadow 150ms ease;
       }
 
-      /* Hover animation */
+      /* Hover effect (NO transform) */
       #workspaces:hover,
       #custom-dashboard:hover,
       #pulseaudio:hover,
@@ -47,7 +47,7 @@
       #clock:hover {
         background: @color0;
         border-color: @color1;
-        transform: scale(1.05);
+        box-shadow: 0 0 6px alpha(@color1, 0.35);
       }
 
       /* Workspaces buttons */
