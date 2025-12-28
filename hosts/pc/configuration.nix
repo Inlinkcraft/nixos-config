@@ -113,6 +113,9 @@
 
 
   programs.thunar.enable = true;
+  environment.variables = {
+    QT_QPA_PLATFORM = "xcb";
+  };
 
   ###############################################################
   # System version
