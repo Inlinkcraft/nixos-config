@@ -46,8 +46,8 @@
         "SUPER,SPACE,exec,wofi --show drun"
         "SUPER,N,exec,alacritty -e nvim"
 
-        # Dashboard (special workspace)
-        "SUPER,D,togglespecialworkspace,dashboard"
+        # Dashboard (Eww overlay toggle)
+        "SUPER,D,exec,eww open --toggle dashboard"
 
         # Window management
         "SUPER,Q,killactive"
@@ -81,8 +81,7 @@
         # Theme switcher
         "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
 
-        # Workspaces
-        # Switch workspace
+        # Workspaces (scripted)
         "SUPER,1,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 1"
         "SUPER,2,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 2"
         "SUPER,3,exec,$HOME/Configuration/scripts/hypr-keybinds.sh switch 3"
@@ -112,29 +111,22 @@
         "swww-daemon"
         "sh -c 'while [ ! -f ~/.cache/wal/colors-waybar.css ]; do sleep 0.2; done; waybar'"
         "$HOME/Configuration/scripts/setup-workspaces.sh"
-        "eww open dashboard"
       ];
 
       ####################################
-      # Special workspace
-      ####################################
-      workspace = [
-        "special:dashboard"
-      ];
-
-      ####################################
-      # Layer rules (Waybar blur)
+      # Layer rules (Waybar + Eww blur)
       ####################################
       layerrule = [
         "blur, waybar"
         "ignorezero, waybar"
         "xray 0, waybar"
+
         "blur, eww"
         "ignorezero, eww"
       ];
 
       ####################################
-      # Decorations (blur backend)
+      # Decorations
       ####################################
       decoration = {
         blur = {
@@ -145,7 +137,7 @@
       };
 
       ####################################
-      # Gap modification
+      # Gaps & borders
       ####################################
       general = {
         gaps_in = 1;
@@ -162,13 +154,13 @@
       ];
 
       ####################################
-      # Eww dashboard rules
+      # Eww window behavior
       ####################################
       windowrulev2 = [
-       "workspace special:dashboard, class:^(eww)$"
-       "float, class:^(eww)$"
+        "float, class:^(eww)$"
+        "nofocus, class:^(eww)$"
+        "noborder, class:^(eww)$"
       ];
-
     };
   };
 }

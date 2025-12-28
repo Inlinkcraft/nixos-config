@@ -1,12 +1,15 @@
 (defwindow dashboard
   :monitor "current"
   :geometry (geometry
-    :x "50px"
-    :y "50px"
-    :width "600px"
-    :height "300px")
+    :x "5%"
+    :y "10%"
+    :width "90%"
+    :height "80%")
   :exclusive false
 
   (box
-    :class "card"
-    (label :text "Dashboard visible")))
+    :class "dashboard"
+    :spacing 20
+
+    ;; widgets here
+  ))
