@@ -15,6 +15,7 @@
     ../../modules/pywal/hyprland-style
     ../../modules/pywal/waybar-style
     ../../modules/pywal/wofi-style
+    ../../modules/eww
   ];
 
   ########################################
@@ -36,7 +37,6 @@
     grim
     slurp
     cliphist
-    eww
     playerctl
     lm_sensors
     procps
@@ -57,24 +57,5 @@
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-  };
-
-  ########################################
-  # eww
-  ########################################
-  systemd.user.services.eww = {
-    Unit = {
-      Description = "Eww widget daemon";
-      After = [ "graphical-session.target" ];
-    };
-
-    Service = {
-      ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize";
-      Restart = "on-failure";
-    };
-
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
   };
 }
