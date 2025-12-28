@@ -25,7 +25,6 @@
   margin-bottom: 6px;
 }
 
-/* Clock */
 .clock-time {
   font-size: 48px;
   font-weight: 700;
@@ -36,13 +35,13 @@
   color: $color6;
 }
 
-/* Power buttons */
 .power-btn {
   background: $color1;
   color: $background;
   padding: 14px 18px;
   border-radius: 14px;
   font-size: 20px;
+  transition: background 0.2s ease;
 }
 
 .power-btn:hover {

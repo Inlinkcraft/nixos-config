@@ -1,6 +1,24 @@
 ;; =========================
+;; POLLS (DATA SOURCES)
+;; =========================
+
+(defpoll cpu_usage :interval "2s"
+  "awk '{u=$2+$4; t=$2+$4+$5} END {printf \"%.1f\", u*100/t}' /proc/stat")
+
+(defpoll mem_used :interval "2s"
+  "free | awk '/Mem:/ {printf \"%.1f\", $3/$2*100}'")
+
+(defpoll music_artist :interval "2s"
+  "playerctl metadata artist 2>/dev/null || echo \"\"")
+
+(defpoll music_title :interval "2s"
+  "playerctl metadata title 2>/dev/null || echo \"\"")
+
+
+;; =========================
 ;; DASHBOARD WINDOW
 ;; =========================
+
 (defwindow dashboard
   :monitor 0
   :windowtype "dock"
@@ -40,12 +58,13 @@
 
       (card
         :title "Power"
-        (power))))))
-        
+        (power)))))
+
 
 ;; =========================
 ;; GENERIC CARD
 ;; =========================
+
 (defwidget card [title child]
   (box
     :class "card"
@@ -62,9 +81,9 @@
 ;; =========================
 ;; CLOCK
 ;; =========================
+
 (defwidget clock []
   (box
-    :class "clock"
     :orientation "vertical"
     :spacing 4
 
@@ -78,35 +97,35 @@
 
 
 ;; =========================
-;; SYSTEM INFO (simple)
+;; SYSTEM INFO
 ;; =========================
+
 (defwidget sysinfo []
   (box
     :orientation "vertical"
     :spacing 6
 
-    (label :text "CPU: ${round((cpu_usage), 1)}%")
-    (label :text "RAM: ${round((mem_used_perc), 1)}%")))
+    (label :text "CPU: ${cpu_usage}%")
+    (label :text "RAM: ${mem_used}%")))
 
 
 ;; =========================
-;; MUSIC (playerctl)
+;; MUSIC
 ;; =========================
+
 (defwidget music []
   (box
     :orientation "vertical"
     :spacing 6
 
-    (label
-      :text {playerctl.metadata "artist"})
-
-    (label
-      :text {playerctl.metadata "title"})))
+    (label :text music_artist)
+    (label :text music_title)))
 
 
 ;; =========================
 ;; POWER BUTTONS
 ;; =========================
+
 (defwidget power []
   (box
     :orientation "horizontal"
