@@ -29,14 +29,15 @@
     :width "90%"
     :height "84%")
 
+  ;; ROOT CONTAINER
   (box
     :class "dashboard"
     :orientation "vertical"
     :spacing 24
 
-    ;; =========================
+    ;; =====================
     ;; TOP ROW
-    ;; =========================
+    ;; =====================
     (box
       :orientation "horizontal"
       :spacing 24
@@ -46,7 +47,6 @@
         :class "card"
         :orientation "vertical"
         :spacing 12
-
         (label :class "card-title" :text "System")
         (label :text "CPU: ${cpu_usage}%")
         (label :text "RAM: ${mem_used}%"))
@@ -56,14 +56,13 @@
         :class "card"
         :orientation "vertical"
         :spacing 12
-
         (label :class "card-title" :text "Music")
         (label :text music_artist)
         (label :text music_title)))
 
-    ;; =========================
+    ;; =====================
     ;; BOTTOM ROW
-    ;; =========================
+    ;; =====================
     (box
       :orientation "horizontal"
       :spacing 24
@@ -73,7 +72,6 @@
         :class "card"
         :orientation "vertical"
         :spacing 12
-
         (label :class "card-title" :text "Clock")
         (label :class "clock-time" :text (time "%H:%M"))
         (label :class "clock-date" :text (time "%A, %d %B")))
@@ -83,19 +81,16 @@
         :class "card"
         :orientation "vertical"
         :spacing 12
-
         (label :class "card-title" :text "Power")
 
         (box
           :orientation "horizontal"
           :spacing 16
-
           (button
             :class "power-btn"
             :onclick "systemctl poweroff"
             "⏻")
-
           (button
             :class "power-btn"
             :onclick "systemctl reboot"
-            "")))))))
+            ""))))))
