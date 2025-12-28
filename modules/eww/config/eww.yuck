@@ -61,7 +61,7 @@
 ;; GENERIC CARD
 ;; =========================
 
-(defwidget card [title]
+(defwidget card [title children]
   (box
     :class "card"
     :orientation "vertical"
