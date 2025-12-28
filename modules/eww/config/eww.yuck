@@ -1,5 +1,5 @@
 (defwindow dashboard
-  :monitor "current"
+  :monitor 0
   :windowtype "dock"
   :geometry (geometry
     :x "5%"
@@ -9,5 +9,5 @@
   :exclusive false
 
   (box
-    :class "dashboard"
-    (label :text "Dashboard visible")))
+    :style "background: red; padding: 20px;"
+    (label :text "EWW DASHBOARD IS WORKING")))
