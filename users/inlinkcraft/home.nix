@@ -59,8 +59,11 @@
     nix-direnv.enable = true;
   };
 
-  home.sessionVariables = {
-    QT_QPA_PLATFORM = "xcb";
-  };
+  # Wrapper for FreeCAD with environment variable
+  home.file.".local/bin/freecad".text = ''
+    #!${pkgs.stdenv.shell}
+    export QT_QPA_PLATFORM=xcb
+    exec ${pkgs.freecad}/bin/FreeCAD "$@"
+  '';
 
 }
