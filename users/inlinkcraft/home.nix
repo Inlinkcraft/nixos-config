@@ -58,4 +58,9 @@
     enable = true;
     nix-direnv.enable = true;
   };
+
+  home.sessionVariables = {
+    QT_QPA_PLATFORM = "xcb";
+  };
+
 }
