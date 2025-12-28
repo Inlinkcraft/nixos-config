@@ -1,0 +1,17 @@
+(defwindow dashboard
+  :monitor 0
+  :geometry (geometry
+    :x "30px"
+    :y "100px"
+    :width "1200px"
+    :height "400px")
+  :exclusive false
+
+  (box
+    :class "dashboard"
+    :spacing 20
+
+    (music)
+    (sysinfo)
+    (clock)
+    (power)))

@@ -1,0 +1,17 @@
+@import "/home/inlinkcraft/.cache/wal/colors.scss";
+
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font";
+}
+
+.dashboard {
+  background: transparent;
+}
+
+.card {
+  background: rgba($background, 0.85);
+  border-radius: 16px;
+  padding: 16px;
+  color: $foreground;
+}
