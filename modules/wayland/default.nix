@@ -167,10 +167,6 @@
       windowrulev2 = [
        "workspace special:dashboard, class:^(eww)$"
        "float, class:^(eww)$"
-       "nofocus, class:^(eww)$"
-       "noborder, class:^(eww)$"
-       "noshadow, class:^(eww)$"
-       "pin, class:^(eww)$"
       ];
 
     };
