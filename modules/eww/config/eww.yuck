@@ -41,11 +41,11 @@
 
       (card
         :title "System"
-        (sysinfo))
+        :child (sysinfo))
 
       (card
         :title "Music"
-        (music)))
+        :child (music)))
 
     ;; Bottom row
     (box
@@ -54,11 +54,11 @@
 
       (card
         :title "Clock"
-        (clock))
+        :child (clock))
 
       (card
         :title "Power"
-        (power)))))
+        :child (power)))))
 
 
 ;; =========================
