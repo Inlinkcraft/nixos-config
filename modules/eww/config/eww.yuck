@@ -1,5 +1,5 @@
 ;; =========================
-;; POLLS (DATA SOURCES)
+;; POLLS
 ;; =========================
 
 (defpoll cpu_usage :interval "2s"
@@ -16,7 +16,7 @@
 
 
 ;; =========================
-;; DASHBOARD WINDOW
+;; WINDOW
 ;; =========================
 
 (defwindow dashboard
@@ -34,105 +34,68 @@
     :orientation "vertical"
     :spacing 24
 
-    ;; Top row
+    ;; =========================
+    ;; TOP ROW
+    ;; =========================
     (box
       :orientation "horizontal"
       :spacing 24
 
-      (card :title "System"
-        (sysinfo))
+      ;; SYSTEM CARD
+      (box
+        :class "card"
+        :orientation "vertical"
+        :spacing 12
 
-      (card :title "Music"
-        (music)))
+        (label :class "card-title" :text "System")
+        (label :text "CPU: ${cpu_usage}%")
+        (label :text "RAM: ${mem_used}%"))
 
-    ;; Bottom row
+      ;; MUSIC CARD
+      (box
+        :class "card"
+        :orientation "vertical"
+        :spacing 12
+
+        (label :class "card-title" :text "Music")
+        (label :text music_artist)
+        (label :text music_title)))
+
+    ;; =========================
+    ;; BOTTOM ROW
+    ;; =========================
     (box
       :orientation "horizontal"
       :spacing 24
 
-      (card :title "Clock"
-        (clock))
+      ;; CLOCK CARD
+      (box
+        :class "card"
+        :orientation "vertical"
+        :spacing 12
 
-      (card :title "Power"
-        (power)))))
+        (label :class "card-title" :text "Clock")
+        (label :class "clock-time" :text (time "%H:%M"))
+        (label :class "clock-date" :text (time "%A, %d %B")))
 
+      ;; POWER CARD
+      (box
+        :class "card"
+        :orientation "vertical"
+        :spacing 12
 
-;; =========================
-;; GENERIC CARD
-;; =========================
+        (label :class "card-title" :text "Power")
 
-(defwidget card [title children]
-  (box
-    :class "card"
-    :orientation "vertical"
-    :spacing 12
+        (box
+          :orientation "horizontal"
+          :spacing 16
 
-    (label
-      :class "card-title"
-      :text title)
+          (button
+            :class "power-btn"
+            :onclick "systemctl poweroff"
+            "⏻")
 
-    children))
-
-
-;; =========================
-;; CLOCK
-;; =========================
-
-(defwidget clock []
-  (box
-    :orientation "vertical"
-    :spacing 4
-
-    (label
-      :class "clock-time"
-      :text (time "%H:%M"))
-
-    (label
-      :class "clock-date"
-      :text (time "%A, %d %B"))))
-
-
-;; =========================
-;; SYSTEM INFO
-;; =========================
-
-(defwidget sysinfo []
-  (box
-    :orientation "vertical"
-    :spacing 6
-
-    (label :text "CPU: ${cpu_usage}%")
-    (label :text "RAM: ${mem_used}%")))
-
-
-;; =========================
-;; MUSIC
-;; =========================
-
-(defwidget music []
-  (box
-    :orientation "vertical"
-    :spacing 6
-
-    (label :text music_artist)
-    (label :text music_title)))
-
-
-;; =========================
-;; POWER BUTTONS
-;; =========================
-
-(defwidget power []
-  (box
-    :orientation "horizontal"
-    :spacing 16
-
-    (button
-      :class "power-btn"
-      :onclick "systemctl poweroff"
-      "⏻")
-
-    (button
-      :class "power-btn"
-      :onclick "systemctl reboot"
-      "")))
+          (button
+            :class "power-btn"
+            :onclick "systemctl reboot"
+            "")))))))
