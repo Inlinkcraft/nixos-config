@@ -114,7 +114,7 @@
 
   programs.thunar.enable = true;
   environment.variables = {
-    QT_QPA_PLATFORM = "xcb";
+    QT_QPA_PLATFORM = xcb;
   };
 
   ###############################################################
