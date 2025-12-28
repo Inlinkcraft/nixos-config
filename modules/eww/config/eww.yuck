@@ -1,5 +1,6 @@
 (defwindow dashboard
   :monitor "current"
+  :windowtype "dock"
   :geometry (geometry
     :x "5%"
     :y "10%"
@@ -9,7 +10,4 @@
 
   (box
     :class "dashboard"
-    :spacing 20
-
-    ;; widgets here
-  ))
+    (label :text "Dashboard visible")))
