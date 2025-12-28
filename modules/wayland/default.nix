@@ -112,6 +112,7 @@
         "swww-daemon"
         "sh -c 'while [ ! -f ~/.cache/wal/colors-waybar.css ]; do sleep 0.2; done; waybar'"
         "$HOME/Configuration/scripts/setup-workspaces.sh"
+        "eww open dashboard"
       ];
 
       ####################################
@@ -156,6 +157,27 @@
       windowrule = [
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
         "suppressevent maximize, class:.*"
+      ];
+
+      ####################################
+      # Eww dashboard rules
+      ####################################
+      windowrulev2 = [
+       "workspace special:dashboard, class:^(eww)$"
+       "float, class:^(eww)$"
+       "nofocus, class:^(eww)$"
+       "noborder, class:^(eww)$"
+       "noshadow, class:^(eww)$"
+       "pin, class:^(eww)$"
+      ];
+
+      layerrule = [
+        "blur, waybar"
+        "ignorezero, waybar"
+        "xray 0, waybar"
+
+        "blur, eww"
+        "ignorezero, eww"
       ];
     };
   };
