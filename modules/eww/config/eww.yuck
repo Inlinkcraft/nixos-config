@@ -39,33 +39,29 @@
       :orientation "horizontal"
       :spacing 24
 
-      (card
-        :title "System"
-        :child (sysinfo))
+      (card :title "System"
+        (sysinfo))
 
-      (card
-        :title "Music"
-        :child (music)))
+      (card :title "Music"
+        (music)))
 
     ;; Bottom row
     (box
       :orientation "horizontal"
       :spacing 24
 
-      (card
-        :title "Clock"
-        :child (clock))
+      (card :title "Clock"
+        (clock))
 
-      (card
-        :title "Power"
-        :child (power)))))
+      (card :title "Power"
+        (power)))))
 
 
 ;; =========================
 ;; GENERIC CARD
 ;; =========================
 
-(defwidget card [title child]
+(defwidget card [title]
   (box
     :class "card"
     :orientation "vertical"
@@ -75,7 +71,7 @@
       :class "card-title"
       :text title)
 
-    child))
+    children))
 
 
 ;; =========================
