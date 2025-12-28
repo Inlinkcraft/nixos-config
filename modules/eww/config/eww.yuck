@@ -1,13 +1,123 @@
+;; =========================
+;; DASHBOARD WINDOW
+;; =========================
 (defwindow dashboard
   :monitor 0
   :windowtype "dock"
+  :exclusive false
   :geometry (geometry
     :x "5%"
-    :y "10%"
+    :y "8%"
     :width "90%"
-    :height "80%")
-  :exclusive false
+    :height "84%")
 
   (box
-    :style "background: red; padding: 20px;"
-    (label :text "EWW DASHBOARD IS WORKING")))
+    :class "dashboard"
+    :orientation "vertical"
+    :spacing 24
+
+    ;; Top row
+    (box
+      :orientation "horizontal"
+      :spacing 24
+
+      (card
+        :title "System"
+        (sysinfo))
+
+      (card
+        :title "Music"
+        (music)))
+
+    ;; Bottom row
+    (box
+      :orientation "horizontal"
+      :spacing 24
+
+      (card
+        :title "Clock"
+        (clock))
+
+      (card
+        :title "Power"
+        (power))))))
+        
+
+;; =========================
+;; GENERIC CARD
+;; =========================
+(defwidget card [title child]
+  (box
+    :class "card"
+    :orientation "vertical"
+    :spacing 12
+
+    (label
+      :class "card-title"
+      :text title)
+
+    child))
+
+
+;; =========================
+;; CLOCK
+;; =========================
+(defwidget clock []
+  (box
+    :class "clock"
+    :orientation "vertical"
+    :spacing 4
+
+    (label
+      :class "clock-time"
+      :text (time "%H:%M"))
+
+    (label
+      :class "clock-date"
+      :text (time "%A, %d %B"))))
+
+
+;; =========================
+;; SYSTEM INFO (simple)
+;; =========================
+(defwidget sysinfo []
+  (box
+    :orientation "vertical"
+    :spacing 6
+
+    (label :text "CPU: ${round((cpu_usage), 1)}%")
+    (label :text "RAM: ${round((mem_used_perc), 1)}%")))
+
+
+;; =========================
+;; MUSIC (playerctl)
+;; =========================
+(defwidget music []
+  (box
+    :orientation "vertical"
+    :spacing 6
+
+    (label
+      :text {playerctl.metadata "artist"})
+
+    (label
+      :text {playerctl.metadata "title"})))
+
+
+;; =========================
+;; POWER BUTTONS
+;; =========================
+(defwidget power []
+  (box
+    :orientation "horizontal"
+    :spacing 16
+
+    (button
+      :class "power-btn"
+      :onclick "systemctl poweroff"
+      "⏻")
+
+    (button
+      :class "power-btn"
+      :onclick "systemctl reboot"
+      "")))

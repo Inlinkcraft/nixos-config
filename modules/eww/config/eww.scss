@@ -3,6 +3,7 @@
 * {
   all: unset;
   font-family: "JetBrainsMono Nerd Font";
+  color: $foreground;
 }
 
 .dashboard {
@@ -10,8 +11,40 @@
 }
 
 .card {
-  background: rgba($background, 0.85);
-  border-radius: 16px;
-  padding: 16px;
-  color: $foreground;
+  background: rgba($background, 0.88);
+  border-radius: 18px;
+  padding: 20px;
+  min-width: 320px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color4;
+  margin-bottom: 6px;
+}
+
+/* Clock */
+.clock-time {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.clock-date {
+  font-size: 14px;
+  color: $color6;
+}
+
+/* Power buttons */
+.power-btn {
+  background: $color1;
+  color: $background;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 20px;
+}
+
+.power-btn:hover {
+  background: $color2;
 }
