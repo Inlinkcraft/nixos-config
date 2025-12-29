@@ -79,14 +79,15 @@
 
 (defwidget center-column []
   (box :orientation "v" :spacing 22
-       (stats-bar "CPU" cpu 100)
-       (stats-bar "RAM" ram 100)
-       (stats-bar "TEMP" temp 100)
+       (stats-bar :label "CPU"  :value cpu  :max 100)
+       (stats-bar :label "RAM"  :value ram  :max 100)
+       (stats-bar :label "TEMP" :value temp :max 100)
        (clock-box)))
 
 (defwidget stats-bar [label value max]
   (box :class "card stat-bar" :orientation "v" :spacing 6
-       (label :class "stat-label" :text (str label ": " value "%"))
+       (label :class "stat-label"
+              :text (str label ": " value "%"))
        (progress :value value :max max)))
 
 (defwidget clock-box []
