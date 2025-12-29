@@ -1,26 +1,27 @@
-import App from 'resource:///com/github/Aylur/ags/app.js';
-import Widget from 'resource:///com/github/Aylur/ags/widget.js';
+import { App } from "resource:///com/github/Aylur/ags/astal.js";
+import Widget from "resource:///com/github/Aylur/ags/widget.js";
 
 const ControlCenter = Widget.Window({
-  name: 'controlcenter',
+  name: "controlcenter",
+  anchor: ["top", "right"],
+  margins: [20, 20, 20, 20],
+  layer: "overlay",
   visible: false,
-  anchor: ['top', 'bottom', 'left', 'right'],
-  layer: 'overlay',
-  keymode: 'exclusive',
+
   child: Widget.Box({
     vertical: true,
     css: `
-      padding: 40px;
-      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      background: #1e1e2e;
+      border-radius: 12px;
+      min-width: 300px;
     `,
     children: [
-      Widget.Label({ label: 'AGS Control Center 🚀' }),
-      Widget.Label({ label: 'This means app.js was loaded correctly.' }),
+      Widget.Label({ label: "AGS v2 Control Center" }),
     ],
   }),
 });
 
-App.config({
-  style: App.configDir + '/style.css',
+App.start({
   windows: [ControlCenter],
 });
