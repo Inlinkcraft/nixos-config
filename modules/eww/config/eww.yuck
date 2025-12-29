@@ -1,5 +1,5 @@
 ;; =========================================================
-;; VARIABLES (from defpolls)
+;; POLLS
 ;; =========================================================
 
 (defpoll volume
@@ -51,14 +51,13 @@
   (dashboard-root))
 
 ;; =========================================================
-;; ROOT LAYOUT
+;; ROOT
 ;; =========================================================
 
 (defwidget dashboard-root []
   (box :class "dashboard"
        :orientation "h"
        :spacing 24
-
        (left-column)
        (center-column)
        (right-column)))
@@ -99,9 +98,9 @@
 
 (defwidget stats-box []
   (box :class "card stats" :spacing 16
-       (stat-box "CPU" cpu "%")
-       (stat-box "RAM" ram "%")
-       (stat-box "TEMP" temp "°C")))
+       (stat-box :label "CPU"  :value cpu  :unit "%")
+       (stat-box :label "RAM"  :value ram  :unit "%")
+       (stat-box :label "TEMP" :value temp :unit "°C")))
 
 (defwidget stat-box [label value unit]
   (box :class "stat" :orientation "v"
