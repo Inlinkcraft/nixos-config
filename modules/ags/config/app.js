@@ -1,29 +1,27 @@
-import App from "resource:///com/github/Aylur/ags/app.js";
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
+import { App, Astal } from "astal";
+import { Window, Box, Label } from "astal/gtk3";
 
-const ControlCenter = Widget.Window({
+const controlcenter = new Window({
   name: "controlcenter",
-  anchor: ["top", "right"],
-  margins: [20, 20, 20, 20],
-  layer: "overlay",
+  anchor: Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
+  margins: { top: 20, right: 20 },
+  layer: Astal.Layer.OVERLAY,
   visible: false,
 
-  child: Widget.Box({
+  child: new Box({
     vertical: true,
     css: `
-      padding: 20px;
       background: #1e1e2e;
+      padding: 20px;
       border-radius: 12px;
       min-width: 300px;
     `,
     children: [
-      Widget.Label({
-        label: "AGS Control Center",
-      }),
+      new Label({ label: "AGS Control Center (v2)" }),
     ],
   }),
 });
 
-App.config({
-  windows: [ControlCenter],
+App.start({
+  windows: [controlcenter],
 });
