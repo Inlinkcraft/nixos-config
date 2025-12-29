@@ -1,108 +1,123 @@
-/* =========================
-   DASHBOARD THEME (SAFE)
-   ========================= */
+/* Defaults (si pywal pas prêt) */
+:root {
+  --bg: #0f111a;
+  --fg: #d7dae0;
+  --panel: rgba(20, 24, 30, 0.92);
+  --overlay: rgba(0, 0, 0, 0.55);
+  --accent: #7aa2f7;
+  --muted: rgba(215, 218, 224, 0.65);
+}
+
+/* Si présent, ce fichier remplace les variables ci-dessus */
+@import "/home/inlinkcraft/.cache/wal/eww-vars.scss";
 
 * {
   all: unset;
-  font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
-  color: rgba(240, 240, 245, 0.95);
+  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
 }
 
-.dashboard-window {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 26px;
-  padding: 22px;
+.overlay-root {
+  background: var(--overlay);
+  padding: 40px;
 }
 
-/* Layout */
-.root { background: transparent; }
-.grid { }
-.col { min-width: 300px; }
+.panel {
+  background: var(--panel);
+  color: var(--fg);
+  border-radius: 18px;
+  padding: 26px 28px;
+  min-width: 680px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255,255,255,0.06);
+}
 
-/* Header */
-.header { margin-top: 6px; }
-.clock {
-  font-size: 72px;
+.clock-block {
+  padding: 8px 0 2px 0;
+}
+
+.clock-time {
+  font-size: 78px;
   font-weight: 800;
   letter-spacing: 1px;
-}
-.date, .uptime {
-  font-size: 14px;
-  color: rgba(240, 240, 245, 0.72);
+  color: var(--fg);
 }
 
-/* Cards */
-.card {
-  background: rgba(15, 15, 18, 0.72);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 18px;
-  padding: 14px;
+.clock-date {
+  margin-top: 4px;
+  font-size: 16px;
+  color: var(--muted);
 }
-.card-title {
+
+.stats-grid {
+  padding: 10px 0;
+}
+
+.stat-row {
+  padding: 8px 6px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  margin: 6px 0;
+}
+
+.stat-icon {
+  min-width: 34px;
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.stat-label {
+  min-width: 64px;
   font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.7px;
-  color: rgba(240, 240, 245, 0.72);
+  color: var(--muted);
 }
 
-/* Tiles */
-.tile {
+.stat-bar {
+  min-width: 360px;
+  margin: 0 10px;
   background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+}
+
+.stat-bar trough {
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+}
+
+.stat-bar progress {
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.stat-value {
+  min-width: 64px;
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.toggles {
+  padding-top: 10px;
+}
+
+.toggle-btn, .action-btn {
+  background: rgba(255,255,255,0.05);
   border-radius: 14px;
   padding: 10px 12px;
+  margin: 0 6px;
+  border: 1px solid rgba(255,255,255,0.06);
 }
-.tile:hover { background: rgba(255,255,255,0.09); }
-.tile.active {
-  background: rgba(120, 170, 255, 0.18);
-  border: 1px solid rgba(120, 170, 255, 0.35);
-}
-.tile-icon { font-size: 18px; min-width: 22px; color: rgba(120, 170, 255, 0.95); }
-.tile-text { font-weight: 700; }
 
-/* Power buttons */
-.pwr {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 16px;
-  padding: 14px;
-}
-.pwr:hover { background: rgba(255,255,255,0.09); }
-.pwr-icon { font-size: 18px; color: rgba(120, 170, 255, 0.95); }
-
-/* Sliders */
-.slider-row {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 14px;
-  padding: 10px 12px;
-}
-.s-icon { font-size: 16px; min-width: 22px; color: rgba(120, 170, 255, 0.95); }
-.slider { min-width: 180px; }
-.s-val { color: rgba(240, 240, 245, 0.72); min-width: 48px; }
-
-/* Bars */
-.bar-label { min-width: 44px; font-weight: 800; color: rgba(240,240,245,0.72); }
-.bar-val { min-width: 44px; text-align: right; color: rgba(240,240,245,0.72); }
-
-.bar {
-  min-width: 190px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 999px;
+.toggle-btn.is-on {
+  background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.10);
 }
-.bar > trough {
-  background: rgba(255,255,255,0.06);
-  border-radius: 999px;
-}
-.bar > trough > progress {
-  background: rgba(120, 170, 255, 0.95);
-  border-radius: 999px;
+
+.btn-icon {
+  margin-right: 8px;
+  color: var(--accent);
+  font-size: 16px;
 }
 
-/* Temp */
-.temp { font-weight: 800; color: rgba(120, 170, 255, 0.95); }
-
-/* Hint */
-.hint { color: rgba(240, 240, 245, 0.72); }
+.btn-text {
+  font-size: 13px;
+  color: var(--fg);
+}

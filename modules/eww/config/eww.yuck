@@ -1,148 +1,110 @@
 ;; =========================
-;; EWW DASHBOARD (YUCK)
+;; Vars / polls
 ;; =========================
+(defpoll time_hm :interval "1s" "date +%H:%M")
+(defpoll time_date :interval "10s" "date '+%A %d %B'")
 
-(defvar term "kitty")
-(defvar browser "firefox")
-(defvar launcher "wofi --show drun")
+(defpoll cpu :interval "2s" "sh -lc '$HOME/.config/eww/scripts/metrics cpu'")
+(defpoll ram :interval "2s" "sh -lc '$HOME/.config/eww/scripts/metrics ram'")
+(defpoll disk :interval "30s" "sh -lc '$HOME/.config/eww/scripts/metrics disk'")
+(defpoll temp :interval "3s" "sh -lc '$HOME/.config/eww/scripts/metrics temp'")
+(defpoll vol :interval "2s" "sh -lc '$HOME/.config/eww/scripts/metrics vol'")
+(defpoll bright :interval "5s" "sh -lc '$HOME/.config/eww/scripts/metrics bright'")
 
-;; ---- Polls ----
-(defpoll time_h :interval "1s" "date +'%H:%M'")
-(defpoll date_d :interval "10s" "date +'%a %d %b'")
-(defpoll uptime_s :interval "10s" "uptime -p | sed 's/^up //g'")
+(defpoll wifi_state :interval "3s" "sh -lc '$HOME/.config/eww/scripts/wifi_state'")
 
-;; Audio
-(defpoll volume :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'\"")
-(defpoll muted  :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo yes || echo no\"")
-
-;; Wi-Fi / Bluetooth
-(defpoll wifi_state :interval "2s" "bash -lc \"nmcli -t -f WIFI g 2>/dev/null | head -n1 | tr '[:upper:]' '[:lower:]'\"")
-(defpoll bt_state   :interval "2s" "bash -lc \"bluetoothctl show 2>/dev/null | awk -F': ' '/Powered/ {print tolower($2)}'\"")
-
-;; System metrics (scripts)
-(defpoll cpu_p  :interval "2s" "bash -lc \"$HOME/.config/eww/scripts/metrics cpu\"")
-(defpoll mem_p  :interval "2s" "bash -lc \"$HOME/.config/eww/scripts/metrics mem\"")
-(defpoll disk_p :interval "10s" "bash -lc \"$HOME/.config/eww/scripts/metrics disk\"")
-(defpoll temp_c :interval "5s" "bash -lc \"$HOME/.config/eww/scripts/metrics temp\"")
-
-;; ---- Widgets ----
-(defwidget bar [label value suffix]
-  (box :class "bar-row" :spacing 10
-    (label :class "bar-label" :text label)
-    (progress :class "bar" :value value :max 100)
-    (label :class "bar-val" :text (str value suffix))))
-
-(defwidget toggle-btn [icon text active cmd]
-  (button :class (str "tile " (if active "active" ""))
-          :onclick cmd
-    (box :class "tile-inner" :spacing 10
-      (label :class "tile-icon" :text icon)
-      (label :class "tile-text" :text text))))
-
-(defwidget action-btn [icon text cmd]
-  (button :class "tile"
-          :onclick cmd
-    (box :class "tile-inner" :spacing 10
-      (label :class "tile-icon" :text icon)
-      (label :class "tile-text" :text text))))
-
-(defwidget power-btn [icon cmd]
-  (button :class "pwr"
-          :onclick cmd
-    (label :class "pwr-icon" :text icon)))
-
-(defwidget dashboard []
-  (box :class "root" :orientation "v" :spacing 18
-
-    ;; Header
-    (box :class "header" :orientation "v" :spacing 4 :halign "center"
-      (label :class "clock" :text time_h)
-      (box :class "subline" :spacing 18 :halign "center"
-        (label :class "date" :text date_d)
-        (label :class "uptime" :text uptime_s)))
-
-    ;; Content grid
-    (box :class "grid" :spacing 18
-
-      ;; LEFT
-      (box :class "col" :orientation "v" :spacing 14
-
-        (box :class "card" :orientation "v" :spacing 10
-          (label :class "card-title" :text "Quick toggles")
-
-          (box :class "row" :spacing 10
-            (toggle-btn
-              :icon "󰤨"
-              :text "Wi-Fi"
-              :active (eq wifi_state "enabled")
-              :cmd "bash -lc 'if nmcli -t -f WIFI g | grep -qi enabled; then nmcli r wifi off; else nmcli r wifi on; fi'")
-
-            (toggle-btn
-              :icon "󰂯"
-              :text "Bluetooth"
-              :active (eq bt_state "yes")
-              :cmd "bash -lc 'if bluetoothctl show | grep -q \"Powered: yes\"; then bluetoothctl power off; else bluetoothctl power on; fi'"))
-
-          (box :class "row" :spacing 10
-            (toggle-btn
-              :icon "󰝟"
-              :text "Mute"
-              :active (eq muted "yes")
-              :cmd "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")))
-
-        (box :class "card" :orientation "v" :spacing 12
-          (label :class "card-title" :text "Sliders")
-          (box :class "slider-row" :spacing 12
-            (label :class "s-icon" :text "󰕾")
-            (scale :class "slider" :min 0 :max 100 :value volume
-                   :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ $0%")
-            (label :class "s-val" :text (str volume "%"))))
-      )
-
-      ;; MIDDLE
-      (box :class "col" :orientation "v" :spacing 14
-
-        (box :class "card" :orientation "v" :spacing 12
-          (label :class "card-title" :text "System")
-          (bar :label "CPU"  :value cpu_p  :suffix "%")
-          (bar :label "RAM"  :value mem_p  :suffix "%")
-          (bar :label "Disk" :value disk_p :suffix "%")
-          (box :class "temp-row" :spacing 10
-            (label :class "bar-label" :text "Temp")
-            (label :class "temp" :text (str temp_c "°C"))))
-
-        (box :class "card" :orientation "v" :spacing 10
-          (label :class "card-title" :text "Media")
-          (label :class "hint" :text "Playerctl widget next (cover + controls)."))
-      )
-
-      ;; RIGHT
-      (box :class "col" :orientation "v" :spacing 14
-
-        (box :class "card" :orientation "v" :spacing 10
-          (label :class "card-title" :text "Power")
-          (box :class "pwr-row" :spacing 10
-            (power-btn :icon "⏻" :cmd "systemctl poweroff")
-            (power-btn :icon "" :cmd "systemctl reboot")
-            (power-btn :icon "󰤄" :cmd "loginctl suspend")
-            (power-btn :icon "󰍃" :cmd "loginctl lock-session")))
-
-        (box :class "card" :orientation "v" :spacing 10
-          (label :class "card-title" :text "Actions")
-          (action-btn :icon "" :text "Terminal" :cmd term)
-          (action-btn :icon "󰖟" :text "Browser" :cmd browser)
-          (action-btn :icon "󰍉" :text "Launcher" :cmd launcher))
-      )
-    )
-  )
-)
-
+;; =========================
+;; Window
+;; =========================
 (defwindow dashboard
   :monitor 0
-  :class "dashboard-window"
-  :geometry (geometry :x "0" :y "0" :width "980px" :height "620px" :anchor "center")
-  :stacking "fg"
-  :exclusive false
+  :stacking "overlay"
   :focusable true
-  :popup true
-  (dashboard))
+  :exclusive false
+  :geometry (geometry :x "0px" :y "0px" :width "100%" :height "100%" :anchor "center")
+  (overlay-root))
+
+;; =========================
+;; Widgets
+;; =========================
+(defwidget overlay-root []
+  (box
+    :class "overlay-root"
+    :orientation "vertical"
+    :halign "center"
+    :valign "center"
+    (panel)))
+
+(defwidget panel []
+  (box
+    :class "panel"
+    :orientation "vertical"
+    :space-evenly false
+    :halign "center"
+    :valign "center"
+
+    (clock-block)
+    (spacer :height "14px")
+    (stats-grid)
+    (spacer :height "14px")
+    (quick-toggles)))
+
+(defwidget clock-block []
+  (box
+    :class "clock-block"
+    :orientation "vertical"
+    :halign "center"
+    :valign "center"
+    (label :class "clock-time" :text time_hm)
+    (label :class "clock-date" :text time_date)))
+
+(defwidget stats-grid []
+  (box
+    :class "stats-grid"
+    :orientation "vertical"
+    (stat-row :icon "" :label "CPU"   :value cpu   :unit "%"  :max "100")
+    (stat-row :icon "" :label "RAM"   :value ram   :unit "%"  :max "100")
+    (stat-row :icon "󰋊" :label "DISK"  :value disk  :unit "%"  :max "100")
+    (stat-row :icon "󰔄" :label "TEMP"  :value temp  :unit "°C" :max "100")
+    (stat-row :icon "" :label "VOL"   :value vol   :unit "%"  :max "100")
+    (stat-row :icon "󰃟" :label "BRI"   :value bright :unit "%" :max "100")))
+
+(defwidget stat-row [icon label value unit max]
+  (box :class "stat-row" :orientation "horizontal" :space-evenly false
+    (label :class "stat-icon" :text icon)
+    (label :class "stat-label" :text label)
+    (progress :class "stat-bar" :value value :max max)
+    (label :class "stat-value" :text (str value unit))))
+
+(defwidget quick-toggles []
+  (box :class "toggles" :orientation "horizontal" :space-evenly true
+    (toggle-btn
+      :icon ""
+      :label "Wi-Fi"
+      :active (== wifi_state "enabled")
+      :cmd "nmcli radio wifi on"
+      :cmd_off "nmcli radio wifi off")
+
+    (action-btn :icon "󰍃" :label "Lock" :cmd "loginctl lock-session")
+    (action-btn :icon "󰗽" :label "Sleep" :cmd "loginctl suspend")
+    (action-btn :icon ""  :label "Reboot" :cmd "systemctl reboot")
+    (action-btn :icon "⏻"  :label "Off" :cmd "systemctl poweroff")))
+
+(defwidget toggle-btn [icon label active cmd cmd_off]
+  (button
+    :class (str "toggle-btn " (if active "is-on" "is-off"))
+    :onclick (if active cmd_off cmd)
+    (box :orientation "horizontal" :space-evenly false
+      (label :class "btn-icon" :text icon)
+      (label :class "btn-text" :text label))))
+
+(defwidget action-btn [icon label cmd]
+  (button
+    :class "action-btn"
+    :onclick cmd
+    (box :orientation "horizontal" :space-evenly false
+      (label :class "btn-icon" :text icon)
+      (label :class "btn-text" :text label))))
+
+(defwidget spacer [height]
+  (box :style (str "min-height:" height ";")))
