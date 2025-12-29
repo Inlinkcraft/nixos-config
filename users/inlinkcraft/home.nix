@@ -18,7 +18,6 @@
     ../../modules/pywal/hyprland-style
     ../../modules/pywal/waybar-style
     ../../modules/pywal/wofi-style
-    ../../modules/ags
     ../../modules/eww
   ];
 
