@@ -113,11 +113,11 @@
 (defwidget power-grid []
   (box :class "module power" :orientation "v" :spacing 8
        (box :spacing 8
-            (power-btn :icon "⏻"  :cmd "systemctl poweroff")
-            (power-btn :icon "󰜉"  :cmd "systemctl reboot"))
+            (power-btn :icon "⏻" :cmd "systemctl poweroff")
+            (power-btn :icon "󰜉" :cmd "systemctl reboot"))
        (box :spacing 8
-            (power-btn :icon "󰌾"  :cmd "swaylock")
-            (power-btn :icon "󰗽"  :cmd "loginctl suspend")))))
+            (power-btn :icon "󰌾" :cmd "swaylock")
+            (power-btn :icon "󰗽" :cmd "loginctl suspend"))))
 
 (defwidget power-btn [icon cmd]
   (button :class "power-btn"
