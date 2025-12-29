@@ -18,6 +18,10 @@
   :interval "30s"
   "df / | awk 'NR==2 {print int($3/$2*100)}'")
 
+(defpoll battery
+  :interval "30s"
+  "acpi -b 2>/dev/null | awk '{print substr($4, 1, length($4)-1)}'")
+
 (defpoll volume
   :interval "1s"
   "pamixer --get-volume 2>/dev/null || echo 0")
@@ -53,21 +57,21 @@
   :exclusive false
   :background false
   :transition "fade"
-  (overlay-root))
+  (root))
 
 ;; =========================================================
 ;; ROOT
 ;; =========================================================
 
-(defwidget overlay-root []
-  (box :class "overlay"
+(defwidget root []
+  (box :class "background"
        :halign "center"
        :valign "center"
-       (columns)))
+       (content)))
 
-(defwidget columns []
-  (box :class "columns"
-       :spacing 32
+(defwidget content []
+  (box :class "content"
+       :spacing 16
        (music-column)
        (info-column)
        (control-column)))
@@ -78,48 +82,46 @@
 
 (defwidget music-column []
   (box :class "column"
-       (music-stack)))
-
-(defwidget music-stack []
-  (box :class "module music" :orientation "v" :spacing 12
-       (image :path music_art :class "album")
-       (label :class "music-title" :text music_title)
-       (label :class "music-artist" :text music_artist)
-       (progress :value music_pos :max music_len)
-       (box :spacing 16
-            (button :onclick "playerctl previous" "󰒮")
-            (button :onclick "playerctl play-pause" "󰏥")
-            (button :onclick "playerctl next" "󰒭"))))
+       (box :class "module music" :orientation "v" :spacing 6
+            (image :path music_art :class "album")
+            (label :class "music-title" :text music_title)
+            (label :class "music-artist" :text music_artist)
+            (progress :value music_pos :max music_len)
+            (box :spacing 10
+                 (button :onclick "playerctl previous" "󰒮")
+                 (button :onclick "playerctl play-pause" "󰏥")
+                 (button :onclick "playerctl next" "󰒭")))))
 
 ;; =========================================================
 ;; INFO COLUMN
 ;; =========================================================
 
 (defwidget info-column []
-  (box :class "column" :orientation "v" :spacing 20
-       (date-stack)
-       (volume-stack)
-       (specs-row)))
+  (box :class "column" :orientation "v" :spacing 12
+       (date-module)
+       (volume-module)
+       (specs-module)))
 
-(defwidget date-stack []
+(defwidget date-module []
   (box :class "module date" :orientation "v"
        (label :class "clock" :text (strftime "%H:%M"))
        (label :class "date"  :text (strftime "%A %d %B"))))
 
-(defwidget volume-stack []
-  (box :class "module volume" :orientation "v" :spacing 6
+(defwidget volume-module []
+  (box :class "module volume" :orientation "v" :spacing 4
        (label :text "Volume")
        (scale :value volume :max 100
               :onchange "pamixer --set-volume {}")))
 
-(defwidget specs-row []
-  (box :class "module specs" :spacing 16
-       (spec :label "CPU"  :value cpu)
-       (spec :label "RAM"  :value ram)
-       (spec :label "TEMP" :value temp)
-       (spec :label "SSD"  :value disk)))
+(defwidget specs-module []
+  (box :class "module specs" :orientation "v" :spacing 2
+       (spec-line :label "CPU"  :value cpu)
+       (spec-line :label "RAM"  :value ram)
+       (spec-line :label "TEMP" :value temp)
+       (spec-line :label "SSD"  :value disk)
+       (spec-line :label "BAT"  :value battery)))
 
-(defwidget spec [label value]
+(defwidget spec-line [label value]
   (label :class "spec"
          :text (str "[" label " "
                     (repeat "#" (/ value 5))
@@ -131,21 +133,23 @@
 ;; =========================================================
 
 (defwidget control-column []
-  (box :class "column" :orientation "v" :spacing 20
-       (wifi-box)
+  (box :class "column" :orientation "v" :spacing 12
+       (network-module)
        (power-grid)))
 
-(defwidget wifi-box []
-  (box :class "module wifi"
+(defwidget network-module []
+  (box :class "module network" :orientation "v" :spacing 6
        (button :onclick "nmcli radio wifi off || nmcli radio wifi on"
-               "󰖩 Wi-Fi")))
+               "󰖩 Wi-Fi")
+       (button :onclick "bluetoothctl power off || bluetoothctl power on"
+               " Bluetooth")))
 
 (defwidget power-grid []
-  (box :class "module power" :orientation "v" :spacing 10
-       (box :spacing 10
+  (box :class "module power" :orientation "v" :spacing 6
+       (box :spacing 6
             (power-btn :icon "⏻" :cmd "systemctl poweroff")
             (power-btn :icon "󰜉" :cmd "systemctl reboot"))
-       (box :spacing 10
+       (box :spacing 6
             (power-btn :icon "󰌾" :cmd "swaylock")
             (power-btn :icon "󰗽" :cmd "loginctl suspend"))))
 
