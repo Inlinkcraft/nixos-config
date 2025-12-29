@@ -6,13 +6,9 @@
   :interval "1s"
   "pamixer --get-volume 2>/dev/null || echo 0")
 
-(defpoll brightness
-  :interval "2s"
-  "brightnessctl g 2>/dev/null || echo 0")
-
 (defpoll cpu
   :interval "2s"
-  "awk -v FS=' ' '/^cpu / {usage=($2+$4)*100/($2+$4+$5); printf \"%d\", usage}' /proc/stat")
+  "awk '/^cpu / {printf \"%d\", ($2+$4)*100/($2+$4+$5)}' /proc/stat")
 
 (defpoll ram
   :interval "2s"
@@ -21,10 +17,6 @@
 (defpoll temp
   :interval "5s"
   "sensors 2>/dev/null | awk '/Package id 0/ {gsub(\"[+°C]\", \"\", $4); print int($4)}'")
-
-(defpoll battery
-  :interval "30s"
-  "acpi -b 2>/dev/null | awk '{print substr($4, 1, length($4)-1)}'")
 
 (defpoll music_title
   :interval "1s"
@@ -43,11 +35,13 @@
   :geometry (geometry
               :x "50%"
               :y "50%"
-              :width "900px"
-              :height "520px"
+              :width "820px"
+              :height "460px"
               :anchor "center")
   :stacking "fg"
   :exclusive false
+  :background false
+  :transition "fade"
   (dashboard-root))
 
 ;; =========================================================
@@ -63,49 +57,37 @@
        (right-column)))
 
 ;; =========================================================
-;; LEFT COLUMN
+;; LEFT COLUMN — MUSIC
 ;; =========================================================
 
 (defwidget left-column []
   (box :orientation "v" :spacing 20
-       (system-box)
        (music-box)))
-
-(defwidget system-box []
-  (box :class "card system" :orientation "v" :spacing 6
-       (label :text " Arch Linux")
-       (label :text "󰣇 systemd")
-       (label :text " inlinkcraft")
-       (label :text " kitty")))
 
 (defwidget music-box []
   (box :class "card music" :orientation "v" :spacing 10
        (label :class "music-title" :text music_title)
        (label :class "music-artist" :text music_artist)
-       (box :class "music-controls" :spacing 12
+       (box :spacing 12
             (button :onclick "playerctl previous" "󰒮")
             (button :onclick "playerctl play-pause" "󰏥")
             (button :onclick "playerctl next" "󰒭"))))
 
 ;; =========================================================
-;; CENTER COLUMN
+;; CENTER COLUMN — STATS
 ;; =========================================================
 
 (defwidget center-column []
-  (box :orientation "v" :spacing 24
-       (stats-box)
+  (box :orientation "v" :spacing 22
+       (stats-bar "CPU" cpu 100)
+       (stats-bar "RAM" ram 100)
+       (stats-bar "TEMP" temp 100)
        (clock-box)))
 
-(defwidget stats-box []
-  (box :class "card stats" :spacing 16
-       (stat-box :label "CPU"  :value cpu  :unit "%")
-       (stat-box :label "RAM"  :value ram  :unit "%")
-       (stat-box :label "TEMP" :value temp :unit "°C")))
-
-(defwidget stat-box [label value unit]
-  (box :class "stat" :orientation "v"
-       (label :class "stat-value" :text (str value unit))
-       (label :class "stat-label" :text label)))
+(defwidget stats-bar [label value max]
+  (box :class "card stat-bar" :orientation "v" :spacing 6
+       (label :class "stat-label" :text (str label ": " value "%"))
+       (progress :value value :max max)))
 
 (defwidget clock-box []
   (box :class "card clock" :orientation "v" :spacing 4
@@ -113,22 +95,23 @@
        (label :class "day"  :text (strftime "%A"))))
 
 ;; =========================================================
-;; RIGHT COLUMN
+;; RIGHT COLUMN — MIXER + POWER
 ;; =========================================================
 
 (defwidget right-column []
   (box :orientation "v" :spacing 20
-       (profile-box)
+       (volume-box)
        (controls-box)))
 
-(defwidget profile-box []
-  (box :class "card profile" :orientation "v" :spacing 8
-       (image :path "~/.face")
-       (label :text "I'm qxb3!")
-       (label :class "uptime" :text "󰔛 online")))
+(defwidget volume-box []
+  (box :class "card volume" :orientation "v" :spacing 8
+       (label :text "Volume")
+       (scale :value volume
+              :max 100
+              :onchange "pamixer --set-volume {}")))
 
 (defwidget controls-box []
-  (box :class "card controls" :spacing 12
+  (box :class "card controls" :spacing 14
        (button :onclick "systemctl poweroff" "⏻")
        (button :onclick "systemctl reboot"  "󰜉")
        (button :onclick "swaylock"          "󰌾")))

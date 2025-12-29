@@ -6,23 +6,20 @@
   color: $foreground;
 }
 
+/* ================= ROOT ================= */
+
 .dashboard {
-  background: rgba($background, 0.80);
-  border-radius: 26px;
+  background: rgba($background, 0.55);
+  border-radius: 28px;
   padding: 22px;
 }
 
+/* ================= CARDS ================= */
+
 .card {
-  background: rgba($color0, 0.85);
+  background: rgba($color0, 0.75);
   border-radius: 20px;
   padding: 16px;
-}
-
-/* ================= SYSTEM ================= */
-
-.system label {
-  font-size: 14px;
-  color: $color4;
 }
 
 /* ================= MUSIC ================= */
@@ -38,29 +35,31 @@
   color: $color8;
 }
 
-.music-controls button {
+.music button {
   font-size: 20px;
-  padding: 6px;
   color: $color3;
 }
 
 /* ================= STATS ================= */
 
-.stat {
-  background: rgba($color1, 0.25);
-  border-radius: 50%;
-  min-width: 86px;
-  min-height: 86px;
-  padding: 12px;
+.stat-bar progress {
+  background: rgba($color8, 0.2);
+  border-radius: 10px;
+  min-height: 12px;
 }
 
-.stat-value {
-  font-size: 18px;
-  color: $color5;
+.stat-bar progress trough {
+  background: rgba($color8, 0.15);
+  border-radius: 10px;
+}
+
+.stat-bar progress bar {
+  background: $color6;
+  border-radius: 10px;
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 12px;
   color: $color7;
 }
 
@@ -76,19 +75,24 @@
   color: $color8;
 }
 
-/* ================= PROFILE ================= */
+/* ================= VOLUME ================= */
 
-.profile image {
+.volume scale trough {
+  background: rgba($color8, 0.2);
+  border-radius: 10px;
+  min-height: 12px;
+}
+
+.volume scale slider {
+  background: $color6;
   border-radius: 50%;
-  min-width: 64px;
-  min-height: 64px;
 }
 
 /* ================= CONTROLS ================= */
 
 .controls button {
   font-size: 22px;
-  background: rgba($color2, 0.35);
+  background: rgba($color2, 0.45);
   border-radius: 14px;
   padding: 10px;
 }
