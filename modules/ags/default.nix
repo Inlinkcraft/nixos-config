@@ -1,10 +1,11 @@
 { config, pkgs, ... }:
 
 {
-  # Install AGS config
-  home.file.".config/ags".source = ./config;
+  home.file.".config/ags" = {
+    source = ./config;
+    recursive = true;
+  };
 
-  # Start AGS (Astal) correctly
   systemd.user.services.ags = {
     Unit = {
       Description = "AGS (Aylur's GTK Shell)";
