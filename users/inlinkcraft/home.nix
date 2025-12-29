@@ -5,6 +5,9 @@
   home.homeDirectory = "/home/inlinkcraft";
   home.stateVersion = "24.05";
 
+  ########################################
+  # Imports (modules)
+  ########################################
   imports = [
     ../../modules/wayland
     ../../modules/nvim
@@ -15,44 +18,63 @@
     ../../modules/pywal/hyprland-style
     ../../modules/pywal/waybar-style
     ../../modules/pywal/wofi-style
-    ../../modules/eww
+    ../../modules/ags
+#    ../../modules/eww
   ];
 
   ########################################
   # Packages
   ########################################
   home.packages = with pkgs; [
+    # Browsers / apps
     firefox
-    wofi
-    swww
-    pywal
-    tmux
-    ledger
     spotify
-    hyprshot
     zoom-us
     discord
-    swaylock-effects
+    freecad
+
+    # Wayland utils
+    swww
+    hyprshot
     wl-clipboard
     grim
     slurp
     cliphist
-    playerctl
-    lm_sensors
-    procps
+    swaylock-effects
+
+    # CLI / tools
+    tmux
+    ledger
+    fastfetch
+    cava
     jq
+    socat
+    procps
+
+    # Media / control
+    playerctl
+    pamixer
     brightnessctl
     acpi
-    socat
+    lm_sensors
+
+    # UI / theming
+    pywal
     nerd-fonts.fira-code
-    cava
-    fastfetch
-    freecad
-    pamixer
+
+    # AGS runtime deps
+    ags
+    bun
+    gjs
+    gtk3
+    gtk-layer-shell
+    networkmanager
+    blueman
+    pavucontrol
   ];
 
   ########################################
-  # Swaylock (or Hyprlock if you want)
+  # Swaylock
   ########################################
   programs.swaylock.settings = {
     color = "#00000000";
@@ -66,11 +88,12 @@
     nix-direnv.enable = true;
   };
 
-  # Wrapper for FreeCAD with environment variable
+  ########################################
+  # FreeCAD wrapper (Wayland fix)
+  ########################################
   home.file.".local/bin/freecad".text = ''
     #!${pkgs.stdenv.shell}
     export QT_QPA_PLATFORM=xcb
     exec ${pkgs.freecad}/bin/FreeCAD "$@"
   '';
-
 }
