@@ -12,9 +12,14 @@
   background: transparent;
 }
 
-/* Invisible layout container */
-.center {
-  padding: 32px;
+.columns {
+  padding: 40px;
+}
+
+/* ================= STRUCTURE ================= */
+
+.column {
+  min-width: 260px;
 }
 
 /* ================= MODULE BASE ================= */
@@ -29,9 +34,9 @@
 /* ================= MUSIC ================= */
 
 .album {
-  min-width: 96px;
-  min-height: 96px;
-  border-radius: 8px;
+  min-width: 140px;
+  min-height: 140px;
+  border-radius: 10px;
 }
 
 .music-title {
@@ -45,15 +50,30 @@
   color: $color8;
 }
 
-/* ================= STATS ================= */
+.music progress trough {
+  background: $color0;
+}
+
+.music progress bar {
+  background: $color6;
+}
+
+/* ================= DATE ================= */
 
 .clock {
-  font-size: 32px;
+  font-size: 36px;
   color: $color6;
 }
 
+.date {
+  font-size: 14px;
+  color: $color7;
+}
+
+/* ================= SPECS ================= */
+
 .spec {
-  font-size: 12px;
+  font-size: 11px;
   color: $color7;
 }
 
@@ -61,13 +81,10 @@
 
 .volume scale trough {
   background: $color0;
-  min-height: 10px;
-  border-radius: 8px;
 }
 
 .volume scale slider {
   background: $color6;
-  border-radius: 50%;
 }
 
 /* ================= POWER ================= */
@@ -76,7 +93,7 @@
   background: $color1;
   border-radius: 10px;
   padding: 14px;
+  min-width: 64px;
+  min-height: 64px;
   font-size: 20px;
-  min-width: 60px;
-  min-height: 60px;
 }

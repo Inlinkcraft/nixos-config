@@ -14,6 +14,10 @@
   :interval "5s"
   "sensors 2>/dev/null | awk '/Package id 0/ {gsub(\"[+°C]\", \"\", $4); print int($4)}'")
 
+(defpoll disk
+  :interval "30s"
+  "df / | awk 'NR==2 {print int($3/$2*100)}'")
+
 (defpoll volume
   :interval "1s"
   "pamixer --get-volume 2>/dev/null || echo 0")
@@ -30,17 +34,21 @@
   :interval "1s"
   "playerctl metadata mpris:artUrl 2>/dev/null | sed 's|file://||'")
 
+(defpoll music_pos
+  :interval "1s"
+  "playerctl position 2>/dev/null | cut -d. -f1 || echo 0")
+
+(defpoll music_len
+  :interval "5s"
+  "playerctl metadata mpris:length 2>/dev/null | awk '{print int($1/1000000)}'")
+
 ;; =========================================================
 ;; WINDOW
 ;; =========================================================
 
 (defwindow dashboard
   :monitor 0
-  :geometry (geometry
-              :x "0%"
-              :y "0%"
-              :width "100%"
-              :height "100%")
+  :geometry (geometry :x "0%" :y "0%" :width "100%" :height "100%")
   :stacking "fg"
   :exclusive false
   :background false
@@ -48,47 +56,70 @@
   (overlay-root))
 
 ;; =========================================================
-;; ROOT OVERLAY
+;; ROOT
 ;; =========================================================
 
 (defwidget overlay-root []
   (box :class "overlay"
        :halign "center"
        :valign "center"
-       (center-container)))
+       (columns)))
 
-(defwidget center-container []
-  (box :class "center"
-       :orientation "v"
-       :spacing 20
-       (music-box)
-       (stats-box)
-       (volume-box)
-       (power-grid)))
+(defwidget columns []
+  (box :class "columns"
+       :spacing 32
+       (music-column)
+       (info-column)
+       (control-column)))
 
 ;; =========================================================
-;; MUSIC
+;; MUSIC COLUMN
 ;; =========================================================
 
-(defwidget music-box []
-  (box :class "module music" :spacing 16
+(defwidget music-column []
+  (box :class "column"
+       (music-stack)))
+
+(defwidget music-stack []
+  (box :class "module music" :orientation "v" :spacing 12
        (image :path music_art :class "album")
-       (box :orientation "v" :spacing 4
-            (label :class "music-title" :text music_title)
-            (label :class "music-artist" :text music_artist))))
+       (label :class "music-title" :text music_title)
+       (label :class "music-artist" :text music_artist)
+       (progress :value music_pos :max music_len)
+       (box :spacing 16
+            (button :onclick "playerctl previous" "󰒮")
+            (button :onclick "playerctl play-pause" "󰏥")
+            (button :onclick "playerctl next" "󰒭"))))
 
 ;; =========================================================
-;; STATS + CLOCK
+;; INFO COLUMN
 ;; =========================================================
 
-(defwidget stats-box []
-  (box :class "module stats" :orientation "v" :spacing 8
+(defwidget info-column []
+  (box :class "column" :orientation "v" :spacing 20
+       (date-stack)
+       (volume-stack)
+       (specs-row)))
+
+(defwidget date-stack []
+  (box :class "module date" :orientation "v"
        (label :class "clock" :text (strftime "%H:%M"))
-       (spec-line :label "CPU"  :value cpu)
-       (spec-line :label "RAM"  :value ram)
-       (spec-line :label "TEMP" :value temp)))
+       (label :class "date"  :text (strftime "%A %d %B"))))
 
-(defwidget spec-line [label value]
+(defwidget volume-stack []
+  (box :class "module volume" :orientation "v" :spacing 6
+       (label :text "Volume")
+       (scale :value volume :max 100
+              :onchange "pamixer --set-volume {}")))
+
+(defwidget specs-row []
+  (box :class "module specs" :spacing 16
+       (spec :label "CPU"  :value cpu)
+       (spec :label "RAM"  :value ram)
+       (spec :label "TEMP" :value temp)
+       (spec :label "SSD"  :value disk)))
+
+(defwidget spec [label value]
   (label :class "spec"
          :text (str "[" label " "
                     (repeat "#" (/ value 5))
@@ -96,30 +127,27 @@
                     " " value "%]")))
 
 ;; =========================================================
-;; VOLUME
+;; CONTROL COLUMN
 ;; =========================================================
 
-(defwidget volume-box []
-  (box :class "module volume" :orientation "v" :spacing 6
-       (label :text "Volume")
-       (scale :value volume
-              :max 100
-              :onchange "pamixer --set-volume {}")))
+(defwidget control-column []
+  (box :class "column" :orientation "v" :spacing 20
+       (wifi-box)
+       (power-grid)))
 
-;; =========================================================
-;; POWER GRID (2x2)
-;; =========================================================
+(defwidget wifi-box []
+  (box :class "module wifi"
+       (button :onclick "nmcli radio wifi off || nmcli radio wifi on"
+               "󰖩 Wi-Fi")))
 
 (defwidget power-grid []
-  (box :class "module power" :orientation "v" :spacing 8
-       (box :spacing 8
+  (box :class "module power" :orientation "v" :spacing 10
+       (box :spacing 10
             (power-btn :icon "⏻" :cmd "systemctl poweroff")
             (power-btn :icon "󰜉" :cmd "systemctl reboot"))
-       (box :spacing 8
+       (box :spacing 10
             (power-btn :icon "󰌾" :cmd "swaylock")
             (power-btn :icon "󰗽" :cmd "loginctl suspend"))))
 
 (defwidget power-btn [icon cmd]
-  (button :class "power-btn"
-          :onclick cmd
-          icon))
+  (button :class "power-btn" :onclick cmd icon))
