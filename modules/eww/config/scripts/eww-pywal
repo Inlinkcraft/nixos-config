@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WAL="$HOME/.cache/wal/colors.sh"
+OUT="$HOME/.cache/wal/eww-colors.scss"
+
+if [[ ! -f "$WAL" ]]; then
+  mkdir -p "$(dirname "$OUT")"
+  cat > "$OUT" <<'EOF'
+:root { --accent: rgba(120,170,255,0.85); }
+EOF
+  exit 0
+fi
+
+# shellcheck disable=SC1090
+source "$WAL"
+
+mkdir -p "$(dirname "$OUT")"
+
+cat > "$OUT" <<EOF
+:root {
+  --text: rgba(240,240,245,0.95);
+  --muted: rgba(240,240,245,0.72);
+
+  /* pywal */
+  --accent: ${color4};
+  --bg: rgba(0,0,0,0.55);
+  --card: rgba(15,15,18,0.72);
+  --border: rgba(255,255,255,0.10);
+}
+EOF
+#!/usr/bin/env bash
+set -euo pipefail
+
+WAL="$HOME/.cache/wal/colors.sh"
+OUT="$HOME/.cache/wal/eww-colors.scss"
+
+if [[ ! -f "$WAL" ]]; then
+  mkdir -p "$(dirname "$OUT")"
+  cat > "$OUT" <<'EOF'
+:root { --accent: rgba(120,170,255,0.85); }
+EOF
+  exit 0
+fi
+
+# shellcheck disable=SC1090
+source "$WAL"
+
+mkdir -p "$(dirname "$OUT")"
+
+cat > "$OUT" <<EOF
+:root {
+  --text: rgba(240,240,245,0.95);
+  --muted: rgba(240,240,245,0.72);
+
+  /* pywal */
+  --accent: ${color4};
+  --bg: rgba(0,0,0,0.55);
+  --card: rgba(15,15,18,0.72);
+  --border: rgba(255,255,255,0.10);
+}
+EOF
+

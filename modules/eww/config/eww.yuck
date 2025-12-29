@@ -1,240 +1,146 @@
 ;; =========================
-;; EWW DASHBOARD (Eww 0.6.x)
+;; EWW DASHBOARD (YUCK)
 ;; =========================
-;;
-;; Goals:
-;; - No (= ...) / (== ...) comparisons (your parser rejects them)
-;; - Poll booleans directly: wifi_on/bt_on/muted
-;; - Commands always output something valid (no empty float parsing)
 
-;; -------------------------
-;; POLLS
-;; -------------------------
-(defpoll time_hm :interval "1s"
-  "date '+%H:%M'")
+(defvar term "kitty")
+(defvar browser "firefox")
+(defvar launcher "wofi --show drun")
 
-(defpoll date_str :interval "60s"
-  "date '+%a %b %d'")
+;; ---- Polls (dynamiques) ----
+(defpoll time_h :interval "1s" "date +'%H:%M'")
+(defpoll date_d :interval "10s" "date +'%a %d %b'")
+(defpoll uptime_s :interval "10s" "uptime -p | sed 's/^up //g'")
 
-(defpoll uptime_str :interval "30s"
-  "bash -lc 'uptime -p 2>/dev/null | sed \"s/^up //\" || echo \"\"'")
+;; Audio (PipeWire / PulseAudio)
+(defpoll volume :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'\"")
+(defpoll muted  :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo 1 || echo 0\"")
 
-(defpoll wifi_on :interval "5s"
-  "bash -lc '[[ \"$(nmcli radio wifi 2>/dev/null)\" == \"enabled\" ]] && echo true || echo false'")
+;; Wi-Fi + Bluetooth (si dispo)
+(defpoll wifi_state :interval "2s" "bash -lc \"nmcli -t -f WIFI g 2>/dev/null | head -n1 | tr '[:upper:]' '[:lower:]'\"")
+(defpoll bt_state   :interval "2s" "bash -lc \"bluetoothctl show 2>/dev/null | awk -F': ' '/Powered/ {print tolower($2)}'\"")
 
-(defpoll wifi_icon :interval "5s"
-  "bash -lc '[[ \"$(nmcli radio wifi 2>/dev/null)\" == \"enabled\" ]] && echo \"󰖩\" || echo \"󰖪\"'")
+;; Système (utilise scripts, plus fiable)
+(defpoll cpu_p  :interval "2s" "bash -lc \"$HOME/.config/eww/scripts/metrics cpu\"")
+(defpoll mem_p  :interval "2s" "bash -lc \"$HOME/.config/eww/scripts/metrics mem\"")
+(defpoll disk_p :interval "10s" "bash -lc \"$HOME/.config/eww/scripts/metrics disk\"")
+(defpoll temp_c :interval "5s" "bash -lc \"$HOME/.config/eww/scripts/metrics temp\"")
 
-(defpoll bt_on :interval "5s"
-  "bash -lc 'bluetoothctl show 2>/dev/null | grep -q \"Powered: yes\" && echo true || echo false'")
+;; Clamp helpers (evite crash si vide)
+(defvar cpu_safe 0)
+(defvar mem_safe 0)
+(defvar disk_safe 0)
 
-(defpoll bt_icon :interval "5s"
-  "bash -lc 'bluetoothctl show 2>/dev/null | grep -q \"Powered: yes\" && echo \"󰂯\" || echo \"󰂲\"'")
+(defwidget bar [label value suffix]
+  (box :class "bar-row" :spacing 10
+    (label :class "bar-label" :text label)
+    (progress :class "bar" :value value)
+    (label :class "bar-val" :text (str value suffix))))
 
-(defpoll volume :interval "1s"
-  "bash -lc 'pamixer --get-volume 2>/dev/null || echo 0'")
+(defwidget toggle-btn [icon text active cmd]
+  (button :class (str "tile " (if active "active" ""))
+          :onclick cmd
+    (box :class "tile-inner" :spacing 10
+      (label :class "tile-icon" :text icon)
+      (label :class "tile-text" :text text))))
 
-(defpoll muted :interval "1s"
-  "bash -lc 'pamixer --get-mute 2>/dev/null || echo false'")
+(defwidget action-btn [icon text cmd]
+  (button :class "tile"
+          :onclick cmd
+    (box :class "tile-inner" :spacing 10
+      (label :class "tile-icon" :text icon)
+      (label :class "tile-text" :text text))))
 
-(defpoll vol_icon :interval "1s"
-  "bash -lc '
-    m=$(pamixer --get-mute 2>/dev/null || echo false)
-    if [[ \"$m\" == \"true\" ]]; then
-      echo \"󰝟\"
-    else
-      v=$(pamixer --get-volume 2>/dev/null || echo 0)
-      if   (( v == 0 )); then echo \"󰝟\"
-      elif (( v < 35 )); then echo \"󰕿\"
-      elif (( v < 70 )); then echo \"󰖀\"
-      else                   echo \"󰕾\"
-      fi
-    fi
-  '")
+(defwidget power-btn [icon cmd]
+  (button :class "pwr"
+          :onclick cmd
+    (label :class "pwr-icon" :text icon)))
 
-(defpoll brightness :interval "2s"
-  "bash -lc '
-    if command -v brightnessctl >/dev/null 2>&1; then
-      g=$(brightnessctl g 2>/dev/null || echo 0)
-      m=$(brightnessctl m 2>/dev/null || echo 1)
-      awk -v g=\"$g\" -v m=\"$m\" \"BEGIN { if (m<=0) m=1; printf \\\"%d\\\", (g*100)/m }\"
-    else
-      echo 0
-    fi
-  '")
+(defwidget dashboard []
+  (box :class "root" :orientation "v" :spacing 18
 
-(defpoll cpu_pct :interval "3s"
-  "bash -lc '
-    awk \"/^cpu /{u=$2+$4; t=$2+$4+$5; if(t==0)t=1; printf \\\"%d\\\", (u*100)/t}\" /proc/stat 2>/dev/null || echo 0
-  '")
+    ;; Header
+    (box :class "header" :orientation "v" :spacing 4 :halign "center"
+      (label :class "clock" :text time_h)
+      (box :class "subline" :spacing 18 :halign "center"
+        (label :class "date" :text date_d)
+        (label :class "uptime" :text (str uptime_s))))
 
-(defpoll mem_pct :interval "3s"
-  "bash -lc '
-    awk \"
-      /^MemTotal:/{t=$2}
-      /^MemAvailable:/{a=$2}
-      END{
-        if(t==0)t=1;
-        used=t-a;
-        printf \\\"%d\\\", (used*100)/t
-      }\" /proc/meminfo 2>/dev/null || echo 0
-  '")
+    ;; Content grid
+    (box :class "grid" :spacing 18
 
-(defpoll temp_c :interval "5s"
-  "bash -lc '
-    p=/sys/class/thermal/thermal_zone0/temp
-    if [[ -f \"$p\" ]]; then
-      v=$(cat \"$p\" 2>/dev/null || echo 0)
-      awk -v v=\"$v\" \"BEGIN{printf \\\"%d\\\", v/1000}\"
-    else
-      echo 0
-    fi
-  '")
+      ;; LEFT COLUMN
+      (box :class "col" :orientation "v" :spacing 14
 
-(defpoll m_title :interval "2s"
-  "bash -lc 'playerctl metadata title 2>/dev/null | head -c 60 || echo \"\"'")
+        (box :class "card" :orientation "v" :spacing 10
+          (label :class "card-title" :text "Quick toggles")
+          (box :class "row" :spacing 10
+            (toggle-btn :icon "󰤨" :text "Wi-Fi"
+              :active (= wifi_state "enabled")
+              :cmd "nmcli r wifi on || true; nmcli r wifi off || true")
+            (toggle-btn :icon "󰂯" :text "Bluetooth"
+              :active (= bt_state "yes")
+              :cmd "bluetoothctl power on || true; bluetoothctl power off || true")))
+          (box :class "row" :spacing 10
+            (toggle-btn :icon "󰝟" :text "Mute"
+              :active (= muted 1)
+              :cmd "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")))
 
-(defpoll m_artist :interval "2s"
-  "bash -lc 'playerctl metadata artist 2>/dev/null | head -c 60 || echo \"\"'")
+        (box :class "card" :orientation "v" :spacing 12
+          (label :class "card-title" :text "Sliders")
+          (box :class "slider-row" :spacing 12
+            (label :class "s-icon" :text "󰕾")
+            (scale :class "slider" :min 0 :max 100 :value volume
+                   :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ $0%")
+            (label :class "s-val" :text (str volume "%"))))
 
-(defpoll m_status :interval "1s"
-  "bash -lc 'playerctl status 2>/dev/null || echo \"Stopped\"'")
+      )
 
-(defpoll m_btn_icon :interval "1s"
-  "bash -lc 'playerctl status 2>/dev/null | grep -q Playing && echo \"󰏤\" || echo \"󰐊\"'")
+      ;; MIDDLE COLUMN
+      (box :class "col" :orientation "v" :spacing 14
 
-;; -------------------------
-;; WINDOWS
-;; -------------------------
+        (box :class "card" :orientation "v" :spacing 12
+          (label :class "card-title" :text "System")
+          (bar :label "CPU"  :value cpu_p  :suffix "%")
+          (bar :label "RAM"  :value mem_p  :suffix "%")
+          (bar :label "Disk" :value disk_p :suffix "%")
+          (box :class "temp-row" :spacing 10
+            (label :class "bar-label" :text "Temp")
+            (label :class "temp" :text (str temp_c "°C"))))
+
+        (box :class "card" :orientation "v" :spacing 10
+          (label :class "card-title" :text "Media")
+          (label :class "hint" :text "Tu peux brancher playerctl plus tard (je te le fais après).")))
+
+      )
+
+      ;; RIGHT COLUMN
+      (box :class "col" :orientation "v" :spacing 14
+
+        (box :class "card" :orientation "v" :spacing 10
+          (label :class "card-title" :text "Power")
+          (box :class "pwr-row" :spacing 10
+            (power-btn :icon "⏻" :cmd "systemctl poweroff")
+            (power-btn :icon "" :cmd "systemctl reboot")
+            (power-btn :icon "󰤄" :cmd "loginctl suspend")
+            (power-btn :icon "󰍃" :cmd "loginctl lock-session")))
+
+        (box :class "card" :orientation "v" :spacing 10
+          (label :class "card-title" :text "Actions")
+          (action-btn :icon "" :text "Terminal" :cmd term)
+          (action-btn :icon "󰖟" :text "Browser" :cmd browser)
+          (action-btn :icon "󰍉" :text "Launcher" :cmd launcher))
+
+      )
+    )
+  )
+)
+
 (defwindow dashboard
   :monitor 0
   :class "dashboard-window"
-  :geometry (geometry :x "0" :y "0" :width "980px" :height "560px" :anchor "center")
+  :geometry (geometry :x "0" :y "0" :width "980px" :height "620px" :anchor "center")
   :stacking "fg"
   :exclusive false
   :focusable true
   :popup true
   (dashboard))
-
-;; -------------------------
-;; WIDGETS
-;; -------------------------
-(defwidget sep []
-  (box :class "sep"))
-
-(defwidget card [title]
-  (box :class "card" :orientation "v" :spacing 10
-    (label :class "card-title" :text title)
-    (box :class "card-body" :orientation "v" :spacing 10
-      (children))))
-
-(defwidget pillbar [icon value]
-  (box :class "pillbar" :orientation "h" :spacing 10
-    (label :class "pillbar-icon" :text icon)
-    (progress :class "pillbar-progress" :value value :max 100)
-    (label :class "pillbar-text" :text (str value "%"))))
-
-(defwidget toggle-btn [icon label active cmd]
-  (button
-    :class (if active "toggle active" "toggle")
-    :onclick cmd
-    (box :orientation "h" :spacing 10
-      (label :class "toggle-icon" :text icon)
-      (label :class "toggle-text" :text label))))
-
-(defwidget power-btn [icon cmd]
-  (button :class "power-btn" :onclick cmd
-    (label :text icon)))
-
-(defwidget media []
-  (box :class "media" :orientation "v" :spacing 10
-    (box :class "media-top" :orientation "h" :spacing 10
-      (label :class "media-icon" :text "󰎈")
-      (box :orientation "v" :spacing 2
-        (label :class "media-title" :text (if (str-eq m_title "") "No media" m_title))
-        (label :class "media-artist" :text m_artist)))
-    (box :class "media-controls" :orientation "h" :spacing 10
-      (button :class "media-btn" :onclick "playerctl previous 2>/dev/null || true" (label :text "󰒮"))
-      (button :class "media-btn big" :onclick "playerctl play-pause 2>/dev/null || true" (label :text m_btn_icon))
-      (button :class "media-btn" :onclick "playerctl next 2>/dev/null || true" (label :text "󰒭")))))
-
-;; NOTE: str-eq is safe on eww 0.6; if for some reason it errors on your build,
-;; replace (if (str-eq m_title "") ...) with just m_title.
-
-(defwidget sliders []
-  (box :class "sliders" :orientation "v" :spacing 12
-    (box :class "slider-row" :orientation "h" :spacing 10
-      (label :class "slider-icon" :text vol_icon)
-      (scale :class "slider"
-        :min 0
-        :max 100
-        :value volume
-        :onchange "bash -lc 'pamixer --set-volume {} 2>/dev/null || true'")
-      (label :class "slider-val" :text (str volume "%")))
-    (box :class "slider-row" :orientation "h" :spacing 10
-      (label :class "slider-icon" :text "󰃠")
-      (scale :class "slider"
-        :min 0
-        :max 100
-        :value brightness
-        :onchange "bash -lc 'brightnessctl set {}% 2>/dev/null || true'")
-      (label :class "slider-val" :text (str brightness "%")))))
-
-(defwidget header []
-  (box :class "header" :orientation "h" :space-between true
-    (box :orientation "v" :spacing 2
-      (label :class "clock" :text time_hm)
-      (label :class "date" :text date_str))
-    (box :class "header-right" :orientation "v" :halign "end" :spacing 2
-      (label :class "uptime" :text uptime_str))))
-
-(defwidget dashboard []
-  (box :class "root" :orientation "v" :spacing 14
-    (header)
-    (box :class "content" :orientation "h" :spacing 14
-
-      ;; LEFT COLUMN
-      (box :class "col" :orientation "v" :spacing 14
-        (card :title "Quick toggles"
-          (box :class "toggles" :orientation "v" :spacing 10
-            (toggle-btn :icon wifi_icon :label "Wi-Fi" :active wifi_on
-              :cmd "bash -lc 'nmcli radio wifi off 2>/dev/null || true; nmcli radio wifi on 2>/dev/null || true'")
-            (toggle-btn :icon bt_icon :label "Bluetooth" :active bt_on
-              :cmd "bash -lc 'if bluetoothctl show 2>/dev/null | grep -q \"Powered: yes\"; then bluetoothctl power off; else bluetoothctl power on; fi'")
-            (toggle-btn :icon "󰝟" :label "Mute" :active muted
-              :cmd "bash -lc 'pamixer -t 2>/dev/null || true'")))
-
-        (card :title "Sliders"
-          (sliders)))
-
-      ;; MIDDLE COLUMN
-      (box :class "col" :orientation "v" :spacing 14
-        (card :title "System"
-          (box :orientation "v" :spacing 10
-            (pillbar :icon "󰍛" :value cpu_pct)
-            (pillbar :icon "󰘚" :value mem_pct)
-            (box :class "pillbar" :orientation "h" :spacing 10
-              (label :class "pillbar-icon" :text "󰔏")
-              (progress :class "pillbar-progress" :value temp_c :max 100)
-              (label :class "pillbar-text" :text (str temp_c "°C")))))
-
-        (card :title "Media"
-          (media)))
-
-      ;; RIGHT COLUMN
-      (box :class "col" :orientation "v" :spacing 14
-        (card :title "Power"
-          (box :class "power-row" :orientation "h" :spacing 10
-            (power-btn :icon "󰐥" :cmd "bash -lc 'loginctl lock-session 2>/dev/null || true'")
-            (power-btn :icon "󰒲" :cmd "bash -lc 'loginctl suspend 2>/dev/null || true'")
-            (power-btn :icon "󰜉" :cmd "bash -lc 'systemctl reboot 2>/dev/null || true'")
-            (power-btn :icon "⏻"   :cmd "bash -lc 'systemctl poweroff 2>/dev/null || true'")))
-
-        (card :title "Actions"
-          (box :class "actions" :orientation "v" :spacing 10
-            (button :class "action-btn" :onclick "bash -lc 'kitty 2>/dev/null & disown || true'"
-              (box :orientation "h" :spacing 10 (label :text "󰆍") (label :text "Terminal")))
-            (button :class "action-btn" :onclick "bash -lc 'firefox 2>/dev/null & disown || true'"
-              (box :orientation "h" :spacing 10 (label :text "󰈹") (label :text "Browser")))
-            (button :class "action-btn" :onclick "bash -lc 'wofi --show drun 2>/dev/null || true'"
-              (box :orientation "h" :spacing 10 (label :text "󰣇") (label :text "Launcher")))))))))

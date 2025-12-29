@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+what="${1:-}"
+
+cpu() {
+  # CPU% via top (simple, fiable)
+  top -bn1 | awk -F',' '/Cpu/ {gsub(/%id.*/, "", $4); gsub(/ /,"",$4); printf("%d\n", 100-$4)}' 2>/dev/null || echo 0
+}
+
+mem() {
+  # RAM% via free
+  free | awk '/Mem:/ {printf("%d\n", ($3/$2)*100)}' 2>/dev/null || echo 0
+}
+
+disk() {
+  # Disk% sur /
+  df -P / | awk 'NR==2 {gsub(/%/,"",$5); print $5}' 2>/dev/null || echo 0
+}
+
+temp() {
+  # Temp via sensors si dispo sinon 0
+  if command -v sensors >/dev/null 2>&1; then
+    sensors 2>/dev/null | awk '/Package id 0:/ {gsub(/[+°C]/,"",$4); print int($4); exit}' || echo 0
+  else
+    echo 0
+  fi
+}
+
+case "$what" in
+  cpu) cpu ;;
+  mem) mem ;;
+  disk) disk ;;
+  temp) temp ;;
+  *) echo 0 ;;
+esac
+
