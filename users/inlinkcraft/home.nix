@@ -62,12 +62,11 @@
     pywal
     nerd-fonts.fira-code
 
-    # AGS runtime deps (GTK4)
+    # AGS runtime deps (GTK3 - works)
     ags
-    bun
     gjs
-    gtk4
-    gtk4-layer-shell
+    gtk3
+    gtk-layer-shell
 
     # Control-center helpers
     networkmanager

@@ -1,30 +1,32 @@
-imports.gi.versions.Gtk = "4.0";
-imports.gi.versions.Gdk = "4.0";
-imports.gi.versions.Astal = "1.0"; // if this errors later, we’ll switch it
+import App from "resource:///com/github/Aylur/ags/app.js";
+import Widget from "resource:///com/github/Aylur/ags/widget.js";
 
-const Gtk = imports.gi.Gtk;
-const Astal = imports.gi.Astal;
-
-Gtk.init();
-
-const controlcenter = new Astal.Window({
+const ControlCenter = Widget.Window({
   name: "controlcenter",
-  anchor: Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
-  layer: Astal.Layer.OVERLAY,
+  anchor: ["top", "right"],
+  margins: [20, 20, 20, 20],
+  layer: "overlay",
   visible: false,
 
-  child: new Gtk.Box({
-    orientation: Gtk.Orientation.VERTICAL,
-    spacing: 12,
-    css_classes: ["cc-root"],
+  child: Widget.Box({
+    vertical: true,
+    css: `
+      background: rgba(30, 30, 46, 0.92);
+      padding: 20px;
+      border-radius: 14px;
+      min-width: 340px;
+    `,
     children: [
-      new Gtk.Label({ label: "AGS Control Center (GTK4)", css_classes: ["cc-title"] }),
-      new Gtk.Label({ label: "GTK4 typelib found ✅", css_classes: ["cc-sub"] }),
+      Widget.Label({
+        label: "AGS Control Center (GTK3)",
+      }),
+      Widget.Label({
+        label: "This is the correct setup for NixOS today.",
+      }),
     ],
   }),
 });
 
-App.start({
-  css: `${App.configDir}/style.css`,
-  windows: [controlcenter],
+App.config({
+  windows: [ControlCenter],
 });
