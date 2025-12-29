@@ -1,20 +1,30 @@
 { pkgs, ... }:
 
+let
+  # Prefer AGS v1 package if your nixpkgs has it.
+  # Many nixpkgs expose v1 as `aylurs-gtk-shell`.
+  agsPkg =
+    if pkgs ? aylurs-gtk-shell then pkgs.aylurs-gtk-shell
+    else pkgs.ags;
+
+  agsBin = "${agsPkg}/bin/ags";
+in
 {
-  # Install AGS config
+  # Deploy config
   xdg.configFile."ags/app.js".source = ./config/app.js;
   xdg.configFile."ags/style.css".source = ./config/style.css;
 
-  # AGS v1 runs with GTK3 — no Astal, no GTK4
+  # Start AGS as a daemon (v1 behavior)
   systemd.user.services.ags = {
     Unit = {
-      Description = "AGS (GTK3)";
+      Description = "AGS (daemon)";
       After = [ "graphical-session.target" ];
     };
 
     Service = {
-      ExecStart = "${pkgs.ags}/bin/ags";
+      ExecStart = agsBin;
       Restart = "on-failure";
+      RestartSec = 1;
     };
 
     Install = {

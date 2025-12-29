@@ -7,7 +7,6 @@ const ControlCenter = Widget.Window({
   margins: [20, 20, 20, 20],
   layer: "overlay",
   visible: false,
-
   child: Widget.Box({
     vertical: true,
     css: `
@@ -17,16 +16,13 @@ const ControlCenter = Widget.Window({
       min-width: 340px;
     `,
     children: [
-      Widget.Label({
-        label: "AGS Control Center (GTK3)",
-      }),
-      Widget.Label({
-        label: "This is the correct setup for NixOS today.",
-      }),
+      Widget.Label({ label: "AGS Control Center (v1)" }),
+      Widget.Label({ label: "If you see this, v1 is running." }),
     ],
   }),
 });
 
 App.config({
+  style: App.configDir + "/style.css",
   windows: [ControlCenter],
 });
