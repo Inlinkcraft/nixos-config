@@ -1,4 +1,4 @@
-import { App } from "resource:///com/github/Aylur/ags/astal.js";
+import App from "resource:///com/github/Aylur/ags/app.js";
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
 
 const ControlCenter = Widget.Window({
@@ -17,11 +17,13 @@ const ControlCenter = Widget.Window({
       min-width: 300px;
     `,
     children: [
-      Widget.Label({ label: "AGS v2 Control Center" }),
+      Widget.Label({
+        label: "AGS Control Center",
+      }),
     ],
   }),
 });
 
-App.start({
+App.config({
   windows: [ControlCenter],
 });
