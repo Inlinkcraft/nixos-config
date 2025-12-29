@@ -48,6 +48,7 @@
     cava
     fastfetch
     freecad
+    pamixer
   ];
 
   ########################################
