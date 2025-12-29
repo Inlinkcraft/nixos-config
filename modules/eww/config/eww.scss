@@ -13,8 +13,6 @@
 }
 
 /* ================= CONTENT ================= */
-/* Eww does NOT support vw/vh, so we use fixed size
-   roughly equivalent to 50% on a 1080p screen */
 
 .content {
   min-width: 960px;
@@ -44,11 +42,17 @@
   border-radius: 8px;
 }
 
+/* --- MUSIC PROGRESS BAR (FIXED) --- */
+
 .music progress trough {
+  min-height: 10px;
+  border-radius: 6px;
   background: $color0;
 }
 
 .music progress bar {
+  min-height: 10px;
+  border-radius: 6px;
   background: $color6;
 }
 
@@ -73,13 +77,18 @@
 
 /* ================= VOLUME ================= */
 
+/* --- VOLUME BAR (FIXED) --- */
+
 .volume scale trough {
+  min-height: 12px;
+  border-radius: 6px;
   background: $color0;
-  min-height: 8px;
 }
 
 .volume scale slider {
-  background: $color6;
+  min-height: 12px;
+  border-radius: 6px;
+  background: $color5;
 }
 
 /* ================= NETWORK ================= */
