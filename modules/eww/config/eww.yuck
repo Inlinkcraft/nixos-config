@@ -1,131 +1,135 @@
-;; =========================
-;; GLOBAL VARIABLES
-;; =========================
-(defvar volume "50")
-(defvar brightness "50")
-(defvar cpu "0")
-(defvar ram "0")
-(defvar temp "0")
-(defvar battery "100")
+;; =========================================================
+;; VARIABLES (from defpolls)
+;; =========================================================
 
-;; =========================
-;; POLLING
-;; =========================
 (defpoll volume
   :interval "1s"
-  "pamixer --get-volume")
+  "pamixer --get-volume 2>/dev/null || echo 0")
 
 (defpoll brightness
   :interval "2s"
-  "brightnessctl g")
+  "brightnessctl g 2>/dev/null || echo 0")
 
 (defpoll cpu
   :interval "2s"
-  "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print int(usage)}'")
+  "awk -v FS=' ' '/^cpu / {usage=($2+$4)*100/($2+$4+$5); printf \"%d\", usage}' /proc/stat")
 
 (defpoll ram
   :interval "2s"
-  "free | awk '/Mem/ {print int($3/$2 * 100)}'")
+  "free | awk '/Mem/ {printf \"%d\", ($3/$2)*100}'")
 
 (defpoll temp
   :interval "5s"
-  "sensors | awk '/Package id 0/ {print int($4)}'")
+  "sensors 2>/dev/null | awk '/Package id 0/ {gsub(\"[+°C]\", \"\", $4); print int($4)}'")
 
 (defpoll battery
   :interval "30s"
-  "acpi -b | awk '{print substr($4, 1, length($4)-1)}'")
+  "acpi -b 2>/dev/null | awk '{print substr($4, 1, length($4)-1)}'")
 
-;; =========================
+(defpoll music_title
+  :interval "1s"
+  "playerctl metadata title 2>/dev/null || echo 'Nothing Playing'")
+
+(defpoll music_artist
+  :interval "1s"
+  "playerctl metadata artist 2>/dev/null || echo ''")
+
+;; =========================================================
 ;; WINDOW
-;; =========================
+;; =========================================================
+
 (defwindow dashboard
-  :geometry (geometry :x "50%" :y "50%" :width "900px" :height "500px" :anchor "center")
+  :monitor 0
+  :geometry (geometry
+              :x "50%"
+              :y "50%"
+              :width "900px"
+              :height "520px"
+              :anchor "center")
   :stacking "fg"
   :exclusive false
   (dashboard-root))
 
-;; =========================
-;; ROOT
-;; =========================
+;; =========================================================
+;; ROOT LAYOUT
+;; =========================================================
+
 (defwidget dashboard-root []
   (box :class "dashboard"
        :orientation "h"
-       :spacing 20
+       :spacing 24
 
        (left-column)
        (center-column)
        (right-column)))
 
-;; =========================
+;; =========================================================
 ;; LEFT COLUMN
-;; =========================
+;; =========================================================
+
 (defwidget left-column []
   (box :orientation "v" :spacing 20
        (system-box)
        (music-box)))
 
 (defwidget system-box []
-  (box :class "card system"
+  (box :class "card system" :orientation "v" :spacing 6
        (label :text " Arch Linux")
-       (label :text " systemd")
-       (label :text "󰍹 user")
+       (label :text "󰣇 systemd")
+       (label :text " inlinkcraft")
        (label :text " kitty")))
 
 (defwidget music-box []
-  (box :class "card music" :orientation "v"
-       (label :class "music-title"
-              :text {playerctl metadata title})
-       (label :class "music-artist"
-              :text {playerctl metadata artist})
-       (box :class "music-controls"
+  (box :class "card music" :orientation "v" :spacing 10
+       (label :class "music-title" :text music_title)
+       (label :class "music-artist" :text music_artist)
+       (box :class "music-controls" :spacing 12
             (button :onclick "playerctl previous" "󰒮")
             (button :onclick "playerctl play-pause" "󰏥")
             (button :onclick "playerctl next" "󰒭"))))
 
-;; =========================
+;; =========================================================
 ;; CENTER COLUMN
-;; =========================
-(defwidget center-column []
-  (box :orientation "v" :spacing 20
+;; =========================================================
 
+(defwidget center-column []
+  (box :orientation "v" :spacing 24
        (stats-box)
        (clock-box)))
 
 (defwidget stats-box []
-  (box :class "card stats" :spacing 10
-       (stat-circle "CPU" cpu)
-       (stat-circle "RAM" ram)
-       (stat-circle "TEMP" temp)))
+  (box :class "card stats" :spacing 16
+       (stat-box "CPU" cpu "%")
+       (stat-box "RAM" ram "%")
+       (stat-box "TEMP" temp "°C")))
 
-(defwidget stat-circle [label value]
-  (box :class "stat"
-       (label :class "stat-value" :text value)
+(defwidget stat-box [label value unit]
+  (box :class "stat" :orientation "v"
+       (label :class "stat-value" :text (str value unit))
        (label :class "stat-label" :text label)))
 
 (defwidget clock-box []
-  (box :class "card clock" :orientation "v"
+  (box :class "card clock" :orientation "v" :spacing 4
        (label :class "time" :text (strftime "%H:%M"))
-       (label :class "day" :text (strftime "%A"))))
+       (label :class "day"  :text (strftime "%A"))))
 
-;; =========================
+;; =========================================================
 ;; RIGHT COLUMN
-;; =========================
+;; =========================================================
+
 (defwidget right-column []
   (box :orientation "v" :spacing 20
        (profile-box)
        (controls-box)))
 
 (defwidget profile-box []
-  (box :class "card profile" :orientation "v"
+  (box :class "card profile" :orientation "v" :spacing 8
        (image :path "~/.face")
        (label :text "I'm qxb3!")
-       (label :text "󰔛 32 minutes")))
+       (label :class "uptime" :text "󰔛 online")))
 
 (defwidget controls-box []
-  (box :class "card controls"
-       :orientation "v"
-       :spacing 10
+  (box :class "card controls" :spacing 12
        (button :onclick "systemctl poweroff" "⏻")
-       (button :onclick "systemctl reboot" "󰜉")
-       (button :onclick "swaylock" "󰌾")))
-
+       (button :onclick "systemctl reboot"  "󰜉")
+       (button :onclick "swaylock"          "󰌾")))
