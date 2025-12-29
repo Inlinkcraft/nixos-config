@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  # Where GI typelibs live
+  # GI typelibs search path for GJS (GTK4 needs this on NixOS)
   giPath = pkgs.lib.makeSearchPath "lib/girepository-1.0" [
     pkgs.glib
     pkgs.gobject-introspection
@@ -11,10 +11,10 @@ let
     pkgs.graphene
     pkgs.gtk4
     pkgs.gtk4-layer-shell
-    pkgs.astal-gjs
   ];
 
-  # Desktop data dirs used by GTK (schemas, icons, etc.)
+  # Data dirs used by GTK (schemas, icons). Not strictly required to fix Gtk typelib,
+  # but prevents follow-up warnings/crashes.
   xdgData = pkgs.lib.makeSearchPath "share" [
     pkgs.gsettings-desktop-schemas
     pkgs.gtk4
@@ -28,14 +28,14 @@ let
   '';
 in
 {
-  # Deploy AGS config (explicit, reliable)
+  # Deploy AGS config files
   xdg.configFile."ags/app.js".source = ./config/app.js;
   xdg.configFile."ags/style.css".source = ./config/style.css;
 
-  # Ensure wrapper is available
+  # Make the wrapper available in PATH for testing
   home.packages = [ agsRun ];
 
-  # Start AGS with the wrapper so typelibs are visible
+  # Run AGS with GI paths so Gtk 4.0 typelibs are found
   systemd.user.services.ags = {
     Unit = {
       Description = "AGS (GTK4) with GI paths";
