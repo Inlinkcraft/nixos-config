@@ -6,23 +6,33 @@
   color: $foreground;
 }
 
-/* ================= ROOT ================= */
+/* ================= OVERLAY ================= */
 
-.dashboard {
-  background: rgba($background, 0.55);
-  border-radius: 28px;
-  padding: 22px;
+.overlay {
+  background: transparent;
 }
 
-/* ================= CARDS ================= */
+/* Invisible layout container */
+.center {
+  padding: 32px;
+}
 
-.card {
-  background: rgba($color0, 0.75);
-  border-radius: 20px;
+/* ================= MODULE BASE ================= */
+
+.module {
+  background: $background;
+  border: 2px solid $color0;
+  border-radius: 14px;
   padding: 16px;
 }
 
 /* ================= MUSIC ================= */
+
+.album {
+  min-width: 96px;
+  min-height: 96px;
+  border-radius: 8px;
+}
 
 .music-title {
   font-size: 16px;
@@ -35,52 +45,24 @@
   color: $color8;
 }
 
-.music button {
-  font-size: 20px;
-  color: $color3;
-}
-
 /* ================= STATS ================= */
 
-.stat-bar progress {
-  background: rgba($color8, 0.2);
-  border-radius: 10px;
-  min-height: 12px;
-}
-
-.stat-bar progress trough {
-  background: rgba($color8, 0.15);
-  border-radius: 10px;
-}
-
-.stat-bar progress bar {
-  background: $color6;
-  border-radius: 10px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: $color7;
-}
-
-/* ================= CLOCK ================= */
-
-.clock .time {
-  font-size: 36px;
+.clock {
+  font-size: 32px;
   color: $color6;
 }
 
-.clock .day {
-  font-size: 14px;
-  color: $color8;
+.spec {
+  font-size: 12px;
+  color: $color7;
 }
 
 /* ================= VOLUME ================= */
 
 .volume scale trough {
-  background: rgba($color8, 0.2);
-  border-radius: 10px;
-  min-height: 12px;
+  background: $color0;
+  min-height: 10px;
+  border-radius: 8px;
 }
 
 .volume scale slider {
@@ -88,11 +70,13 @@
   border-radius: 50%;
 }
 
-/* ================= CONTROLS ================= */
+/* ================= POWER ================= */
 
-.controls button {
-  font-size: 22px;
-  background: rgba($color2, 0.45);
-  border-radius: 14px;
-  padding: 10px;
+.power-btn {
+  background: $color1;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 20px;
+  min-width: 60px;
+  min-height: 60px;
 }
