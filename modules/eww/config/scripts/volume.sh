@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
-pamixer --get-volume 2>/dev/null || echo 0
 
+cmd="${1:-get}"
+val="${2:-}"
+
+case "$cmd" in
+  get)  pamixer --get-volume ;;
+  set)  pamixer --set-volume "$val" >/dev/null; pamixer --get-volume ;;
+  mute) pamixer --toggle-mute >/dev/null; pamixer --get-volume ;;
+  *)    pamixer --get-volume ;;
+esac

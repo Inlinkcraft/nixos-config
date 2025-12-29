@@ -1,116 +1,163 @@
-;; ---------- polls ----------
-(defpoll time      :interval "1s"  "date +%H:%M")
-(defpoll date_long :interval "60s" "date '+%A, %d %b'")
-(defpoll uptime    :interval "60s" "~/.config/eww/scripts/uptime.sh")
-(defpoll battery   :interval "30s" "~/.config/eww/scripts/battery.sh")
-(defpoll wifi      :interval "10s" "~/.config/eww/scripts/wifi.sh")
+(defpoll username :interval "3600s" "whoami")
+(defpoll time     :interval "1s"    "date +%H:%M")
+(defpoll date     :interval "60s"   "date '+%A, %d %b'")
+(defpoll uptime   :interval "60s"   "uptime -p | sed 's/^up //'")
 
-(defpoll cpu  :interval "2s"  "~/.config/eww/scripts/cpu.sh")
-(defpoll mem  :interval "2s"  "~/.config/eww/scripts/mem.sh")
-(defpoll disk :interval "30s" "~/.config/eww/scripts/disk.sh")
-(defpoll temp :interval "5s"  "~/.config/eww/scripts/temp.sh")
+(defpoll cpu  :interval "2s"  "bash $HOME/.config/eww/scripts/cpu.sh")
+(defpoll ram  :interval "2s"  "bash $HOME/.config/eww/scripts/ram.sh")
+(defpoll disk :interval "30s" "bash $HOME/.config/eww/scripts/disk.sh")
+(defpoll temp :interval "5s"  "bash $HOME/.config/eww/scripts/temp.sh")
 
-(defpoll volume     :interval "1s" "~/.config/eww/scripts/volume.sh")
-(defpoll is_muted   :interval "1s" "~/.config/eww/scripts/mute.sh")
-(defpoll brightness :interval "2s" "~/.config/eww/scripts/brightness.sh")
+(defpoll vol  :interval "1s"  "bash $HOME/.config/eww/scripts/volume.sh get")
+(defpoll bri  :interval "2s"  "bash $HOME/.config/eww/scripts/brightness.sh get")
 
-(defpoll m_title    :interval "2s" "~/.config/eww/scripts/music_title.sh")
-(defpoll m_artist   :interval "2s" "~/.config/eww/scripts/music_artist.sh")
-(defpoll m_status   :interval "2s" "~/.config/eww/scripts/music_status.sh")
-(defpoll m_progress :interval "1s" "~/.config/eww/scripts/music_progress.sh")
-(defpoll m_pos      :interval "1s" "~/.config/eww/scripts/music_position.sh")
-(defpoll m_len      :interval "5s" "~/.config/eww/scripts/music_length.sh")
+(defpoll wifi_state :interval "5s" "bash $HOME/.config/eww/scripts/wifi.sh state")
+(defpoll wifi_ssid  :interval "5s" "bash $HOME/.config/eww/scripts/wifi.sh ssid")
+(defpoll bt_state   :interval "5s" "bash $HOME/.config/eww/scripts/bt.sh state")
 
-;; ---------- window ----------
+(defpoll m_status :interval "1s" "bash $HOME/.config/eww/scripts/player.sh status")
+(defpoll m_title  :interval "1s" "bash $HOME/.config/eww/scripts/player.sh title")
+(defpoll m_artist :interval "1s" "bash $HOME/.config/eww/scripts/player.sh artist")
+(defpoll m_art    :interval "2s" "bash $HOME/.config/eww/scripts/player.sh art")
+
 (defwindow dashboard
   :monitor 0
-  :geometry (geometry :x "0" :y "0" :width "1080px" :height "640px" :anchor "center")
   :stacking "fg"
   :exclusive false
   :focusable true
+  :geometry (geometry :anchor "center" :width "900px" :height "520px")
   (dashboard))
 
-;; ---------- widgets ----------
 (defwidget dashboard []
-  (box :class "dash-root" :spacing 18
-    (box :class "col" :orientation "v" :spacing 18
-      (clock_card)
-      (music_card))
-    (box :class "col" :orientation "v" :spacing 18
-      (quick_card)
-      (sliders_card)
-      (system_card))))
+  (box :class "dash"
+    (box :class "row" :orientation "h" :spacing 16
 
-(defwidget clock_card []
-  (box :class "card clock" :orientation "v" :spacing 10
-    (label :class "time" :text time)
-    (label :class "date" :text date_long)
-    (box :class "minirow" :spacing 12
-      (label :class "hint" :text uptime)
-      (label :class "hint" :text battery))
-    (label :class "hint" :text wifi)))
+      (box :class "col" :orientation "v" :spacing 16
+        (clock_tile)
+        (calendar_tile))
 
-(defwidget music_card []
-  (box :class "card music" :orientation "v" :spacing 10
-    (label :class "card-title" :text "Music")
-    (label :class "music-title" :limit-width 42 :text m_title)
-    (label :class "music-artist" :limit-width 42 :text m_artist)
-    (progress :class "progress" :value m_progress)
-    (box :class "minirow" :spacing 10
-      (button :class "icon-btn" :onclick "~/.config/eww/scripts/music_prev.sh" "⏮")
-      (button :class "icon-btn" :onclick "~/.config/eww/scripts/music_toggle.sh"
-        (label :text (if (== m_status "Playing") "⏸" "▶")))
-      (button :class "icon-btn" :onclick "~/.config/eww/scripts/music_next.sh" "⏭")
-      (label :class "music-time" :text "${m_pos} / ${m_len}"))))
+      (box :class "col" :orientation "v" :spacing 16 :hexpand true
+        (user_tile)
+        (quick_row)
+        (sliders_tile)
+        (media_tile))
 
-(defwidget quick_card []
-  (box :class "card quick" :orientation "v" :spacing 12
-    (label :class "card-title" :text "Quick")
-    (box :class "quick-row" :spacing 10
-      (button :class "icon-btn" :onclick "wofi --show drun" "🔎")
-      (button :class "icon-btn" :onclick "kitty" "⌨")
-      (button :class "icon-btn" :onclick "firefox" "🌐")
-      (button :class "icon-btn" :onclick "xdg-open $HOME" "🗂"))
-    (box :class "quick-row" :spacing 10
-      (button :class "icon-btn" :onclick "swaylock" "🔒")
-      (button :class "icon-btn" :onclick "systemctl suspend" "🌙")
-      (button :class "icon-btn" :onclick "systemctl reboot" "🔄")
-      (button :class "icon-btn" :onclick "systemctl poweroff" "⏻"))))
+      (box :class "col" :orientation "v" :spacing 16
+        (stats_tile)
+        (launcher_tile)))))
 
-(defwidget sliders_card []
-  (box :class "card sliders" :orientation "v" :spacing 12
-    (label :class "card-title" :text "Levels")
+(defwidget tile [class child]
+  (box :class (str "tile " class) child))
 
-    (box :class "slider-row" :spacing 10
-      (button :class "icon-btn small" :onclick "pamixer --toggle-mute"
-        (label :text (if (== is_muted "true") "🔇" "🔊")))
-      (scale :class "slider"
-        :min 0 :max 100
-        :value volume
-        :onchange "~/.config/eww/scripts/set-volume.sh {}")
-      (label :class "pct" :text "${volume}%"))
+(defwidget clock_tile []
+  (tile :class "tile-clock"
+    (box :orientation "v" :spacing 6
+      (label :class "clock" :text time)
+      (label :class "muted" :text date)
+      (label :class "muted2" :text (str "up " uptime)))))
 
-    (box :class "slider-row" :spacing 10
-      (label :class "slider-ico" :text "☀")
-      (scale :class "slider"
-        :min 1 :max 100
-        :value brightness
-        :onchange "~/.config/eww/scripts/set-brightness.sh {}")
-      (label :class "pct" :text "${brightness}%"))))
+(defwidget calendar_tile []
+  (tile :class "tile-calendar"
+    (calendar :class "calendar")))
 
-(defwidget stat_row [ico value suffix]
-  (box :class "stat-row" :spacing 10
-    (label :class "stat-icon" :text ico)
-    (progress :class "stat-bar" :value (/ value 100.0))
-    (label :class "stat-val" :text "${value}${suffix}")))
+(defwidget user_tile []
+  (tile :class "tile-user"
+    (box :orientation "h" :spacing 14
+      (box :class "avatar"
+        (label :class "avatar-icon" :text "󰙊"))
+      (box :orientation "v" :spacing 2 :hexpand true
+        (label :class "title" :text username)
+        (label :class "muted" :text "dashboard"))
+      (button :class "icon-btn"
+        :onclick "eww close dashboard"
+        (label :text "󰅖")))))
 
-(defwidget system_card []
-  (box :class "card sys" :orientation "v" :spacing 12
-    (label :class "card-title" :text "System")
-    (stat_row :ico "CPU"  :value cpu  :suffix "%")
-    (stat_row :ico "RAM"  :value mem  :suffix "%")
-    (stat_row :ico "SSD"  :value disk :suffix "%")
-    (box :class "stat-row" :spacing 10
-      (label :class "stat-icon" :text "TMP")
-      (progress :class "stat-bar" :value (/ temp 100.0))
-      (label :class "stat-val" :text "${temp}°C"))))
+(defwidget qs_btn [icon active onclick]
+  (button :class (str "qs-btn " (if active "active" ""))
+    :onclick onclick
+    (label :class "qs-icon" :text icon)))
+
+(defwidget quick_row []
+  (tile :class "tile-qs"
+    (box :orientation "h" :spacing 12
+      (qs_btn :icon "󰤨"
+              :active (== wifi_state "on")
+              :onclick "bash $HOME/.config/eww/scripts/wifi.sh toggle")
+      (qs_btn :icon "󰂯"
+              :active (== bt_state "on")
+              :onclick "bash $HOME/.config/eww/scripts/bt.sh toggle")
+      (qs_btn :icon "󰌾"
+              :active false
+              :onclick "swaylock -f")
+      (qs_btn :icon "󰐥"
+              :active false
+              :onclick "wlogout")
+      (box :hexpand true)
+      (label :class "muted" :text (if (== wifi_ssid "") " " wifi_ssid)))))
+
+(defwidget sliders_tile []
+  (tile :class "tile-sliders"
+    (box :orientation "v" :spacing 12
+
+      (box :orientation "h" :spacing 10
+        (label :class "s-icon" :text "󰕾")
+        (scale :class "slider" :min 0 :max 100 :value vol
+               :onchange "bash $HOME/.config/eww/scripts/volume.sh set {}")
+        (button :class "icon-btn"
+          :onclick "bash $HOME/.config/eww/scripts/volume.sh mute"
+          (label :text "󰝟")))
+
+      (box :orientation "h" :spacing 10
+        (label :class "s-icon" :text "󰃠")
+        (scale :class "slider" :min 0 :max 100 :value bri
+               :onchange "bash $HOME/.config/eww/scripts/brightness.sh set {}")
+        (button :class "icon-btn"
+          :onclick "bash $HOME/.config/eww/scripts/brightness.sh max"
+          (label :text "󰛨"))))))
+
+(defwidget media_tile []
+  (tile :class "tile-media"
+    (box :orientation "v" :spacing 12
+
+      (box :orientation "h" :spacing 12
+        (box :class "cover-wrap"
+          (revealer :reveal (!= m_art "")
+            (image :class "cover" :path m_art))
+          (revealer :reveal (== m_art "")
+            (box :class "cover-fallback"
+              (label :text "󰝚"))))
+        (box :orientation "v" :spacing 2 :hexpand true
+          (label :class "title" :xalign 0
+                 :text (if (== m_title "") "Nothing playing" m_title))
+          (label :class "muted" :xalign 0 :text m_artist)))
+
+      (box :class "media-controls" :orientation "h" :spacing 12 :halign "center"
+        (button :class "icon-btn" :onclick "playerctl previous" (label :text "󰒮"))
+        (button :class "icon-btn big" :onclick "playerctl play-pause"
+          (label :text (if (== m_status "Playing") "󰏤" "󰐊")))
+        (button :class "icon-btn" :onclick "playerctl next" (label :text "󰒭"))))))
+
+(defwidget ring [label value icon]
+  (box :class "ring"
+    (circular-progress :class "ring-prog" :min 0 :max 100 :value value
+      (label :class "ring-icon" :text icon))
+    (label :class "ring-label" :text label)
+    (label :class "ring-val" :text (str value (if (== label "Temp") "°" "%")))))
+
+(defwidget stats_tile []
+  (tile :class "tile-stats"
+    (box :class "grid" :orientation "v" :spacing 12
+      (box :orientation "h" :spacing 12
+        (ring :label "CPU"  :value cpu  :icon "󰍛")
+        (ring :label "RAM"  :value ram  :icon "󰘚"))
+      (box :orientation "h" :spacing 12
+        (ring :label "Disk" :value disk :icon "󰋊")
+        (ring :label "Temp" :value temp :icon "󰔏")))))
+
+(defwidget launcher_tile []
+  (tile :class "tile-launch"
+    (box :orientation "v" :spacing 10
+      (button :class "launch-btn" :onclick "wofi --show drun" (label :text "󰍉"))
+      (button :class "launch-btn" :onclick "kitty" (label :text "󰆍"))
+      (button :class "launch-btn" :onclick "firefox" (label :text "󰈹"))
+      (button :class "launch-btn" :onclick "thunar" (label :text "󰝰")))))

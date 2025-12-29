@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v nmcli >/dev/null 2>&1; then
-  echo "No nmcli"
-  exit 0
-fi
+cmd="${1:-state}"
 
-ssid="$(nmcli -t -f active,ssid dev wifi 2>/dev/null | awk -F: '$1=="yes"{print $2; exit}')"
-if [[ -n "${ssid:-}" ]]; then
-  echo "Wi-Fi • ${ssid}"
-else
-  state="$(nmcli -t -f WIFI g 2>/dev/null | head -n1 || true)"
-  echo "Wi-Fi • ${state:-off}"
-fi
+case "$cmd" in
+  state)
+    # on/off
+    if nmcli -t -f WIFI g | grep -q enabled; then echo on; else echo off; fi
+    ;;
+  ssid)
+    nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | awk -F: '$1=="yes"{print $2; exit}'
+    ;;
+  toggle)
+    if nmcli -t -f WIFI g | grep -q enabled; then
+      nmcli r wifi off >/dev/null
+    else
+      nmcli r wifi on >/dev/null
+    fi
+    ;;
+esac

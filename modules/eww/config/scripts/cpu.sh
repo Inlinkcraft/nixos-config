@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/eww"
-mkdir -p "$cache_dir"
-prev="$cache_dir/cpu_prev"
+state="/tmp/eww_cpu.stat"
 
-read -r _ user nice system idle iowait irq softirq steal _ < /proc/stat
-idle_all=$((idle + iowait))
+read -r _ user nice system idle iowait irq softirq steal _ _ < /proc/stat
 total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+idleall=$((idle + iowait))
 
-usage=0
-if [[ -f "$prev" ]]; then
-  read -r p_total p_idle < "$prev" || true
-  totald=$((total - p_total))
-  idled=$((idle_all - p_idle))
-  if (( totald > 0 )); then
-    usage=$(( (1000 * (totald - idled) / totald + 5) / 10 ))
-  fi
+if [[ -f "$state" ]]; then
+  read -r ptotal pidle < "$state"
+else
+  ptotal=$total
+  pidle=$idleall
 fi
 
-printf "%s %s\n" "$total" "$idle_all" > "$prev"
-echo "$usage"
+echo "$total $idleall" > "$state"
+
+dt=$((total - ptotal))
+di=$((idleall - pidle))
+
+if (( dt <= 0 )); then
+  echo 0
+else
+  echo $(( (100 * (dt - di)) / dt ))
+fi
