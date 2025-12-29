@@ -1,7 +1,7 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
-  home.file.".config/ags" = {
+  xdg.configFile."ags" = {
     source = ./config;
     recursive = true;
   };
