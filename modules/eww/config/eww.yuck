@@ -108,6 +108,7 @@
 ;; -------------------------
 (defwindow dashboard
   :monitor 0
+  :class "dashboard-window"
   :geometry (geometry :x "0" :y "0" :width "980px" :height "560px" :anchor "center")
   :stacking "fg"
   :exclusive false
