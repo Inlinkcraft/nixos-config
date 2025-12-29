@@ -6,34 +6,30 @@
 (defvar browser "firefox")
 (defvar launcher "wofi --show drun")
 
-;; ---- Polls (dynamiques) ----
+;; ---- Polls ----
 (defpoll time_h :interval "1s" "date +'%H:%M'")
 (defpoll date_d :interval "10s" "date +'%a %d %b'")
 (defpoll uptime_s :interval "10s" "uptime -p | sed 's/^up //g'")
 
-;; Audio (PipeWire / PulseAudio)
+;; Audio
 (defpoll volume :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'\"")
-(defpoll muted  :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo 1 || echo 0\"")
+(defpoll muted  :interval "1s" "bash -lc \"wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo yes || echo no\"")
 
-;; Wi-Fi + Bluetooth (si dispo)
+;; Wi-Fi / Bluetooth
 (defpoll wifi_state :interval "2s" "bash -lc \"nmcli -t -f WIFI g 2>/dev/null | head -n1 | tr '[:upper:]' '[:lower:]'\"")
 (defpoll bt_state   :interval "2s" "bash -lc \"bluetoothctl show 2>/dev/null | awk -F': ' '/Powered/ {print tolower($2)}'\"")
 
-;; Système (utilise scripts, plus fiable)
+;; System metrics (scripts)
 (defpoll cpu_p  :interval "2s" "bash -lc \"$HOME/.config/eww/scripts/metrics cpu\"")
 (defpoll mem_p  :interval "2s" "bash -lc \"$HOME/.config/eww/scripts/metrics mem\"")
 (defpoll disk_p :interval "10s" "bash -lc \"$HOME/.config/eww/scripts/metrics disk\"")
 (defpoll temp_c :interval "5s" "bash -lc \"$HOME/.config/eww/scripts/metrics temp\"")
 
-;; Clamp helpers (evite crash si vide)
-(defvar cpu_safe 0)
-(defvar mem_safe 0)
-(defvar disk_safe 0)
-
+;; ---- Widgets ----
 (defwidget bar [label value suffix]
   (box :class "bar-row" :spacing 10
     (label :class "bar-label" :text label)
-    (progress :class "bar" :value value)
+    (progress :class "bar" :value value :max 100)
     (label :class "bar-val" :text (str value suffix))))
 
 (defwidget toggle-btn [icon text active cmd]
@@ -63,26 +59,35 @@
       (label :class "clock" :text time_h)
       (box :class "subline" :spacing 18 :halign "center"
         (label :class "date" :text date_d)
-        (label :class "uptime" :text (str uptime_s))))
+        (label :class "uptime" :text uptime_s)))
 
     ;; Content grid
     (box :class "grid" :spacing 18
 
-      ;; LEFT COLUMN
+      ;; LEFT
       (box :class "col" :orientation "v" :spacing 14
 
         (box :class "card" :orientation "v" :spacing 10
           (label :class "card-title" :text "Quick toggles")
+
           (box :class "row" :spacing 10
-            (toggle-btn :icon "󰤨" :text "Wi-Fi"
-              :active (= wifi_state "enabled")
-              :cmd "nmcli r wifi on || true; nmcli r wifi off || true")
-            (toggle-btn :icon "󰂯" :text "Bluetooth"
-              :active (= bt_state "yes")
-              :cmd "bluetoothctl power on || true; bluetoothctl power off || true")))
+            (toggle-btn
+              :icon "󰤨"
+              :text "Wi-Fi"
+              :active (eq wifi_state "enabled")
+              :cmd "bash -lc 'if nmcli -t -f WIFI g | grep -qi enabled; then nmcli r wifi off; else nmcli r wifi on; fi'")
+
+            (toggle-btn
+              :icon "󰂯"
+              :text "Bluetooth"
+              :active (eq bt_state "yes")
+              :cmd "bash -lc 'if bluetoothctl show | grep -q \"Powered: yes\"; then bluetoothctl power off; else bluetoothctl power on; fi'"))
+
           (box :class "row" :spacing 10
-            (toggle-btn :icon "󰝟" :text "Mute"
-              :active (= muted 1)
+            (toggle-btn
+              :icon "󰝟"
+              :text "Mute"
+              :active (eq muted "yes")
               :cmd "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")))
 
         (box :class "card" :orientation "v" :spacing 12
@@ -92,10 +97,9 @@
             (scale :class "slider" :min 0 :max 100 :value volume
                    :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ $0%")
             (label :class "s-val" :text (str volume "%"))))
-
       )
 
-      ;; MIDDLE COLUMN
+      ;; MIDDLE
       (box :class "col" :orientation "v" :spacing 14
 
         (box :class "card" :orientation "v" :spacing 12
@@ -109,11 +113,10 @@
 
         (box :class "card" :orientation "v" :spacing 10
           (label :class "card-title" :text "Media")
-          (label :class "hint" :text "Tu peux brancher playerctl plus tard (je te le fais après).")))
-
+          (label :class "hint" :text "Playerctl widget next (cover + controls)."))
       )
 
-      ;; RIGHT COLUMN
+      ;; RIGHT
       (box :class "col" :orientation "v" :spacing 14
 
         (box :class "card" :orientation "v" :spacing 10
@@ -129,7 +132,6 @@
           (action-btn :icon "" :text "Terminal" :cmd term)
           (action-btn :icon "󰖟" :text "Browser" :cmd browser)
           (action-btn :icon "󰍉" :text "Launcher" :cmd launcher))
-
       )
     )
   )
