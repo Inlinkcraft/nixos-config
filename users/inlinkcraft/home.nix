@@ -41,6 +41,12 @@
     lm_sensors
     procps
     jq
+    brightnessctl
+    acpi
+    socat
+    nerd-fonts.fira-code
+    cava
+    fastfetch
     freecad
   ];
 

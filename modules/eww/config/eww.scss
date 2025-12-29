@@ -1,49 +1,86 @@
-@import "/home/inlinkcraft/.cache/wal/colors.scss";
+/* Import pywal */
+@import "~/.cache/wal/colors.scss";
 
 * {
   all: unset;
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "FiraCode Nerd Font";
   color: $foreground;
 }
 
 .dashboard {
-  background: transparent;
+  background: rgba($background, 0.75);
+  border-radius: 24px;
+  padding: 20px;
 }
 
 .card {
-  background: rgba($background, 0.88);
+  background: rgba($color0, 0.85);
   border-radius: 18px;
-  padding: 20px;
-  min-width: 320px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  padding: 16px;
 }
 
-.card-title {
+.system label {
   font-size: 14px;
-  font-weight: 600;
   color: $color4;
-  margin-bottom: 6px;
 }
 
-.clock-time {
-  font-size: 48px;
-  font-weight: 700;
-}
-
-.clock-date {
-  font-size: 14px;
+.music-title {
+  font-size: 16px;
   color: $color6;
 }
 
-.power-btn {
-  background: $color1;
-  color: $background;
-  padding: 14px 18px;
-  border-radius: 14px;
-  font-size: 20px;
-  transition: background 0.2s ease;
+.music-artist {
+  font-size: 13px;
+  color: $color8;
 }
 
-.power-btn:hover {
-  background: $color2;
+.music-controls button {
+  font-size: 20px;
+  padding: 6px;
+  color: $color3;
+}
+
+.stats {
+  display: flex;
+}
+
+.stat {
+  background: rgba($color1, 0.3);
+  border-radius: 50%;
+  min-width: 80px;
+  min-height: 80px;
+  padding: 10px;
+}
+
+.stat-value {
+  font-size: 20px;
+  color: $color5;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: $color7;
+}
+
+.clock .time {
+  font-size: 36px;
+  color: $color6;
+}
+
+.clock .day {
+  font-size: 14px;
+  color: $color8;
+}
+
+.profile image {
+  border-radius: 50%;
+  min-width: 64px;
+  min-height: 64px;
+}
+
+.controls button {
+  font-size: 22px;
+  background: rgba($color2, 0.4);
+  border-radius: 12px;
+  padding: 8px;
 }
