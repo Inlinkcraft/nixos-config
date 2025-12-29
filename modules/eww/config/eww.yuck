@@ -1,30 +1,39 @@
-;; =========================================================
-;; POLLS
-;; =========================================================
+;; ===================== POLLS =====================
 
 (defpoll cpu
   :interval "2s"
-  "awk '/^cpu / {printf \"%d\", ($2+$4)*100/($2+$4+$5)}' /proc/stat")
+  "awk '/^cpu / {printf \"%d\", ($2+$4)*100/($2+$4+$5)}' /proc/stat || echo 0")
 
 (defpoll ram
   :interval "2s"
-  "free | awk '/Mem/ {printf \"%d\", ($3/$2)*100}'")
+  "free | awk '/Mem/ {printf \"%d\", ($3/$2)*100}' || echo 0")
 
 (defpoll temp
   :interval "5s"
-  "sensors 2>/dev/null | awk '/Package id 0/ {gsub(\"[+°C]\", \"\", $4); print int($4)}'")
+  "sensors 2>/dev/null | awk '/Package id 0/ {gsub(\"[+°C]\", \"\", $4); print int($4)}' || echo 0")
 
 (defpoll disk
   :interval "30s"
-  "df / | awk 'NR==2 {print int($3/$2*100)}'")
+  "df / | awk 'NR==2 {print int($3/$2*100)}' || echo 0")
 
 (defpoll battery
   :interval "30s"
-  "acpi -b 2>/dev/null | awk '{print substr($4, 1, length($4)-1)}'")
+  "acpi -b 2>/dev/null | awk '{print substr($4,1,length($4)-1)}' || echo 0")
 
+;; -------- Volume (clamped) --------
 (defpoll volume
   :interval "1s"
   "pamixer --get-volume 2>/dev/null || echo 0")
+
+;; -------- Music (YouTube-safe) --------
+(defpoll music_pos
+  :interval "1s"
+  "playerctl position 2>/dev/null | awk '{print int($1)}' || echo 0")
+
+(defpoll music_len
+  :interval "5s"
+  ;; Convert nanoseconds → seconds
+  "playerctl metadata mpris:length 2>/dev/null | awk '{print int($1/1000000000)}' || echo 1")
 
 (defpoll music_title
   :interval "1s"
@@ -35,33 +44,18 @@
   "playerctl metadata artist 2>/dev/null || echo ''")
 
 (defpoll music_art
-  :interval "1s"
+  :interval "2s"
   "playerctl metadata mpris:artUrl 2>/dev/null | sed 's|file://||'")
 
-(defpoll music_pos
-  :interval "1s"
-  "playerctl position 2>/dev/null | cut -d. -f1 || echo 0")
-
-(defpoll music_len
-  :interval "5s"
-  "playerctl metadata mpris:length 2>/dev/null | awk '{print int($1/1000000)}'")
-
-;; =========================================================
-;; WINDOW
-;; =========================================================
+;; ===================== WINDOW =====================
 
 (defwindow dashboard
-  :monitor 0
   :geometry (geometry :x "0%" :y "0%" :width "100%" :height "100%")
   :stacking "fg"
   :exclusive false
-  :background false
-  :transition "fade"
   (root))
 
-;; =========================================================
-;; ROOT
-;; =========================================================
+;; ===================== ROOT =====================
 
 (defwidget root []
   (box :class "background"
@@ -76,50 +70,47 @@
        (info-column)
        (control-column)))
 
-;; =========================================================
-;; MUSIC COLUMN
-;; =========================================================
+;; ===================== MUSIC =====================
 
 (defwidget music-column []
   (box :class "column"
        (box :class "module music" :orientation "v" :spacing 6
             (image :path music_art :class "album")
-            (label :class "music-title" :text music_title)
-            (label :class "music-artist" :text music_artist)
+            (label :text music_title)
+            (label :text music_artist)
+            ;; Progress will now ALWAYS show
             (progress :value music_pos :max music_len)
             (box :spacing 10
                  (button :onclick "playerctl previous" "󰒮")
                  (button :onclick "playerctl play-pause" "󰏥")
                  (button :onclick "playerctl next" "󰒭")))))
 
-;; =========================================================
-;; INFO COLUMN
-;; =========================================================
+;; ===================== INFO =====================
 
 (defwidget info-column []
-  (box :class "column" :orientation "v" :spacing 12
+  (box :class "column" :orientation "v" :spacing 10
        (date-module)
        (volume-module)
        (specs-module)))
 
 (defwidget date-module []
-  (box :class "module date" :orientation "v"
+  (box :class "module"
        (label :class "clock" :text (strftime "%H:%M"))
-       (label :class "date"  :text (strftime "%A %d %B"))))
+       (label :class "date" :text (strftime "%A %d %B"))))
 
 (defwidget volume-module []
-  (box :class "module volume" :orientation "v" :spacing 4
+  (box :class "module volume" :orientation "v"
        (label :text "Volume")
        (scale :value volume :max 100
               :onchange "pamixer --set-volume {}")))
 
 (defwidget specs-module []
   (box :class "module specs" :orientation "v" :spacing 2
-       (spec-line :label "CPU"  :value cpu)
-       (spec-line :label "RAM"  :value ram)
+       (spec-line :label "CPU" :value cpu)
+       (spec-line :label "RAM" :value ram)
        (spec-line :label "TEMP" :value temp)
-       (spec-line :label "SSD"  :value disk)
-       (spec-line :label "BAT"  :value battery)))
+       (spec-line :label "SSD" :value disk)
+       (spec-line :label "BAT" :value battery)))
 
 (defwidget spec-line [label value]
   (label :class "spec"
@@ -128,24 +119,20 @@
                     (repeat " " (- 20 (/ value 5)))
                     " " value "%]")))
 
-;; =========================================================
-;; CONTROL COLUMN
-;; =========================================================
+;; ===================== CONTROLS =====================
 
 (defwidget control-column []
-  (box :class "column" :orientation "v" :spacing 12
+  (box :class "column" :orientation "v" :spacing 10
        (network-module)
        (power-grid)))
 
 (defwidget network-module []
-  (box :class "module network" :orientation "v" :spacing 6
-       (button :onclick "nmcli radio wifi off || nmcli radio wifi on"
-               "󰖩 Wi-Fi")
-       (button :onclick "bluetoothctl power off || bluetoothctl power on"
-               " Bluetooth")))
+  (box :class "module"
+       (button :onclick "nmcli radio wifi off || nmcli radio wifi on" "󰖩 Wi-Fi")
+       (button :onclick "bluetoothctl power off || bluetoothctl power on" " Bluetooth")))
 
 (defwidget power-grid []
-  (box :class "module power" :orientation "v" :spacing 6
+  (box :class "module" :orientation "v" :spacing 6
        (box :spacing 6
             (power-btn :icon "⏻" :cmd "systemctl poweroff")
             (power-btn :icon "󰜉" :cmd "systemctl reboot"))
