@@ -13,10 +13,12 @@
 }
 
 /* ================= CONTENT ================= */
+/* Eww does NOT support vw/vh, so we use fixed size
+   roughly equivalent to 50% on a 1080p screen */
 
 .content {
-  min-width: 50vw;
-  min-height: 50vh;
+  min-width: 960px;
+  min-height: 540px;
 }
 
 /* ================= COLUMNS ================= */
