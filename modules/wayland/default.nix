@@ -47,8 +47,7 @@
         "SUPER,N,exec,alacritty -e nvim"
 
         # Dashboard (Eww overlay toggle)
-        #"SUPER,D,exec,eww open --toggle dashboard"
-        "SUPER,D,exec,ags -t controlcenter"
+        "SUPER,D,exec,eww open --toggle dashboard"
 
         # Window management
         "SUPER,Q,killactive"
