@@ -1,163 +1,273 @@
-(defpoll username :interval "3600s" "whoami")
-(defpoll time     :interval "1s"    "date +%H:%M")
-(defpoll date     :interval "60s"   "date '+%A, %d %b'")
-(defpoll uptime   :interval "60s"   "uptime -p | sed 's/^up //'")
+;; ============================================================
+;; EWW DASHBOARD (GTK) - copy/paste whole file
+;; Compatible with newer eww (named args for widgets, no `==`)
+;; ============================================================
 
-(defpoll cpu  :interval "2s"  "bash $HOME/.config/eww/scripts/cpu.sh")
-(defpoll ram  :interval "2s"  "bash $HOME/.config/eww/scripts/ram.sh")
-(defpoll disk :interval "30s" "bash $HOME/.config/eww/scripts/disk.sh")
-(defpoll temp :interval "5s"  "bash $HOME/.config/eww/scripts/temp.sh")
+;; -----------------------------
+;; Polls / State
+;; -----------------------------
 
-(defpoll vol  :interval "1s"  "bash $HOME/.config/eww/scripts/volume.sh get")
-(defpoll bri  :interval "2s"  "bash $HOME/.config/eww/scripts/brightness.sh get")
+(defpoll time_hm :interval "1s"
+  "date '+%H:%M'")
 
-(defpoll wifi_state :interval "5s" "bash $HOME/.config/eww/scripts/wifi.sh state")
-(defpoll wifi_ssid  :interval "5s" "bash $HOME/.config/eww/scripts/wifi.sh ssid")
-(defpoll bt_state   :interval "5s" "bash $HOME/.config/eww/scripts/bt.sh state")
+(defpoll date_long :interval "30s"
+  "date '+%a, %b %d'")
 
-(defpoll m_status :interval "1s" "bash $HOME/.config/eww/scripts/player.sh status")
-(defpoll m_title  :interval "1s" "bash $HOME/.config/eww/scripts/player.sh title")
-(defpoll m_artist :interval "1s" "bash $HOME/.config/eww/scripts/player.sh artist")
-(defpoll m_art    :interval "2s" "bash $HOME/.config/eww/scripts/player.sh art")
+(defpoll wifi_state :interval "2s"
+  "bash -lc 's=$(nmcli -t -f WIFI g 2>/dev/null); [[ \"$s\" == \"enabled\" ]] && echo on || echo off'")
+
+(defpoll wifi_ssid :interval "5s"
+  "bash -lc 'nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | awk -F: \"$1==\\\"yes\\\"{print $2; exit}\"'")
+
+(defpoll bt_state :interval "2s"
+  "bash -lc 'bluetoothctl show 2>/dev/null | awk -F\": \" \"/Powered/{print ($2==\\\"yes\\\"?\\\"on\\\":\\\"off\\\"); exit}\" || echo off'")
+
+(defpoll volume :interval "1s"
+  "bash -lc 'pamixer --get-volume 2>/dev/null || echo 0'")
+
+(defpoll muted :interval "1s"
+  "bash -lc 'pamixer --get-mute 2>/dev/null || echo false'")
+
+(defpoll brightness :interval "2s"
+  "bash -lc 'brightnessctl -m 2>/dev/null | awk -F, \"{gsub(/%/,\\\"\\\",$4); print $4; exit}\" || echo 0'")
+
+(defpoll cpu_perc :interval "2s"
+  "bash -lc \"LC_ALL=C top -bn1 | awk '/Cpu\\(s\\)/{print int(100-$8); exit}' 2>/dev/null || echo 0\"")
+
+(defpoll ram_perc :interval "3s"
+  "bash -lc \"free -m 2>/dev/null | awk '/Mem:/{print int($3*100/$2); exit}' || echo 0\"")
+
+(defpoll temp_c :interval "3s"
+  "bash -lc \"t=$(sensors 2>/dev/null | awk '/Package id 0:/{gsub(/[+°C]/,\\\"\\\",$4); print int($4); exit}'); [[ -n \\\"$t\\\" ]] && echo $t || echo 0\"")
+
+;; Media (playerctl)
+(defpoll m_status :interval "1s"
+  "bash -lc 'playerctl status 2>/dev/null || echo Stopped'")
+
+(defpoll m_title :interval "2s"
+  "bash -lc 'playerctl metadata title 2>/dev/null || echo \"\"'")
+
+(defpoll m_artist :interval "2s"
+  "bash -lc 'playerctl metadata artist 2>/dev/null || echo \"\"'")
+
+(defpoll m_art :interval "5s"
+  "bash -lc 'playerctl metadata mpris:artUrl 2>/dev/null | sed \"s#^file://##\" || echo \"\"'")
+
+;; -----------------------------
+;; Window
+;; -----------------------------
 
 (defwindow dashboard
   :monitor 0
-  :stacking "fg"
+  :stacking "overlay"
   :exclusive false
   :focusable true
-  :geometry (geometry :anchor "center" :width "900px" :height "520px")
-  (dashboard))
+  :geometry (geometry :x "50%" :y "50%" :width "920px" :height "560px" :anchor "center")
+  (dashboard-root))
 
-(defwidget dashboard []
-  (box :class "dash"
-    (box :class "row" :orientation "h" :spacing 16
+;; -----------------------------
+;; Root Layout
+;; -----------------------------
 
-      (box :class "col" :orientation "v" :spacing 16
-        (clock_tile)
-        (calendar_tile))
+(defwidget dashboard-root []
+  (box :class "dash-root" :orientation "v" :space-evenly false :spacing 16
+    (header-row)
+    (box :class "dash-grid" :orientation "h" :space-evenly false :spacing 16
+      (left-col)
+      (right-col))
+    (power-row)))
 
-      (box :class "col" :orientation "v" :spacing 16 :hexpand true
-        (user_tile)
-        (quick_row)
-        (sliders_tile)
-        (media_tile))
+(defwidget header-row []
+  (box :class "tile header" :orientation "h" :space-between true
+    (box :orientation "v" :spacing 2
+      (label :class "time" :text time_hm)
+      (label :class "date" :text date_long))
+    (box :class "chips" :orientation "h" :spacing 10
+      (chip :text "dashboard")
+      (chip :text "eww"))))
 
-      (box :class "col" :orientation "v" :spacing 16
-        (stats_tile)
-        (launcher_tile)))))
+(defwidget left-col []
+  (box :orientation "v" :spacing 16
+    (quick-toggles)
+    (sliders-tile)
+    (stats-tile)))
 
-(defwidget tile [class child]
-  (box :class (str "tile " class) child))
+(defwidget right-col []
+  (box :orientation "v" :spacing 16
+    (media-tile)
+    (notes-tile)))
 
-(defwidget clock_tile []
-  (tile :class "tile-clock"
-    (box :orientation "v" :spacing 6
-      (label :class "clock" :text time)
-      (label :class "muted" :text date)
-      (label :class "muted2" :text (str "up " uptime)))))
+;; -----------------------------
+;; Small building blocks
+;; -----------------------------
 
-(defwidget calendar_tile []
-  (tile :class "tile-calendar"
-    (calendar :class "calendar")))
+(defwidget chip [text]
+  (box :class "chip"
+    (label :text text)))
 
-(defwidget user_tile []
-  (tile :class "tile-user"
-    (box :orientation "h" :spacing 14
-      (box :class "avatar"
-        (label :class "avatar-icon" :text "󰙊"))
-      (box :orientation "v" :spacing 2 :hexpand true
-        (label :class "title" :text username)
-        (label :class "muted" :text "dashboard"))
-      (button :class "icon-btn"
-        :onclick "eww close dashboard"
-        (label :text "󰅖")))))
+(defwidget tile [title child]
+  (box :class "tile" :orientation "v" :spacing 10
+    (label :class "tile-title" :text title)
+    child))
 
-(defwidget qs_btn [icon active onclick]
-  (button :class (str "qs-btn " (if active "active" ""))
-    :onclick onclick
-    (label :class "qs-icon" :text icon)))
+(defwidget divider []
+  (box :class "divider"))
 
-(defwidget quick_row []
-  (tile :class "tile-qs"
-    (box :orientation "h" :spacing 12
-      (qs_btn :icon "󰤨"
-              :active (== wifi_state "on")
-              :onclick "bash $HOME/.config/eww/scripts/wifi.sh toggle")
-      (qs_btn :icon "󰂯"
-              :active (== bt_state "on")
-              :onclick "bash $HOME/.config/eww/scripts/bt.sh toggle")
-      (qs_btn :icon "󰌾"
-              :active false
-              :onclick "swaylock -f")
-      (qs_btn :icon "󰐥"
-              :active false
-              :onclick "wlogout")
-      (box :hexpand true)
-      (label :class "muted" :text (if (== wifi_ssid "") " " wifi_ssid)))))
+;; -----------------------------
+;; Toggle + Power buttons (named args!)
+;; -----------------------------
 
-(defwidget sliders_tile []
-  (tile :class "tile-sliders"
-    (box :orientation "v" :spacing 12
+(defwidget toggle-btn [icon active cmd]
+  (button
+    :class (str "tbtn " (if active "on" "off"))
+    :onclick cmd
+    (label :class "tbtn-icon" :text icon)))
 
-      (box :orientation "h" :spacing 10
-        (label :class "s-icon" :text "󰕾")
-        (scale :class "slider" :min 0 :max 100 :value vol
-               :onchange "bash $HOME/.config/eww/scripts/volume.sh set {}")
-        (button :class "icon-btn"
-          :onclick "bash $HOME/.config/eww/scripts/volume.sh mute"
-          (label :text "󰝟")))
+(defwidget power-btn [icon cmd]
+  (button :class "pbtn" :onclick cmd
+    (label :class "pbtn-icon" :text icon)))
 
-      (box :orientation "h" :spacing 10
-        (label :class "s-icon" :text "󰃠")
-        (scale :class "slider" :min 0 :max 100 :value bri
-               :onchange "bash $HOME/.config/eww/scripts/brightness.sh set {}")
-        (button :class "icon-btn"
-          :onclick "bash $HOME/.config/eww/scripts/brightness.sh max"
-          (label :text "󰛨"))))))
+;; -----------------------------
+;; Quick toggles
+;; -----------------------------
 
-(defwidget media_tile []
-  (tile :class "tile-media"
-    (box :orientation "v" :spacing 12
+(defwidget quick-toggles []
+  (tile "quick"
+    (box :class "quick" :orientation "h" :spacing 12
 
-      (box :orientation "h" :spacing 12
-        (box :class "cover-wrap"
-          (revealer :reveal (!= m_art "")
-            (image :class "cover" :path m_art))
-          (revealer :reveal (== m_art "")
-            (box :class "cover-fallback"
-              (label :text "󰝚"))))
-        (box :orientation "v" :spacing 2 :hexpand true
-          (label :class "title" :xalign 0
-                 :text (if (== m_title "") "Nothing playing" m_title))
-          (label :class "muted" :xalign 0 :text m_artist)))
+      ;; WiFi
+      (box :class "quick-item" :orientation "v" :spacing 6
+        (toggle-btn
+          :icon "󰖩"
+          :active (= wifi_state "on")
+          :cmd "bash -lc 'nmcli radio wifi off || true; nmcli radio wifi on || true'")
+        (label :class "sub"
+          :text (if (= wifi_ssid "") "wifi" wifi_ssid)))
 
-      (box :class "media-controls" :orientation "h" :spacing 12 :halign "center"
-        (button :class "icon-btn" :onclick "playerctl previous" (label :text "󰒮"))
-        (button :class "icon-btn big" :onclick "playerctl play-pause"
-          (label :text (if (== m_status "Playing") "󰏤" "󰐊")))
-        (button :class "icon-btn" :onclick "playerctl next" (label :text "󰒭"))))))
+      ;; Bluetooth
+      (box :class "quick-item" :orientation "v" :spacing 6
+        (toggle-btn
+          :icon "󰂯"
+          :active (= bt_state "on")
+          :cmd "bash -lc 'if bluetoothctl show 2>/dev/null | grep -q \"Powered: yes\"; then bluetoothctl power off; else bluetoothctl power on; fi'")
+        (label :class "sub"
+          :text (if (= bt_state "on") "bluetooth" "bt off")))
 
-(defwidget ring [label value icon]
+      ;; Mute
+      (box :class "quick-item" :orientation "v" :spacing 6
+        (toggle-btn
+          :icon "󰝟"
+          :active (= muted "true")
+          :cmd "bash -lc 'pamixer -t || true'")
+        (label :class "sub"
+          :text (if (= muted "true") "muted" "sound")))
+
+      ;; Night light placeholder (no-op unless you wire it)
+      (box :class "quick-item" :orientation "v" :spacing 6
+        (toggle-btn
+          :icon "󰖔"
+          :active false
+          :cmd "true")
+        (label :class "sub" :text "night")))))
+
+;; -----------------------------
+;; Sliders
+;; -----------------------------
+
+(defwidget sliders-tile []
+  (tile "controls"
+    (box :class "sliders" :orientation "v" :spacing 14
+
+      (box :orientation "h" :space-between true
+        (label :class "k" :text "volume")
+        (label :class "v" :text (str volume "%")))
+      (scale
+        :class "scale"
+        :min 0
+        :max 100
+        :value volume
+        :onchange "bash -lc 'pamixer --set-volume {} || true'")
+
+      (divider)
+
+      (box :orientation "h" :space-between true
+        (label :class "k" :text "brightness")
+        (label :class "v" :text (str brightness "%")))
+      (scale
+        :class "scale"
+        :min 0
+        :max 100
+        :value brightness
+        :onchange "bash -lc 'brightnessctl set {}% || true'"))))
+
+;; -----------------------------
+;; Stats (rings)
+;; -----------------------------
+
+(defwidget ring [label value max]
   (box :class "ring"
-    (circular-progress :class "ring-prog" :min 0 :max 100 :value value
-      (label :class "ring-icon" :text icon))
-    (label :class "ring-label" :text label)
-    (label :class "ring-val" :text (str value (if (== label "Temp") "°" "%")))))
+    (circular-progress :class "ring-prog" :value value :max max)
+    (box :class "ring-text" :orientation "v" :spacing 2
+      (label :class "ring-label" :text label)
+      (label :class "ring-value"
+        :text (str value (if (= label "temp") "°" "%"))))))
 
-(defwidget stats_tile []
-  (tile :class "tile-stats"
-    (box :class "grid" :orientation "v" :spacing 12
-      (box :orientation "h" :spacing 12
-        (ring :label "CPU"  :value cpu  :icon "󰍛")
-        (ring :label "RAM"  :value ram  :icon "󰘚"))
-      (box :orientation "h" :spacing 12
-        (ring :label "Disk" :value disk :icon "󰋊")
-        (ring :label "Temp" :value temp :icon "󰔏")))))
+(defwidget stats-tile []
+  (tile "system"
+    (box :class "rings" :orientation "h" :spacing 14
+      (ring :label "cpu"  :value cpu_perc :max 100)
+      (ring :label "ram"  :value ram_perc :max 100)
+      (ring :label "temp" :value temp_c   :max 100))))
 
-(defwidget launcher_tile []
-  (tile :class "tile-launch"
-    (box :orientation "v" :spacing 10
-      (button :class "launch-btn" :onclick "wofi --show drun" (label :text "󰍉"))
-      (button :class "launch-btn" :onclick "kitty" (label :text "󰆍"))
-      (button :class "launch-btn" :onclick "firefox" (label :text "󰈹"))
-      (button :class "launch-btn" :onclick "thunar" (label :text "󰝰")))))
+;; -----------------------------
+;; Media
+;; -----------------------------
+
+(defwidget media-tile []
+  (tile "media"
+    (box :class "media" :orientation "h" :spacing 12
+
+      (box :class "art-wrap"
+        (revealer :transition "crossfade" :duration "200ms" :reveal (not (= m_art ""))
+          (image :class "art" :path m_art))
+        (revealer :transition "crossfade" :duration "200ms" :reveal (= m_art "")
+          (box :class "art-fallback"
+            (label :text "󰎈"))))
+
+      (box :class "media-main" :orientation "v" :spacing 8
+        (label :class "media-title"
+          :text (if (= m_title "") "Nothing playing" m_title)
+          :wrap true)
+        (label :class "media-artist"
+          :text (if (= m_artist "") " " m_artist)
+          :wrap true)
+
+        (box :class "media-controls" :orientation "h" :spacing 10
+          (button :class "mbtn" :onclick "playerctl previous || true" (label :text "󰒮"))
+          (button :class "mbtn" :onclick "playerctl play-pause || true"
+            (label :text (if (= m_status "Playing") "󰏤" "󰐊")))
+          (button :class "mbtn" :onclick "playerctl next || true" (label :text "󰒭")))))))
+
+;; -----------------------------
+;; Notes tile (simple placeholder)
+;; -----------------------------
+
+(defwidget notes-tile []
+  (tile "notes"
+    (box :class "notes" :orientation "v" :spacing 8
+      (label :class "note" :text "• keep it clean")
+      (label :class "note" :text "• add widgets later")
+      (label :class "note" :text "• make it yours"))))
+
+;; -----------------------------
+;; Power row
+;; -----------------------------
+
+(defwidget power-row []
+  (box :class "tile power" :orientation "h" :space-between true
+    (label :class "tile-title" :text "power")
+    (box :orientation "h" :spacing 10
+      (power-btn :icon "󰌾" :cmd "bash -lc 'loginctl lock-session || true'")
+      (power-btn :icon "󰤄" :cmd "bash -lc 'loginctl suspend || true'")
+      (power-btn :icon "󰑓" :cmd "bash -lc 'systemctl reboot || true'")
+      (power-btn :icon "⏻"  :cmd "bash -lc 'systemctl poweroff || true'"))))
