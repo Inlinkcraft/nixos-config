@@ -1,35 +1,51 @@
 { config, pkgs, lib, ... }:
 
+let
+  cfgDir = "${config.home.homeDirectory}/.config/eww";
+in
 {
+  # Ensure eww exists
   home.packages = with pkgs; [
     eww
-    jq
-    playerctl
-    pamixer
-    brightnessctl
+    bash
+    coreutils
+    gawk
+    gnused
+    procps
+    lm_sensors
     networkmanager
     bluez
-    wlogout
-    acpi
-    lm_sensors
+    wireplumber
   ];
 
-  xdg.configFile."eww".source = ./config;
+  # Copy eww config into ~/.config/eww
+  home.file.".config/eww/eww.yuck".source = ./config/eww.yuck;
+  home.file.".config/eww/eww.scss".source = ./config/eww.scss;
 
+  # Scripts (must be executable!)
+  home.file.".config/eww/scripts/metrics" = {
+    source = ./config/scripts/metrics;
+    executable = true;
+  };
+
+  # Run eww daemon as a persistent user service
   systemd.user.services.eww = {
     Unit = {
-      Description = "Eww daemon";
-      After = [ "graphical-session.target" "pywal.service" ];
-      Wants = [ "pywal.service" ];
+      Description = "Eww widget daemon";
       PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
     };
 
     Service = {
-      Type = "forking";
-      ExecStart = "${pkgs.eww}/bin/eww daemon";
-      ExecStop = "${pkgs.eww}/bin/eww kill";
+      Type = "simple";
+      ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize --config ${cfgDir}";
       Restart = "on-failure";
       RestartSec = 1;
+
+      # Very important for daemon socket location:
+      Environment = [
+        "XDG_RUNTIME_DIR=/run/user/%U"
+      ];
     };
 
     Install = {
