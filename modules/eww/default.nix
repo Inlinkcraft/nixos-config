@@ -19,13 +19,7 @@ let
   runtimePath = lib.makeBinPath runtimePkgs;
 in
 {
-  home.packages = with pkgs; [
-    bash
-    eww jq curl
-    playerctl pamixer brightnessctl
-    acpi lm_sensors networkmanager bluez
-    swaylock-effects
-  ];
+  home.packages = runtimePkgs;
 
   home.file.".config/eww/eww.yuck" = { source = ./config/eww.yuck; force = true; };
   home.file.".config/eww/eww.scss" = { source = ./config/eww.scss; force = true; };
@@ -39,12 +33,6 @@ in
   home.file.".config/eww/assets/avatar.svg" = { source = ./config/assets/avatar.svg; force = true; };
   home.file.".config/eww/assets/cover.svg"  = { source = ./config/assets/cover.svg;  force = true; };
 
-  # generated at runtime into ~/.cache/eww/wal.scss
-  home.file.".config/eww/wal.scss" = {
-    source = config.lib.file.mkOutOfStoreSymlink "${ewwCacheDir}/wal.scss";
-    force = true;
-  };
-
   systemd.user.services.eww = {
     Unit = {
       Description = "Eww widget daemon";
@@ -55,12 +43,16 @@ in
 
     Service = {
       Type = "simple";
+
+      # Make scripts callable as `dashboard ...`
       Environment = [
-        "PATH=${runtimePath}"
+        "PATH=${runtimePath}:%h/.config/eww/scripts"
+        "EWW_CONFIG_DIR=%h/.config/eww"
       ];
 
       ExecStartPre = [
-        "${pkgs.bash}/bin/bash ${ewwConfigDir}/scripts/dashboard wal-gen"
+        # Generates ~/.cache/eww/wal.scss (safe even if you don't import it yet)
+        "dashboard wal-gen"
       ];
 
       ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize --config ${ewwConfigDir}";

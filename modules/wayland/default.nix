@@ -114,11 +114,16 @@
       ];
 
       ####################################
-      # Layer rules (Waybar + Eww blur)
+      # Layer rules (MUST include a target layer)
       ####################################
       layerrule = [
+        # Fix your popup: these must be "rule, layer"
         "blur, waybar"
         "ignorezero, waybar"
+
+        # Optional: if you want blur on the eww overlay too
+        # "blur, eww"
+        # "ignorezero, eww"
       ];
 
       ####################################
@@ -142,17 +147,21 @@
       };
 
       ####################################
-      # Window rules
+      # Window rules (legacy = windowrule)
       ####################################
       windowrule = [
+        # This one is fine (legacy format)
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-        "suppressevent maximize, class:.*"
       ];
 
       ####################################
-      # Eww window behavior
+      # Window rules v2 (use this for suppressevent)
       ####################################
       windowrulev2 = [
+        # Fix: suppressevent belongs here + correct syntax
+        "suppressevent maximize, class:^(.*)$"
+
+        # Eww window behavior
         "float, class:^(eww)$"
         "nofocus, class:^(eww)$"
         "noborder, class:^(eww)$"

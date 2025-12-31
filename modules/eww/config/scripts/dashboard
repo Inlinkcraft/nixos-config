@@ -2,6 +2,7 @@
 set -euo pipefail
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/eww"
+CONFIG_DIR="${EWW_CONFIG_DIR:-$HOME/.config/eww}"
 mkdir -p "$CACHE_DIR"
 
 clamp_0_100() { awk -v n="${1:-0}" 'BEGIN{ if(n<0) n=0; if(n>100) n=100; printf "%d\n", n }'; }
@@ -81,14 +82,11 @@ player_title()  { playerctl metadata title 2>/dev/null || echo "No media"; }
 player_artist() { playerctl metadata artist 2>/dev/null || echo ""; }
 
 player_art() {
-  local fallback="${3:-}"
-  url="$(playerctl metadata mpris:artUrl 2>/dev/null || true)"
+  # IMPORTANT: always return a real path
+  local fallback="${1:-$CONFIG_DIR/assets/cover.svg}"
 
-  # No art url -> return fallback path (cover.svg)
-  if [[ -z "${url:-}" ]]; then
-    echo "$fallback"
-    return
-  fi
+  url="$(playerctl metadata mpris:artUrl 2>/dev/null || true)"
+  [[ -z "${url:-}" ]] && { echo "$fallback"; return; }
 
   out="$CACHE_DIR/art"
   urlfile="$CACHE_DIR/art_url"
@@ -160,7 +158,7 @@ case "${1:-}" in
       status) player_status ;;
       title) player_title ;;
       artist) player_artist ;;
-      art) player_art ;;
+      art) player_art "${3:-}" ;;
       playpause) playerctl play-pause 2>/dev/null || true ;;
       next) playerctl next 2>/dev/null || true ;;
       prev) playerctl previous 2>/dev/null || true ;;
@@ -175,4 +173,3 @@ case "${1:-}" in
   refresh) eww reload 2>/dev/null || true ;;
   *) echo "" ;;
 esac
-
