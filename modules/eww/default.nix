@@ -1,81 +1,89 @@
 { config, pkgs, lib, ... }:
 
 let
-  # IMPORTANT: on force le vrai HOME, pas XDG_CONFIG_HOME (qui peut pointer vers /nix/store via HM)
-  ewwDir = "%h/.config/eww";
-  pathBins = lib.makeBinPath [
-    pkgs.coreutils
-    pkgs.gawk
-    pkgs.gnugrep
-    pkgs.util-linux
-    pkgs.procps
-    pkgs.lm_sensors
-    pkgs.networkmanager
-    pkgs.pulseaudio
-    pkgs.brightnessctl
-    pkgs.bash
+  ewwConfigDir = "%h/.config/eww";
+  ewwCacheDir = "${config.home.homeDirectory}/.cache/eww";
+
+  # Binaries your dashboard scripts use
+  runtimePkgs = with pkgs; [
+    eww
+    coreutils
+    gawk
+    gnugrep
+    jq
+    curl
+    procps
+    lm_sensors
+    networkmanager
+    pamixer
+    brightnessctl
+    acpi
+    playerctl
+    bluez
+    util-linux
+    systemd
+    swaylock-effects
   ];
+
+  runtimePath = lib.makeBinPath runtimePkgs;
 in
 {
   home.packages = with pkgs; [
     eww
-    networkmanager
-    lm_sensors
-    procps
-    pulseaudio
+    jq
+    curl
+    playerctl
+    pamixer
     brightnessctl
+    acpi
+    lm_sensors
+    networkmanager
+    bluez
   ];
 
-  # Force overwrite (évite "would be clobbered")
-  home.file.".config/eww/eww.yuck" = {
-    source = ./config/eww.yuck;
-    force = true;
-  };
+  # Main config
+  home.file.".config/eww/eww.yuck" = { source = ./config/eww.yuck; force = true; };
+  home.file.".config/eww/eww.scss" = { source = ./config/eww.scss; force = true; };
 
-  home.file.".config/eww/eww.scss" = {
-    source = ./config/eww.scss;
-    force = true;
-  };
+  # Assets
+  home.file.".config/eww/assets/avatar.svg" = { source = ./config/assets/avatar.svg; force = true; };
+  home.file.".config/eww/assets/cover.svg"  = { source = ./config/assets/cover.svg; force = true; };
 
-  home.file.".config/eww/scripts/metrics" = {
-    source = ./config/scripts/metrics;
+  # Scripts
+  home.file.".config/eww/scripts/dashboard" = {
+    source = ./config/scripts/dashboard;
     executable = true;
     force = true;
   };
 
-  home.file.".config/eww/scripts/wifi_state" = {
-    source = ./config/scripts/wifi_state;
-    executable = true;
-    force = true;
-  };
-
-  home.file.".config/eww/scripts/gen-wal-scss" = {
-    source = ./config/scripts/gen-wal-scss;
-    executable = true;
+  # IMPORTANT:
+  # wal.scss is *not* stored in /nix/store. We symlink it from ~/.cache/eww/wal.scss
+  # so the daemon can update it without hitting the read-only HM symlink problem.
+  home.file.".config/eww/wal.scss" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${ewwCacheDir}/wal.scss";
     force = true;
   };
 
   systemd.user.services.eww = {
     Unit = {
       Description = "Eww daemon";
-      After = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" "pywal.service" ];
+      Wants = [ "pywal.service" ];
       PartOf = [ "graphical-session.target" ];
     };
 
     Service = {
       Type = "simple";
-
-      # On force un PATH correct pour nmcli/sensors/etc
       Environment = [
-        "PATH=${pathBins}"
+        "PATH=${runtimePath}"
       ];
 
-      # Génère un fichier SCSS pywal *toujours présent* avant de démarrer eww
+      # Generate ~/.cache/eww/wal.scss (fallbacks if pywal cache isn't ready)
       ExecStartPre = [
-        "${pkgs.bash}/bin/bash -lc '%h/.config/eww/scripts/gen-wal-scss'"
+        "${ewwConfigDir}/scripts/dashboard wal-gen"
       ];
 
-      ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize --config ${ewwDir}";
+      ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize --config ${ewwConfigDir}";
       Restart = "on-failure";
       RestartSec = "1s";
     };

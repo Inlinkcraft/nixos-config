@@ -61,16 +61,12 @@
     pywal
     nerd-fonts.fira-code
 
-    # AGS runtime deps (GTK3 - works)
-    ags
-    gjs
-    gtk3
-    gtk-layer-shell
-
     # Control-center helpers
     networkmanager
     blueman
     pavucontrol
+    bluez
+    curl
   ];
 
   ########################################

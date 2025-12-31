@@ -1,0 +1,333 @@
+#!/bin/sh
+set -eu
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/eww"
+mkdir -p "$CACHE_DIR"
+
+clamp_0_100() {
+  awk -v n="${1:-0}" 'BEGIN{ if(n<0) n=0; if(n>100) n=100; printf "%d\n", n }'
+}
+
+cpu_usage() {
+  set -- $(awk 'NR==1 {idle=$5+$6; nonidle=$2+$3+$4+$7+$8; total=idle+nonidle; print total, idle; exit}' /proc/stat)
+  total_now="$1"; idle_now="$2"
+
+  prev="$CACHE_DIR/cpu_prev"
+  if [ -f "$prev" ]; then
+    set -- $(cat "$prev" 2>/dev/null || echo "")
+    total_prev="${1:-0}"
+    idle_prev="${2:-0}"
+  else
+    total_prev="$total_now"
+    idle_prev="$idle_now"
+  fi
+
+  echo "$total_now $idle_now" > "$prev"
+
+  awk -v tn="$total_now" -v inow="$idle_now" -v tp="$total_prev" -v ip="$idle_prev" \
+    'BEGIN{
+      dt=tn-tp; di=inow-ip;
+      if(dt<=0){print 0; exit}
+      u=(dt-di)*100/dt;
+      if(u<0)u=0; if(u>100)u=100;
+      printf "%d\n", u
+    }'
+}
+
+mem_usage() {
+  set -- $(awk '
+    $1=="MemTotal:"{t=$2}
+    $1=="MemAvailable:"{a=$2}
+    END{
+      if(t<=0){print 0; exit}
+      u=(t-a)*100/t
+      if(u<0)u=0; if(u>100)u=100;
+      printf "%d\n", u
+    }' /proc/meminfo)
+  echo "${1:-0}"
+}
+
+disk_usage() {
+  df -P / 2>/dev/null | awk 'NR==2{gsub("%","",$5); print $5; exit}'
+}
+
+temp_usage() {
+  # Prefer sensors, fallback to /sys thermal
+  t=""
+  if command -v sensors >/dev/null 2>&1; then
+    t="$(sensors 2>/dev/null | awk '
+      /Package id 0:|Tctl:|temp1:/ {
+        for(i=1;i<=NF;i++){
+          if($i ~ /^\+?[0-9]+(\.[0-9]+)?°C$/){
+            gsub(/[+°C]/,"",$i); print $i; exit
+          }
+        }
+      }')"
+  fi
+
+  if [ -z "${t:-}" ]; then
+    for f in /sys/class/thermal/thermal_zone*/temp; do
+      [ -r "$f" ] || continue
+      raw="$(cat "$f" 2>/dev/null || true)"
+      [ -n "$raw" ] || continue
+      if [ "$raw" -gt 1000 ] 2>/dev/null; then
+        t="$(awk -v r="$raw" 'BEGIN{printf "%.1f", r/1000}')"
+      else
+        t="$raw"
+      fi
+      break
+    done
+  fi
+
+  if [ -z "${t:-}" ]; then
+    echo 0
+    exit 0
+  fi
+
+  # Show as 0-100 “percent-ish”: 70°C -> 70
+  clamp_0_100 "$(awk -v x="$t" 'BEGIN{printf "%d", (x+0.5)}')"
+}
+
+uptime_short() {
+  s="$(awk '{print int($1)}' /proc/uptime 2>/dev/null || echo 0)"
+  m=$((s/60)); h=$((m/60)); d=$((h/24))
+  m=$((m%60)); h=$((h%24))
+
+  if [ "$d" -gt 0 ]; then
+    printf "%dd %dh\n" "$d" "$h"
+  elif [ "$h" -gt 0 ]; then
+    printf "%dh %dm\n" "$h" "$m"
+  else
+    printf "%dm\n" "$m"
+  fi
+}
+
+battery_pct() {
+  if command -v acpi >/dev/null 2>&1; then
+    p="$(acpi -b 2>/dev/null | awk -F'[, %]+' 'NR==1{print $3; exit}')"
+    echo "${p:-0}"
+  else
+    echo 0
+  fi
+}
+
+vol_get()       { command -v pamixer >/dev/null 2>&1 && pamixer --get-volume 2>/dev/null || echo 0; }
+vol_muted()     { command -v pamixer >/dev/null 2>&1 && pamixer --get-mute 2>/dev/null || echo false; }
+vol_set()       { command -v pamixer >/dev/null 2>&1 && pamixer --set-volume "$(clamp_0_100 "${1:-0}")" >/dev/null 2>&1 || true; }
+vol_toggle_mute(){ command -v pamixer >/dev/null 2>&1 && pamixer -t >/dev/null 2>&1 || true; }
+
+bri_get() {
+  if command -v brightnessctl >/dev/null 2>&1; then
+    brightnessctl -m 2>/dev/null | awk -F',' 'NR==1{gsub("%","",$4); print $4; exit}'
+  else
+    echo 0
+  fi
+}
+bri_set() {
+  if command -v brightnessctl >/dev/null 2>&1; then
+    brightnessctl set "$(clamp_0_100 "${1:-0}")%" >/dev/null 2>&1 || true
+  fi
+}
+
+wifi_on() {
+  if command -v nmcli >/dev/null 2>&1; then
+    nmcli -t -f WIFI general 2>/dev/null | grep -qi enabled && echo true || echo false
+  else
+    echo false
+  fi
+}
+wifi_ssid() {
+  if command -v nmcli >/dev/null 2>&1; then
+    nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | awk -F: '$1=="yes"{print $2; exit}'
+  else
+    echo ""
+  fi
+}
+wifi_toggle() {
+  if [ "$(wifi_on)" = "true" ]; then
+    nmcli radio wifi off >/dev/null 2>&1 || true
+  else
+    nmcli radio wifi on >/dev/null 2>&1 || true
+  fi
+}
+
+bt_on() {
+  if command -v bluetoothctl >/dev/null 2>&1; then
+    bluetoothctl show 2>/dev/null | awk -F': ' '/Powered/{print $2}' | grep -qi yes && echo true || echo false
+  else
+    echo false
+  fi
+}
+bt_toggle() {
+  if command -v bluetoothctl >/dev/null 2>&1; then
+    if [ "$(bt_on)" = "true" ]; then
+      bluetoothctl power off >/dev/null 2>&1 || true
+    else
+      bluetoothctl power on >/dev/null 2>&1 || true
+    fi
+  fi
+}
+
+player_status() { command -v playerctl >/dev/null 2>&1 && playerctl status 2>/dev/null || echo "Stopped"; }
+player_title()  { command -v playerctl >/dev/null 2>&1 && playerctl metadata title 2>/dev/null || echo "No media"; }
+player_artist() { command -v playerctl >/dev/null 2>&1 && playerctl metadata artist 2>/dev/null || echo ""; }
+
+player_art() {
+  [ -x "$(command -v playerctl)" ] || { echo ""; exit 0; }
+  url="$(playerctl metadata mpris:artUrl 2>/dev/null || true)"
+  [ -n "$url" ] || { echo ""; exit 0; }
+
+  out="$CACHE_DIR/art"
+  urlfile="$CACHE_DIR/art_url"
+
+  prev="$(cat "$urlfile" 2>/dev/null || true)"
+  if [ "$prev" = "$url" ] && [ -f "$out" ]; then
+    echo "$out"
+    exit 0
+  fi
+
+  echo "$url" > "$urlfile"
+
+  case "$url" in
+    file://*)
+      path="${url#file://}"
+      echo "$path"
+      ;;
+    http://*|https://*)
+      if command -v curl >/dev/null 2>&1; then
+        curl -L -s -o "$out" "$url" >/dev/null 2>&1 || true
+        [ -f "$out" ] && echo "$out" || echo ""
+      else
+        echo ""
+      fi
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+agenda_get() {
+  if command -v khal >/dev/null 2>&1; then
+    khal list today 2>/dev/null | head -n 5
+  elif [ -f "$EWW_CONFIG_DIR/agenda.txt" ]; then
+    head -n 5 "$EWW_CONFIG_DIR/agenda.txt"
+  else
+    echo "No events"
+  fi
+}
+
+wal_gen() {
+  waljson="${XDG_CACHE_HOME:-$HOME/.cache}/wal/colors.json"
+  out="$CACHE_DIR/wal.scss"
+
+  if [ -f "$waljson" ] && command -v jq >/dev/null 2>&1; then
+    bg="$(jq -r '.special.background // "#111111"' "$waljson")"
+    fg="$(jq -r '.special.foreground // "#eeeeee"' "$waljson")"
+    ac="$(jq -r '.colors.color4 // "#4aa3ff"' "$waljson")"
+
+    {
+      echo "\$background: $bg;"
+      echo "\$foreground: $fg;"
+      echo "\$accent: $ac;"
+      i=0
+      while [ "$i" -le 15 ]; do
+        key="color$i"
+        val="$(jq -r ".colors.${key} // \"#111111\"" "$waljson")"
+        echo "\$$key: $val;"
+        i=$((i+1))
+      done
+    } > "$out"
+  else
+    cat > "$out" <<'EOF'
+$background: #111111;
+$foreground: #eeeeee;
+$accent: #4aa3ff;
+$color0: #111111;
+$color1: #ff5d62;
+$color2: #5dff87;
+$color3: #ffd15d;
+$color4: #4aa3ff;
+$color5: #b36bff;
+$color6: #4afff3;
+$color7: #eeeeee;
+$color8: #666666;
+$color9: #ff5d62;
+$color10: #5dff87;
+$color11: #ffd15d;
+$color12: #4aa3ff;
+$color13: #b36bff;
+$color14: #4afff3;
+$color15: #ffffff;
+EOF
+  fi
+}
+
+case "${1:-}" in
+  wal-gen) wal_gen ;;
+  cpu) cpu_usage ;;
+  mem) mem_usage ;;
+  disk) clamp_0_100 "$(disk_usage)" ;;
+  temp) temp_usage ;;
+  uptime) uptime_short ;;
+  battery) clamp_0_100 "$(battery_pct)" ;;
+
+  wifi)
+    case "${2:-}" in
+      on) wifi_on ;;
+      ssid) wifi_ssid ;;
+      toggle) wifi_toggle ;;
+      *) echo "" ;;
+    esac
+    ;;
+
+  bluetooth)
+    case "${2:-}" in
+      on) bt_on ;;
+      toggle) bt_toggle ;;
+      *) echo "" ;;
+    esac
+    ;;
+
+  volume)
+    case "${2:-}" in
+      get) vol_get ;;
+      muted) vol_muted ;;
+      set) vol_set "${3:-0}" ;;
+      mute-toggle) vol_toggle_mute ;;
+      *) echo 0 ;;
+    esac
+    ;;
+
+  brightness)
+    case "${2:-}" in
+      get) bri_get ;;
+      set) bri_set "${3:-0}" ;;
+      *) echo 0 ;;
+    esac
+    ;;
+
+  player)
+    case "${2:-}" in
+      status) player_status ;;
+      title) player_title ;;
+      artist) player_artist ;;
+      art) player_art ;;
+      playpause) playerctl play-pause 2>/dev/null || true ;;
+      next) playerctl next 2>/dev/null || true ;;
+      prev) playerctl previous 2>/dev/null || true ;;
+      *) echo "" ;;
+    esac
+    ;;
+
+  agenda) agenda_get ;;
+
+  poweroff) loginctl poweroff ;;
+  reboot) loginctl reboot ;;
+  suspend) loginctl suspend ;;
+  lock) swaylock -f ;;
+  refresh) eww reload 2>/dev/null || true ;;
+
+  *) echo "" ;;
+esac
+

@@ -1,123 +1,169 @@
-/* Defaults (si pywal pas prêt) */
-:root {
-  --bg: #0f111a;
-  --fg: #d7dae0;
-  --panel: rgba(20, 24, 30, 0.92);
-  --overlay: rgba(0, 0, 0, 0.55);
-  --accent: #7aa2f7;
-  --muted: rgba(215, 218, 224, 0.65);
-}
+@import "wal.scss";
 
-/* Si présent, ce fichier remplace les variables ci-dessus */
-@import "/home/inlinkcraft/.cache/wal/eww-vars.scss";
+/* Defaults if wal.scss is empty/late */
+$bg: if(global-variable-exists(background), $background, #111111);
+$fg: if(global-variable-exists(foreground), $foreground, #eeeeee);
+$ac: if(global-variable-exists(accent), $accent, #4aa3ff);
 
 * {
   all: unset;
-  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+  font-family: "FiraCode Nerd Font";
+  font-size: 14px;
+  color: $fg;
 }
 
-.overlay-root {
-  background: var(--overlay);
-  padding: 40px;
+.screen {
+  /* The overlay container */
+}
+
+.scrim-fill {
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .panel {
-  background: var(--panel);
-  color: var(--fg);
+  background: rgba($bg, 0.86);
+  border: 2px solid rgba($fg, 0.18);
   border-radius: 18px;
-  padding: 26px 28px;
-  min-width: 680px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255,255,255,0.06);
+  padding: 22px;
+  min-width: 1040px;
 }
 
-.clock-block {
-  padding: 8px 0 2px 0;
-}
-
-.clock-time {
-  font-size: 78px;
+.clock {
+  font-size: 92px;
   font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--fg);
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.35);
 }
 
-.clock-date {
-  margin-top: 4px;
-  font-size: 16px;
-  color: var(--muted);
+.content .col {
+  min-width: 320px;
 }
 
-.stats-grid {
-  padding: 10px 0;
+.card {
+  background: rgba($bg, 0.72);
+  border: 2px solid rgba($fg, 0.18);
+  border-radius: 16px;
+  padding: 14px;
 }
 
-.stat-row {
-  padding: 8px 6px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  margin: 6px 0;
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba($fg, 0.80);
 }
 
-.stat-icon {
-  min-width: 34px;
+.name {
   font-size: 18px;
-  color: var(--accent);
+  font-weight: 800;
 }
 
-.stat-label {
-  min-width: 64px;
-  font-size: 13px;
-  color: var(--muted);
+.tagline,
+.muted {
+  color: rgba($fg, 0.70);
+  font-size: 12px;
 }
 
-.stat-bar {
-  min-width: 360px;
-  margin: 0 10px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 999px;
+.small {
+  font-size: 12px;
+  color: rgba($fg, 0.85);
 }
 
-.stat-bar trough {
-  background: rgba(255,255,255,0.06);
-  border-radius: 999px;
-}
-
-.stat-bar progress {
-  background: var(--accent);
-  border-radius: 999px;
-}
-
-.stat-value {
-  min-width: 64px;
-  font-size: 13px;
-  color: var(--fg);
-}
-
-.toggles {
-  padding-top: 10px;
-}
-
-.toggle-btn, .action-btn {
-  background: rgba(255,255,255,0.05);
+.avatar, .cover {
   border-radius: 14px;
-  padding: 10px 12px;
-  margin: 0 6px;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 2px solid rgba($fg, 0.18);
 }
 
-.toggle-btn.is-on {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.10);
+.media-title {
+  font-size: 14px;
+  font-weight: 800;
 }
 
-.btn-icon {
-  margin-right: 8px;
-  color: var(--accent);
-  font-size: 16px;
+.media-artist, .media-status {
+  font-size: 12px;
+  color: rgba($fg, 0.75);
 }
 
-.btn-text {
-  font-size: 13px;
-  color: var(--fg);
+.row-buttons {
+  margin-top: 2px;
 }
+
+.icon-btn {
+  background: rgba($bg, 0.20);
+  border: 2px solid rgba($fg, 0.18);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.icon-btn:hover {
+  border-color: rgba($ac, 0.95);
+}
+
+.icon-btn.primary {
+  border-color: rgba($ac, 0.95);
+  background: rgba($ac, 0.18);
+}
+
+.toggle {
+  background: rgba($bg, 0.20);
+  border: 2px solid rgba($fg, 0.18);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.toggle.on {
+  border-color: rgba($ac, 0.95);
+  background: rgba($ac, 0.18);
+}
+
+.slider-row .icon {
+  padding: 0 6px;
+  color: rgba($fg, 0.85);
+}
+
+.value {
+  min-width: 44px;
+  font-size: 12px;
+  color: rgba($fg, 0.85);
+}
+
+/* Progress bars */
+progressbar {
+  min-height: 10px;
+}
+
+progressbar trough {
+  background: rgba($fg, 0.10);
+  border-radius: 999px;
+  min-height: 10px;
+}
+
+progressbar trough progress {
+  background: rgba($ac, 0.95);
+  border-radius: 999px;
+}
+
+/* Sliders */
+scale trough {
+  background: rgba($fg, 0.10);
+  border-radius: 999px;
+  min-height: 10px;
+}
+
+scale highlight {
+  background: rgba($ac, 0.95);
+  border-radius: 999px;
+}
+
+scale slider {
+  background: rgba($ac, 0.95);
+  border-radius: 999px;
+  min-width: 14px;
+  min-height: 14px;
+}
+
+.uptime {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba($fg, 0.80);
+}
+
