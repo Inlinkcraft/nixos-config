@@ -81,17 +81,33 @@ player_title()  { playerctl metadata title 2>/dev/null || echo "No media"; }
 player_artist() { playerctl metadata artist 2>/dev/null || echo ""; }
 
 player_art() {
+  local fallback="${3:-}"
   url="$(playerctl metadata mpris:artUrl 2>/dev/null || true)"
-  [[ -n "$url" ]] || { echo ""; return; }
+
+  # No art url -> return fallback path (cover.svg)
+  if [[ -z "${url:-}" ]]; then
+    echo "$fallback"
+    return
+  fi
+
   out="$CACHE_DIR/art"
   urlfile="$CACHE_DIR/art_url"
+
   prev="$(cat "$urlfile" 2>/dev/null || true)"
-  if [[ "$prev" == "$url" && -f "$out" ]]; then echo "$out"; return; fi
+  if [[ "$prev" == "$url" && -f "$out" ]]; then
+    echo "$out"
+    return
+  fi
+
   echo "$url" > "$urlfile"
+
   case "$url" in
     file://*) echo "${url#file://}" ;;
-    http://*|https://*) curl -L -s -o "$out" "$url" >/dev/null 2>&1 || true; [[ -f "$out" ]] && echo "$out" || echo "" ;;
-    *) echo "" ;;
+    http://*|https://*)
+      curl -L -s -o "$out" "$url" >/dev/null 2>&1 || true
+      [[ -f "$out" ]] && echo "$out" || echo "$fallback"
+      ;;
+    *) echo "$fallback" ;;
   esac
 }
 
