@@ -1,9 +1,8 @@
-@import "wal.scss";
+/* Temporary: no @import "wal.scss" until the daemon runs cleanly */
 
-/* Defaults if wal.scss is missing */
-$bg: if(global-variable-exists(background), $background, #111111);
-$fg: if(global-variable-exists(foreground), $foreground, #eeeeee);
-$ac: if(global-variable-exists(accent), $accent, #4aa3ff);
+$bg: #111111;
+$fg: #eeeeee;
+$ac: #4aa3ff;
 
 * {
   all: unset;
