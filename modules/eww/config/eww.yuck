@@ -163,7 +163,11 @@
 (defwidget statbar [name val]
   (box :class "stat" :orientation "v" :spacing 6
     (centerbox :orientation "h"
+      ;; left
       (label :class "small" :text {name})
+      ;; center (must exist, can be empty)
+      (label :text "")
+      ;; right
       (label :class "small" :xalign 1 :text {val + "%"}))
     (progress :value val)))
 
