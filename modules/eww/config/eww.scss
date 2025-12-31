@@ -1,39 +1,48 @@
-/* GTK-safe Eww CSS */
-
-@define-color bg #111111;
-@define-color fg #eeeeee;
-@define-color accent #4aa3ff;
+/* GTK-safe Eww CSS (no alpha() function, uses rgba()) */
 
 * {
   all: unset;
   font-family: "FiraCode Nerd Font";
   font-size: 14px;
-  color: @fg;
+  color: #eeeeee;
 }
 
+.screen {
+  background: transparent;
+}
+
+/* dim background */
 .scrim-fill {
-  background-color: alpha(#000000, 0.55);
+  background: rgba(0, 0, 0, 0.55);
 }
 
+/* centering wrapper (just in case) */
+.center {
+  background: transparent;
+}
+
+/* main panel (slightly transparent) */
 .panel {
-  background-color: alpha(@bg, 0.90);
-  border: 2px solid alpha(@fg, 0.14);
+  background: rgba(18, 18, 18, 0.90);
+  border: 2px solid rgba(238, 238, 238, 0.14);
   border-radius: 22px;
   padding: 26px;
 
-  /* big but not fullscreen */
+  /* dashboard size */
   min-width: 1100px;
 }
 
+/* big clock */
 .clock {
   font-size: 64px;
   font-weight: 900;
   letter-spacing: 2px;
 }
 
+/* cards */
 .card {
-  background-color: alpha(@bg, 0.78);
-  border: 2px solid alpha(@fg, 0.14);
+  background: rgba(18, 18, 18, 0.78);
+  border: 2px solid rgba(238, 238, 238, 0.14);
   border-radius: 18px;
   padding: 16px;
 }
@@ -41,7 +50,7 @@
 .card-title {
   font-size: 15px;
   font-weight: 800;
-  color: alpha(@fg, 0.90);
+  color: rgba(238, 238, 238, 0.92);
 }
 
 .name {
@@ -51,61 +60,60 @@
 
 .tagline {
   font-size: 12px;
-  color: alpha(@fg, 0.70);
+  color: rgba(238, 238, 238, 0.70);
 }
 
 .small {
   font-size: 12px;
-  color: alpha(@fg, 0.88);
+  color: rgba(238, 238, 238, 0.88);
 }
 
 .muted {
   font-size: 12px;
-  color: alpha(@fg, 0.65);
+  color: rgba(238, 238, 238, 0.65);
 }
 
+/* images */
 .avatar,
 .cover {
   border-radius: 14px;
-  border: 2px solid alpha(@fg, 0.14);
+  border: 2px solid rgba(238, 238, 238, 0.14);
 }
 
+/* buttons */
 .icon-btn,
 .toggle {
-  background-color: alpha(@bg, 0.30);
-  border: 2px solid alpha(@fg, 0.14);
+  background: rgba(18, 18, 18, 0.30);
+  border: 2px solid rgba(238, 238, 238, 0.14);
   border-radius: 14px;
   padding: 8px 12px;
 }
 
-.icon-btn.primary {
-  background-color: alpha(@accent, 0.20);
-  border-color: alpha(@accent, 0.70);
-}
-
+/* highlight color (temporary fixed blue, we can wire pywal next) */
+.icon-btn.primary,
 .toggle.on {
-  background-color: alpha(@accent, 0.20);
-  border-color: alpha(@accent, 0.70);
+  background: rgba(74, 163, 255, 0.20);
+  border-color: rgba(74, 163, 255, 0.70);
 }
 
 .value {
   min-width: 52px;
   font-size: 12px;
-  color: alpha(@fg, 0.85);
+  color: rgba(238, 238, 238, 0.85);
 }
 
 /* sliders */
 scale trough {
-  background-color: alpha(@fg, 0.12);
+  background: rgba(238, 238, 238, 0.12);
   border-radius: 999px;
   min-height: 10px;
 }
 scale highlight {
-  background-color: alpha(@accent, 0.88);
+  background: rgba(74, 163, 255, 0.88);
   border-radius: 999px;
 }
 scale slider {
-  background-color: @fg;
+  background: #eeeeee;
   border-radius: 999px;
   min-width: 14px;
   min-height: 14px;
@@ -113,11 +121,11 @@ scale slider {
 
 /* progress */
 progressbar trough {
-  background-color: alpha(@fg, 0.12);
+  background: rgba(238, 238, 238, 0.12);
   border-radius: 999px;
   min-height: 10px;
 }
 progressbar trough progress {
-  background-color: alpha(@accent, 0.88);
+  background: rgba(74, 163, 255, 0.88);
   border-radius: 999px;
 }

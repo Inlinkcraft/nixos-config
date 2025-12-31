@@ -43,30 +43,33 @@
   (dashboard))
 
 ;; -------------------------
-;; MAIN WIDGET
+;; MAIN
 ;; -------------------------
 
 (defwidget dashboard []
-  (overlay :class "screen"
-    (eventbox :class "scrim" :onclick "eww close dashboard"
+  (overlay :class "screen" :hexpand true :vexpand true
+    ;; dark click-to-close scrim
+    (eventbox :class "scrim" :onclick "eww close dashboard" :hexpand true :vexpand true
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
-    (eventbox
-      (box :class "panel" :orientation "v" :spacing 18
-        (label :class "clock" :text {clock})
+    ;; centering container
+    (box :class "center" :hexpand true :vexpand true :halign "center" :valign "center"
+      (eventbox
+        (box :class "panel" :orientation "v" :spacing 18
+          (label :class "clock" :text {clock})
 
-        (box :class "content" :orientation "h" :spacing 18
-          (box :class "col" :orientation "v" :spacing 18
-            (profile-card)
-            (media-card))
+          (box :class "content" :orientation "h" :spacing 18
+            (box :class "col" :orientation "v" :spacing 18
+              (profile-card)
+              (media-card))
 
-          (box :class "col" :orientation "v" :spacing 18
-            (calendar-card)
-            (actions-card))
+            (box :class "col" :orientation "v" :spacing 18
+              (calendar-card)
+              (actions-card))
 
-          (box :class "col" :orientation "v" :spacing 18
-            (controls-card)
-            (stats-card)))))))
+            (box :class "col" :orientation "v" :spacing 18
+              (controls-card)
+              (stats-card))))))))
 
 ;; -------------------------
 ;; CARDS
