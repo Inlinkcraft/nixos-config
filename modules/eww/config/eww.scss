@@ -26,11 +26,13 @@ window#dashboard { background: transparent; }
 
 .clock {
   color: #fff;
-  font-size: 86px;
+  font-size: 72px;
   font-weight: 800;
   letter-spacing: 2px;
-  margin-bottom: 6px;
+  line-height: 1;
+  margin: 8px 0 6px 0;
 }
+
 
 .col { min-width: 340px; }
 
