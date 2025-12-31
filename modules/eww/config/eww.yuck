@@ -1,32 +1,41 @@
-(defvar CFG "~/.config/eww")
+;; -------------------------
+;; POLLS
+;; IMPORTANT: defpoll commands must be plain strings.
+;; No ${EWW_CONFIG_DIR}, no ${CFG}, no backticks.
+;; -------------------------
 
-(defpoll clock      :interval "1s"  :initial "00:00" `date +%H:%M`)
-(defpoll date_line  :interval "60s" :initial ""      `date '+%a %d %b %Y'`)
-(defpoll day        :interval "60s" :initial "1"     `date +%d`)
-(defpoll month      :interval "3600s" :initial "1"   `date +%m`)
-(defpoll year       :interval "3600s" :initial "1970" `date +%Y`)
+(defpoll clock      :interval "1s"  :initial "00:00" "date +%H:%M")
+(defpoll date_line  :interval "60s" :initial ""      "date '+%a %d %b %Y'")
+(defpoll day        :interval "60s" :initial "1"     "date +%d")
+(defpoll month      :interval "3600s" :initial "1"   "date +%m")
+(defpoll year       :interval "3600s" :initial "1970" "date +%Y")
 
-(defpoll cpu     :interval "1s"  :initial "0" `${CFG}/scripts/dashboard cpu`)
-(defpoll mem     :interval "1s"  :initial "0" `${CFG}/scripts/dashboard mem`)
-(defpoll temp    :interval "2s"  :initial "0" `${CFG}/scripts/dashboard temp`)
-(defpoll disk    :interval "5s"  :initial "0" `${CFG}/scripts/dashboard disk`)
-(defpoll uptime  :interval "5s"  :initial ""  `${CFG}/scripts/dashboard uptime`)
-(defpoll bat     :interval "10s" :initial "0" `${CFG}/scripts/dashboard battery`)
+;; Use a PATH-safe call: just run the script by absolute path
+(defpoll cpu     :interval "1s"  :initial "0" "~/.config/eww/scripts/dashboard cpu")
+(defpoll mem     :interval "1s"  :initial "0" "~/.config/eww/scripts/dashboard mem")
+(defpoll temp    :interval "2s"  :initial "0" "~/.config/eww/scripts/dashboard temp")
+(defpoll disk    :interval "5s"  :initial "0" "~/.config/eww/scripts/dashboard disk")
+(defpoll uptime  :interval "5s"  :initial ""  "~/.config/eww/scripts/dashboard uptime")
+(defpoll bat     :interval "10s" :initial "0" "~/.config/eww/scripts/dashboard battery")
 
-(defpoll wifi_on   :interval "2s" :initial "false" `${CFG}/scripts/dashboard wifi on`)
-(defpoll wifi_ssid :interval "5s" :initial ""      `${CFG}/scripts/dashboard wifi ssid`)
-(defpoll bt_on     :interval "2s" :initial "false" `${CFG}/scripts/dashboard bluetooth on`)
+(defpoll wifi_on   :interval "2s" :initial "false" "~/.config/eww/scripts/dashboard wifi on")
+(defpoll wifi_ssid :interval "5s" :initial ""      "~/.config/eww/scripts/dashboard wifi ssid")
+(defpoll bt_on     :interval "2s" :initial "false" "~/.config/eww/scripts/dashboard bluetooth on")
 
-(defpoll vol    :interval "1s" :initial "0"     `${CFG}/scripts/dashboard volume get`)
-(defpoll muted  :interval "1s" :initial "false" `${CFG}/scripts/dashboard volume muted`)
-(defpoll bri    :interval "2s" :initial "0"     `${CFG}/scripts/dashboard brightness get`)
+(defpoll vol    :interval "1s" :initial "0"     "~/.config/eww/scripts/dashboard volume get")
+(defpoll muted  :interval "1s" :initial "false" "~/.config/eww/scripts/dashboard volume muted")
+(defpoll bri    :interval "2s" :initial "0"     "~/.config/eww/scripts/dashboard brightness get")
 
-(defpoll p_status :interval "1s" :initial "Stopped" `${CFG}/scripts/dashboard player status`)
-(defpoll p_title  :interval "1s" :initial "No media" `${CFG}/scripts/dashboard player title`)
-(defpoll p_artist :interval "1s" :initial ""        `${CFG}/scripts/dashboard player artist`)
-(defpoll p_art    :interval "2s" :initial ""        `${CFG}/scripts/dashboard player art ${CFG}/assets/cover.svg`)
+(defpoll p_status :interval "1s" :initial "Stopped" "~/.config/eww/scripts/dashboard player status")
+(defpoll p_title  :interval "1s" :initial "No media" "~/.config/eww/scripts/dashboard player title")
+(defpoll p_artist :interval "1s" :initial ""        "~/.config/eww/scripts/dashboard player artist")
+(defpoll p_art    :interval "2s" :initial ""        "~/.config/eww/scripts/dashboard player art ~/.config/eww/assets/cover.svg")
 
-(defpoll agenda :interval "60s" :initial "No events" `${CFG}/scripts/dashboard agenda`)
+(defpoll agenda :interval "60s" :initial "No events" "~/.config/eww/scripts/dashboard agenda")
+
+;; -------------------------
+;; WINDOW
+;; -------------------------
 
 (defwindow dashboard
   :monitor 0
@@ -35,6 +44,10 @@
   :exclusive false
   :focusable "ondemand"
   (dashboard))
+
+;; -------------------------
+;; WIDGETS
+;; -------------------------
 
 (defwidget dashboard []
   (overlay :class "screen"
@@ -62,7 +75,7 @@
   (box :class "card" :orientation "v" :spacing 12
     (box :orientation "h" :spacing 12
       (image :class "avatar"
-        :path "${CFG}/assets/avatar.svg"
+        :path "~/.config/eww/assets/avatar.svg"
         :image-width 64 :image-height 64)
       (box :orientation "v" :spacing 2
         (label :class "name" :text "inlinkcraft")
@@ -84,9 +97,9 @@
         (label :class "media-artist" :text {p_artist})
         (label :class "media-status" :text {p_status})))
     (box :class "row-buttons" :orientation "h" :spacing 10
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard player prev" (label :text "󰒮"))
-      (button :class "icon-btn primary" :onclick "${CFG}/scripts/dashboard player playpause" (label :text "󰐎"))
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard player next" (label :text "󰒭")))))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard player prev" (label :text "󰒮"))
+      (button :class "icon-btn primary" :onclick "~/.config/eww/scripts/dashboard player playpause" (label :text "󰐎"))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard player next" (label :text "󰒭")))))
 
 (defwidget calendar-card []
   (box :class "card" :orientation "v" :spacing 10
@@ -103,12 +116,12 @@
   (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text "Actions")
     (box :class "row-buttons" :orientation "h" :spacing 10
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard poweroff" (label :text "⏻"))
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard reboot" (label :text "󰜉"))
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard suspend" (label :text "󰒲"))
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard lock" (label :text "󰌾")))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard poweroff" (label :text "⏻"))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard reboot" (label :text "󰜉"))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard suspend" (label :text "󰒲"))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard lock" (label :text "󰌾")))
     (box :class "row-buttons" :orientation "h" :spacing 10
-      (button :class "icon-btn" :onclick "${CFG}/scripts/dashboard refresh" (label :text "󰑓"))
+      (button :class "icon-btn" :onclick "~/.config/eww/scripts/dashboard refresh" (label :text "󰑓"))
       (button :class "icon-btn" :onclick "eww close dashboard" (label :text "󰅖")))))
 
 (defwidget controls-card []
@@ -118,7 +131,7 @@
     (box :orientation "h" :spacing 10
       (button
         :class {"toggle " + (wifi_on == "true" ? "on" : "off")}
-        :onclick "${CFG}/scripts/dashboard wifi toggle"
+        :onclick "~/.config/eww/scripts/dashboard wifi toggle"
         (label :text {wifi_on == "true" ? "󰖩" : "󰖪"}))
       (box :orientation "v" :spacing 2 :hexpand true
         (label :class "small" :text "Wi-Fi")
@@ -127,7 +140,7 @@
     (box :orientation "h" :spacing 10
       (button
         :class {"toggle " + (bt_on == "true" ? "on" : "off")}
-        :onclick "${CFG}/scripts/dashboard bluetooth toggle"
+        :onclick "~/.config/eww/scripts/dashboard bluetooth toggle"
         (label :text "󰂯"))
       (box :orientation "v" :spacing 2 :hexpand true
         (label :class "small" :text "Bluetooth")
@@ -135,16 +148,16 @@
 
     (box :class "slider-row" :orientation "h" :spacing 10
       (button :class "icon-btn"
-        :onclick "${CFG}/scripts/dashboard volume mute-toggle"
+        :onclick "~/.config/eww/scripts/dashboard volume mute-toggle"
         (label :text {muted == "true" ? "󰝟" : "󰕾"}))
       (scale :class "slider" :min 0 :max 100 :value vol
-        :onchange "${CFG}/scripts/dashboard volume set {}")
+        :onchange "~/.config/eww/scripts/dashboard volume set {}")
       (label :class "value" :xalign 1 :text {vol + "%"}))
 
     (box :class "slider-row" :orientation "h" :spacing 10
       (label :class "icon" :text "󰃠")
       (scale :class "slider" :min 0 :max 100 :value bri
-        :onchange "${CFG}/scripts/dashboard brightness set {}")
+        :onchange "~/.config/eww/scripts/dashboard brightness set {}")
       (label :class "value" :xalign 1 :text {bri + "%"}))))
 
 (defwidget statbar [name val]
