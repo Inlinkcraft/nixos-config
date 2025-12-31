@@ -9,29 +9,25 @@
   background: transparent;
 }
 
-/* Darken everything */
 .scrim-fill {
-  background: rgba(0, 0, 0, 0.65);
+  background-color: rgba(0, 0, 0, 0.65);
 }
 
-/* Centering stage with safe padding so it never hits edges */
 .stage {
   padding: 24px;
 }
 
-/* Main panel: sized to fit typical 1080p, but capped by % */
 .panel {
-  background: rgba(18, 18, 18, 0.90);
+  background-color: rgba(18, 18, 18, 0.92);
   border: 2px solid rgba(238, 238, 238, 0.14);
   border-radius: 22px;
-  padding: 22px;
+  padding: 20px;
 
-  width: 1180px;
+  width: 1100px;
   max-width: 94%;
   max-height: 92%;
 }
 
-/* Clock: smaller + spaced so it sits "inside" correctly */
 .clock {
   font-size: 56px;
   font-weight: 900;
@@ -40,7 +36,7 @@
 }
 
 .card {
-  background: rgba(18, 18, 18, 0.78);
+  background-color: rgba(18, 18, 18, 0.78);
   border: 2px solid rgba(238, 238, 238, 0.14);
   border-radius: 18px;
   padding: 14px;
@@ -57,9 +53,10 @@
   font-weight: 900;
 }
 
-.tagline {
+.tagline,
+.muted {
   font-size: 12px;
-  color: rgba(238, 238, 238, 0.70);
+  color: rgba(238, 238, 238, 0.65);
 }
 
 .small {
@@ -67,66 +64,30 @@
   color: rgba(238, 238, 238, 0.88);
 }
 
-.muted {
-  font-size: 12px;
-  color: rgba(238, 238, 238, 0.65);
-}
-
-.avatar,
-.cover {
+.avatar-fallback {
+  font-size: 40px;
+  padding: 10px 12px;
   border-radius: 14px;
   border: 2px solid rgba(238, 238, 238, 0.14);
+  background-color: rgba(18, 18, 18, 0.30);
 }
 
 .icon-btn,
 .toggle {
-  background: rgba(18, 18, 18, 0.30);
+  background-color: rgba(18, 18, 18, 0.30);
   border: 2px solid rgba(238, 238, 238, 0.14);
   border-radius: 14px;
   padding: 8px 12px;
 }
 
-/* Accent (temporary fixed blue) */
 .icon-btn.primary,
 .toggle.on {
-  background: rgba(74, 163, 255, 0.20);
-  border-color: rgba(74, 163, 255, 0.70);
+  background-color: rgba(74, 163, 255, 0.22);
+  border-color: rgba(74, 163, 255, 0.85);
 }
 
 .value {
   min-width: 52px;
   font-size: 12px;
   color: rgba(238, 238, 238, 0.85);
-}
-
-scale trough {
-  background: rgba(238, 238, 238, 0.12);
-  border-radius: 999px;
-  min-height: 10px;
-}
-scale highlight {
-  background: rgba(74, 163, 255, 0.88);
-  border-radius: 999px;
-}
-scale slider {
-  background: #eeeeee;
-  border-radius: 999px;
-  min-width: 14px;
-  min-height: 14px;
-}
-
-progressbar trough {
-  background: rgba(238, 238, 238, 0.12);
-  border-radius: 999px;
-  min-height: 10px;
-}
-progressbar trough progress {
-  background: rgba(74, 163, 255, 0.88);
-  border-radius: 999px;
-}
-
-/* Make the calendar a bit more compact */
-.cal {
-  font-size: 12px;
-}
 }

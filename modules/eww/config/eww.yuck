@@ -1,5 +1,5 @@
 ;; -------------------------
-;; POLLS
+;; POLLS (plain strings only)
 ;; -------------------------
 
 (defpoll clock      :interval "1s"  :initial "00:00" "date +%H:%M")
@@ -26,14 +26,12 @@
 (defpoll p_status :interval "1s" :initial "Stopped" "dashboard player status")
 (defpoll p_title  :interval "1s" :initial "No media" "dashboard player title")
 (defpoll p_artist :interval "1s" :initial ""        "dashboard player artist")
-(defpoll p_art    :interval "2s" :initial "assets/cover.svg" "dashboard player art")
 
 (defpoll agenda :interval "60s" :initial "No events" "dashboard agenda")
 
 ;; -------------------------
-;; WINDOW
+;; WINDOW (top-left fullscreen)
 ;; -------------------------
-;; Note: no :anchor "center" here. We want true top-left fullscreen.
 (defwindow dashboard
   :monitor 0
   :geometry (geometry :x "0px" :y "0px" :width "100%" :height "100%")
@@ -45,17 +43,16 @@
 ;; -------------------------
 ;; MAIN
 ;; -------------------------
-
 (defwidget dashboard []
   (overlay :class "screen" :hexpand true :vexpand true
 
-    ;; Fullscreen click-to-close scrim
+    ;; click anywhere to close
     (eventbox :class "scrim" :onclick "eww close dashboard" :hexpand true :vexpand true
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
-    ;; Force true centering using spacers (works reliably)
+    ;; center using spacers (reliable)
     (box :class "stage" :orientation "v" :hexpand true :vexpand true
-      (box :vexpand true) ;; top spacer
+      (box :vexpand true)
 
       (box :hexpand true :halign "center"
         (box :class "panel" :orientation "v" :spacing 14
@@ -74,7 +71,7 @@
               (controls-card)
               (stats-card)))))
 
-      (box :vexpand true) ;; bottom spacer
+      (box :vexpand true)
     )
   )
 )
@@ -86,9 +83,7 @@
 (defwidget profile-card []
   (box :class "card" :orientation "v" :spacing 10
     (box :orientation "h" :spacing 12
-      (image :class "avatar"
-        :path "assets/avatar.svg"
-        :image-width 60 :image-height 60)
+      (label :class "avatar-fallback" :text "󰀄")
       (box :orientation "v" :spacing 2
         (label :class "name" :text "inlinkcraft")
         (label :class "tagline" :text "programmer")))
@@ -100,14 +95,10 @@
 (defwidget media-card []
   (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text "Media")
-    (box :orientation "h" :spacing 12
-      (image :class "cover"
-        :path {p_art}
-        :image-width 88 :image-height 88)
-      (box :orientation "v" :spacing 4 :hexpand true
-        (label :class "media-title" :text {p_title})
-        (label :class "media-artist" :text {p_artist})
-        (label :class "media-status" :text {p_status})))
+    (box :orientation "v" :spacing 4
+      (label :class "media-title" :text {p_title})
+      (label :class "media-artist" :text {p_artist})
+      (label :class "muted" :text {p_status}))
     (box :class "row-buttons" :orientation "h" :spacing 10
       (button :class "icon-btn" :onclick "dashboard player prev" (label :text "󰒮"))
       (button :class "icon-btn primary" :onclick "dashboard player playpause" (label :text "󰐎"))
@@ -120,9 +111,9 @@
       :day day :month month :year year
       :show-details false :show-heading false
       :show-day-names true :show-week-numbers false)
-    (box :class "agenda" :orientation "v" :spacing 6
+    (box :orientation "v" :spacing 6
       (label :class "card-title" :text "Today")
-      (label :class "agenda-text" :text {agenda}))))
+      (label :class "muted" :text {agenda}))))
 
 (defwidget actions-card []
   (box :class "card" :orientation "v" :spacing 10
@@ -140,7 +131,7 @@
   (box :class "card" :orientation "v" :spacing 12
     (label :class "card-title" :text "Controls")
 
-    (box :orientation "h" :spacing 10
+    (box :class "toggle-row" :orientation "h" :spacing 10
       (button
         :class {"toggle " + (wifi_on == "true" ? "on" : "off")}
         :onclick "dashboard wifi toggle"
@@ -149,7 +140,7 @@
         (label :class "small" :text "Wi-Fi")
         (label :class "muted" :text {wifi_ssid})))
 
-    (box :orientation "h" :spacing 10
+    (box :class "toggle-row" :orientation "h" :spacing 10
       (button
         :class {"toggle " + (bt_on == "true" ? "on" : "off")}
         :onclick "dashboard bluetooth toggle"
@@ -172,20 +163,12 @@
         :onchange "dashboard brightness set {}")
       (label :class "value" :xalign 1 :text {bri + "%"}))))
 
-(defwidget statbar [name val]
-  (box :class "stat" :orientation "v" :spacing 6
-    (centerbox :orientation "h"
-      (label :class "small" :text {name})
-      (label :text "")
-      (label :class "small" :xalign 1 :text {val + "%"}))
-    (progress :value val)))
-
 (defwidget stats-card []
-  (box :class "card" :orientation "v" :spacing 12
+  (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text "System")
-    (statbar :name "CPU"  :val cpu)
-    (statbar :name "MEM"  :val mem)
-    (statbar :name "TEMP" :val temp)
-    (statbar :name "STO"  :val disk)
-    (label :class "uptime" :text {"up for: " + uptime})
+    (label :class "small" :text {"CPU:  " + cpu + "%"})
+    (label :class "small" :text {"MEM:  " + mem + "%"})
+    (label :class "small" :text {"TEMP: " + temp + "%"})
+    (label :class "small" :text {"STO:  " + disk + "%"})
+    (label :class "muted" :text {"up for: " + uptime})
     (label :class "muted" :text {"battery: " + bat + "%"})))
