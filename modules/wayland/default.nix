@@ -119,10 +119,6 @@
       layerrule = [
         "blur, waybar"
         "ignorezero, waybar"
-        "xray 0, waybar"
-
-        "blur, eww"
-        "ignorezero, eww"
       ];
 
       ####################################

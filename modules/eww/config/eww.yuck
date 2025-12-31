@@ -58,18 +58,20 @@
       (box :class "panel" :orientation "v" :spacing 18
         (label :class "clock" :text {clock})
 
-        (box :class "content" :orientation "h" :spacing 18
-          (box :class "col" :orientation "v" :spacing 18
-            (profile-card)
-            (media-card))
+        ;; Make the content scroll so it never gets cut off
+        (scroll :vscroll true :hscroll false :hexpand true :vexpand true
+          (box :class "content" :orientation "h" :spacing 18
+            (box :class "col" :orientation "v" :spacing 18
+              (profile-card)
+              (media-card))
 
-          (box :class "col" :orientation "v" :spacing 18
-            (calendar-card)
-            (actions-card))
+            (box :class "col" :orientation "v" :spacing 18
+              (calendar-card)
+              (actions-card))
 
-          (box :class "col" :orientation "v" :spacing 18
-            (controls-card)
-            (stats-card)))))))
+            (box :class "col" :orientation "v" :spacing 18
+              (controls-card)
+              (stats-card))))))))
 
 (defwidget profile-card []
   (box :class "card" :orientation "v" :spacing 12

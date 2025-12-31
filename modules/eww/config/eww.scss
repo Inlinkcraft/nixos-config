@@ -1,8 +1,10 @@
-/* NO @import "wal.scss" */
+/* modules/eww/config/eww.scss
+   NOTE: no @import "wal.scss" (we'll re-add pywal safely later)
+*/
 
 $bg: #111111;
 $fg: #eeeeee;
-$ac: #4aa3ff;
+$ac: #4aa3ff; // "pywal highlight" placeholder for now
 
 * {
   all: unset;
@@ -11,25 +13,48 @@ $ac: #4aa3ff;
   color: $fg;
 }
 
-.scrim-fill { background: rgba(0, 0, 0, 0.55); }
+/* Fullscreen overlay */
+.scrim-fill {
+  background: rgba(0, 0, 0, 0.55);
+}
 
+/* Main panel */
 .panel {
   background: rgba($bg, 0.86);
   border: 2px solid rgba($fg, 0.18);
   border-radius: 18px;
-  padding: 22px;
-  min-width: 1040px;
+
+  padding: 18px;
+
+  /* Important: keep it inside the screen */
+  max-height: 90vh;
+  max-width: 92vw;
+
+  /* Center layout width like your sketch, but safe on small screens */
+  min-width: 980px;
 }
 
+/* If your screen is smaller, let it shrink */
+@media (max-width: 1100px) {
+  .panel {
+    min-width: 92vw;
+  }
+}
+
+/* Big time */
 .clock {
-  font-size: 92px;
-  font-weight: 800;
+  font-size: 72px;
+  font-weight: 900;
   letter-spacing: 2px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.content .col { min-width: 320px; }
+/* Columns */
+.content .col {
+  min-width: 320px;
+}
 
+/* Cards */
 .card {
   background: rgba($bg, 0.72);
   border: 2px solid rgba($fg, 0.18);
@@ -37,51 +62,92 @@ $ac: #4aa3ff;
   padding: 14px;
 }
 
-.card-title { font-size: 15px; font-weight: 700; color: rgba($fg, 0.80); }
-.name { font-size: 18px; font-weight: 800; }
-.tagline, .muted { color: rgba($fg, 0.70); font-size: 12px; }
-.small { font-size: 12px; color: rgba($fg, 0.85); }
+.card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: rgba($fg, 0.82);
+}
 
-.avatar, .cover {
+.name {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.tagline {
+  font-size: 12px;
+  color: rgba($fg, 0.72);
+}
+
+.small {
+  font-size: 12px;
+  color: rgba($fg, 0.88);
+}
+
+.muted {
+  font-size: 12px;
+  color: rgba($fg, 0.72);
+}
+
+.uptime {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba($fg, 0.82);
+}
+
+/* Images */
+.avatar,
+.cover {
   border-radius: 14px;
   border: 2px solid rgba($fg, 0.18);
 }
 
-.row-buttons { margin-top: 2px; }
+/* Buttons */
+.row-buttons {
+  margin-top: 2px;
+}
 
-.icon-btn, .toggle {
-  background: rgba($bg, 0.20);
+.icon-btn,
+.toggle {
+  background: rgba($bg, 0.22);
   border: 2px solid rgba($fg, 0.18);
   border-radius: 12px;
   padding: 8px 10px;
 }
 
-.icon-btn:hover { border-color: rgba($ac, 0.95); }
-.icon-btn.primary { border-color: rgba($ac, 0.95); background: rgba($ac, 0.18); }
-
-.toggle.on { border-color: rgba($ac, 0.95); background: rgba($ac, 0.18); }
-
-.value { min-width: 44px; font-size: 12px; color: rgba($fg, 0.85); }
-
-progressbar trough {
-  background: rgba($fg, 0.10);
-  border-radius: 999px;
-  min-height: 10px;
-}
-progressbar trough progress {
-  background: rgba($ac, 0.95);
-  border-radius: 999px;
+.icon-btn:hover,
+.toggle:hover {
+  border-color: rgba($ac, 0.95);
 }
 
+.icon-btn.primary {
+  border-color: rgba($ac, 0.95);
+  background: rgba($ac, 0.18);
+}
+
+.toggle.on {
+  border-color: rgba($ac, 0.95);
+  background: rgba($ac, 0.18);
+}
+
+/* Right-side value labels */
+.value {
+  min-width: 48px;
+  font-size: 12px;
+  color: rgba($fg, 0.86);
+}
+
+/* Sliders */
 scale trough {
   background: rgba($fg, 0.10);
   border-radius: 999px;
   min-height: 10px;
 }
+
 scale highlight {
   background: rgba($ac, 0.95);
   border-radius: 999px;
 }
+
 scale slider {
   background: rgba($ac, 0.95);
   border-radius: 999px;
@@ -89,4 +155,42 @@ scale slider {
   min-height: 14px;
 }
 
-.uptime { margin-top: 6px; font-size: 12px; color: rgba($fg, 0.80); }
+/* Progress bars */
+progressbar trough {
+  background: rgba($fg, 0.10);
+  border-radius: 999px;
+  min-height: 10px;
+}
+
+progressbar trough progress {
+  background: rgba($ac, 0.95);
+  border-radius: 999px;
+}
+
+/* Scroll styling (so the content area looks clean) */
+scrollbar {
+  background: rgba($fg, 0.06);
+  border-radius: 999px;
+  margin-left: 8px;
+}
+
+scrollbar slider {
+  background: rgba($ac, 0.55);
+  border-radius: 999px;
+}
+
+/* Calendar tweaks (optional but nicer) */
+.cal {
+  background: transparent;
+  color: $fg;
+}
+
+calendar:selected {
+  background: rgba($ac, 0.20);
+  border-radius: 8px;
+}
+
+calendar.header,
+calendar.button {
+  color: rgba($fg, 0.85);
+}
