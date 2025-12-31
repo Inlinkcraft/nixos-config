@@ -1,6 +1,6 @@
 @import "wal.scss";
 
-/* Defaults if wal.scss is empty/late */
+/* Defaults if wal.scss is late */
 $bg: if(global-variable-exists(background), $background, #111111);
 $fg: if(global-variable-exists(foreground), $foreground, #eeeeee);
 $ac: if(global-variable-exists(accent), $accent, #4aa3ff);
@@ -12,13 +12,7 @@ $ac: if(global-variable-exists(accent), $accent, #4aa3ff);
   color: $fg;
 }
 
-.screen {
-  /* The overlay container */
-}
-
-.scrim-fill {
-  background: rgba(0, 0, 0, 0.55);
-}
+.scrim-fill { background: rgba(0, 0, 0, 0.55); }
 
 .panel {
   background: rgba($bg, 0.86);
@@ -35,9 +29,7 @@ $ac: if(global-variable-exists(accent), $accent, #4aa3ff);
   text-shadow: 0 2px 10px rgba(0,0,0,0.35);
 }
 
-.content .col {
-  min-width: 320px;
-}
+.content .col { min-width: 320px; }
 
 .card {
   background: rgba($bg, 0.72);
@@ -46,114 +38,51 @@ $ac: if(global-variable-exists(accent), $accent, #4aa3ff);
   padding: 14px;
 }
 
-.card-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: rgba($fg, 0.80);
-}
-
-.name {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.tagline,
-.muted {
-  color: rgba($fg, 0.70);
-  font-size: 12px;
-}
-
-.small {
-  font-size: 12px;
-  color: rgba($fg, 0.85);
-}
+.card-title { font-size: 15px; font-weight: 700; color: rgba($fg, 0.80); }
+.name { font-size: 18px; font-weight: 800; }
+.tagline, .muted { color: rgba($fg, 0.70); font-size: 12px; }
+.small { font-size: 12px; color: rgba($fg, 0.85); }
 
 .avatar, .cover {
   border-radius: 14px;
   border: 2px solid rgba($fg, 0.18);
 }
 
-.media-title {
-  font-size: 14px;
-  font-weight: 800;
-}
+.row-buttons { margin-top: 2px; }
 
-.media-artist, .media-status {
-  font-size: 12px;
-  color: rgba($fg, 0.75);
-}
-
-.row-buttons {
-  margin-top: 2px;
-}
-
-.icon-btn {
+.icon-btn, .toggle {
   background: rgba($bg, 0.20);
   border: 2px solid rgba($fg, 0.18);
   border-radius: 12px;
   padding: 8px 10px;
 }
 
-.icon-btn:hover {
-  border-color: rgba($ac, 0.95);
-}
+.icon-btn:hover { border-color: rgba($ac, 0.95); }
+.icon-btn.primary { border-color: rgba($ac, 0.95); background: rgba($ac, 0.18); }
 
-.icon-btn.primary {
-  border-color: rgba($ac, 0.95);
-  background: rgba($ac, 0.18);
-}
+.toggle.on { border-color: rgba($ac, 0.95); background: rgba($ac, 0.18); }
 
-.toggle {
-  background: rgba($bg, 0.20);
-  border: 2px solid rgba($fg, 0.18);
-  border-radius: 12px;
-  padding: 8px 10px;
-}
-
-.toggle.on {
-  border-color: rgba($ac, 0.95);
-  background: rgba($ac, 0.18);
-}
-
-.slider-row .icon {
-  padding: 0 6px;
-  color: rgba($fg, 0.85);
-}
-
-.value {
-  min-width: 44px;
-  font-size: 12px;
-  color: rgba($fg, 0.85);
-}
-
-/* Progress bars */
-progressbar {
-  min-height: 10px;
-}
+.value { min-width: 44px; font-size: 12px; color: rgba($fg, 0.85); }
 
 progressbar trough {
   background: rgba($fg, 0.10);
   border-radius: 999px;
   min-height: 10px;
 }
-
 progressbar trough progress {
   background: rgba($ac, 0.95);
   border-radius: 999px;
 }
 
-/* Sliders */
 scale trough {
   background: rgba($fg, 0.10);
   border-radius: 999px;
   min-height: 10px;
 }
-
 scale highlight {
   background: rgba($ac, 0.95);
   border-radius: 999px;
 }
-
 scale slider {
   background: rgba($ac, 0.95);
   border-radius: 999px;
@@ -161,9 +90,5 @@ scale slider {
   min-height: 14px;
 }
 
-.uptime {
-  margin-top: 6px;
-  font-size: 12px;
-  color: rgba($fg, 0.80);
-}
+.uptime { margin-top: 6px; font-size: 12px; color: rgba($fg, 0.80); }
 

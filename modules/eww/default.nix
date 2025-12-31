@@ -4,24 +4,14 @@ let
   ewwConfigDir = "%h/.config/eww";
   ewwCacheDir = "${config.home.homeDirectory}/.cache/eww";
 
-  # Binaries your dashboard scripts use
   runtimePkgs = with pkgs; [
     eww
-    coreutils
-    gawk
-    gnugrep
-    jq
-    curl
-    procps
-    lm_sensors
+    coreutils gawk gnugrep jq curl
+    procps lm_sensors
     networkmanager
-    pamixer
-    brightnessctl
-    acpi
-    playerctl
-    bluez
-    util-linux
-    systemd
+    pamixer brightnessctl acpi
+    playerctl bluez
+    util-linux systemd
     swaylock-effects
   ];
 
@@ -29,36 +19,25 @@ let
 in
 {
   home.packages = with pkgs; [
-    eww
-    jq
-    curl
-    playerctl
-    pamixer
-    brightnessctl
-    acpi
-    lm_sensors
-    networkmanager
-    bluez
+    eww jq curl
+    playerctl pamixer brightnessctl
+    acpi lm_sensors networkmanager bluez
+    swaylock-effects
   ];
 
-  # Main config
   home.file.".config/eww/eww.yuck" = { source = ./config/eww.yuck; force = true; };
   home.file.".config/eww/eww.scss" = { source = ./config/eww.scss; force = true; };
 
-  # Assets
-  home.file.".config/eww/assets/avatar.svg" = { source = ./config/assets/avatar.svg; force = true; };
-  home.file.".config/eww/assets/cover.svg"  = { source = ./config/assets/cover.svg; force = true; };
-
-  # Scripts
   home.file.".config/eww/scripts/dashboard" = {
     source = ./config/scripts/dashboard;
     executable = true;
     force = true;
   };
 
-  # IMPORTANT:
-  # wal.scss is *not* stored in /nix/store. We symlink it from ~/.cache/eww/wal.scss
-  # so the daemon can update it without hitting the read-only HM symlink problem.
+  home.file.".config/eww/assets/avatar.svg" = { source = ./config/assets/avatar.svg; force = true; };
+  home.file.".config/eww/assets/cover.svg"  = { source = ./config/assets/cover.svg;  force = true; };
+
+  # generated at runtime into ~/.cache/eww/wal.scss
   home.file.".config/eww/wal.scss" = {
     source = config.lib.file.mkOutOfStoreSymlink "${ewwCacheDir}/wal.scss";
     force = true;
@@ -78,7 +57,6 @@ in
         "PATH=${runtimePath}"
       ];
 
-      # Generate ~/.cache/eww/wal.scss (fallbacks if pywal cache isn't ready)
       ExecStartPre = [
         "${ewwConfigDir}/scripts/dashboard wal-gen"
       ];
@@ -93,3 +71,4 @@ in
     };
   };
 }
+

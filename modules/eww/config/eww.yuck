@@ -1,44 +1,29 @@
-;; =========================
-;; Dashboard (Wayland / Hyprland)
-;; =========================
+(defpoll clock      :interval "1s"  :initial "00:00" `date +%H:%M`)
+(defpoll date_line  :interval "60s" :initial ""      `date '+%a %d %b %Y'`)
+(defpoll day        :interval "60s" :initial "1"     `date +%d`)
+(defpoll month      :interval "3600s" :initial "1"   `date +%m`)
+(defpoll year       :interval "3600s" :initial "1970" `date +%Y`)
 
-(defvar user_name "inlinkcraft")
-(defvar user_tagline "programmer")
-
-;; --- Time / date
-(defpoll clock      :interval "1s"    :initial "00:00" `date +%H:%M`)
-(defpoll date_line  :interval "60s"   :initial ""      `date '+%a %d %b %Y'`)
-(defpoll day        :interval "60s"   :initial "1"     `date +%d`)
-(defpoll month      :interval "3600s" :initial "1"     `date +%m`)
-(defpoll year       :interval "3600s" :initial "1970"  `date +%Y`)
-(defpoll dow        :interval "60s"   :initial "1"     `date +%u`) ;; 1-7
-
-;; --- System stats (0-100)
-(defpoll cpu     :interval "1s" :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard cpu`)
-(defpoll mem     :interval "1s" :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard mem`)
-(defpoll temp    :interval "2s" :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard temp`)
-(defpoll disk    :interval "5s" :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard disk`)
-(defpoll uptime  :interval "5s" :initial ""  `${EWW_CONFIG_DIR}/scripts/dashboard uptime`)
+(defpoll cpu     :interval "1s"  :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard cpu`)
+(defpoll mem     :interval "1s"  :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard mem`)
+(defpoll temp    :interval "2s"  :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard temp`)
+(defpoll disk    :interval "5s"  :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard disk`)
+(defpoll uptime  :interval "5s"  :initial ""  `${EWW_CONFIG_DIR}/scripts/dashboard uptime`)
 (defpoll bat     :interval "10s" :initial "0" `${EWW_CONFIG_DIR}/scripts/dashboard battery`)
 
-;; --- Controls
 (defpoll wifi_on   :interval "2s" :initial "false" `${EWW_CONFIG_DIR}/scripts/dashboard wifi on`)
 (defpoll wifi_ssid :interval "5s" :initial ""      `${EWW_CONFIG_DIR}/scripts/dashboard wifi ssid`)
-
 (defpoll bt_on     :interval "2s" :initial "false" `${EWW_CONFIG_DIR}/scripts/dashboard bluetooth on`)
 
-(defpoll vol       :interval "1s" :initial "0"     `${EWW_CONFIG_DIR}/scripts/dashboard volume get`)
-(defpoll muted     :interval "1s" :initial "false" `${EWW_CONFIG_DIR}/scripts/dashboard volume muted`)
+(defpoll vol    :interval "1s" :initial "0"     `${EWW_CONFIG_DIR}/scripts/dashboard volume get`)
+(defpoll muted  :interval "1s" :initial "false" `${EWW_CONFIG_DIR}/scripts/dashboard volume muted`)
+(defpoll bri    :interval "2s" :initial "0"     `${EWW_CONFIG_DIR}/scripts/dashboard brightness get`)
 
-(defpoll bri       :interval "2s" :initial "0"     `${EWW_CONFIG_DIR}/scripts/dashboard brightness get`)
+(defpoll p_status :interval "1s" :initial "Stopped" `${EWW_CONFIG_DIR}/scripts/dashboard player status`)
+(defpoll p_title  :interval "1s" :initial "No media" `${EWW_CONFIG_DIR}/scripts/dashboard player title`)
+(defpoll p_artist :interval "1s" :initial ""        `${EWW_CONFIG_DIR}/scripts/dashboard player artist`)
+(defpoll p_art    :interval "2s" :initial ""        `${EWW_CONFIG_DIR}/scripts/dashboard player art`)
 
-;; --- Media
-(defpoll p_status  :interval "1s" :initial "Stopped" `${EWW_CONFIG_DIR}/scripts/dashboard player status`)
-(defpoll p_title   :interval "1s" :initial "No media" `${EWW_CONFIG_DIR}/scripts/dashboard player title`)
-(defpoll p_artist  :interval "1s" :initial ""        `${EWW_CONFIG_DIR}/scripts/dashboard player artist`)
-(defpoll p_art     :interval "2s" :initial ""        `${EWW_CONFIG_DIR}/scripts/dashboard player art`)
-
-;; --- Agenda (optional khal, fallback text)
 (defpoll agenda :interval "60s" :initial "No events" `${EWW_CONFIG_DIR}/scripts/dashboard agenda`)
 
 (defwindow dashboard
@@ -51,28 +36,23 @@
 
 (defwidget dashboard []
   (overlay :class "screen"
-    ;; Click outside -> close
     (eventbox :class "scrim" :onclick "${EWW_CMD} close dashboard"
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
-    ;; Center panel
     (eventbox
       (box :class "panel" :orientation "v" :spacing 18
         (label :class "clock" :text clock)
 
         (box :class "content" :orientation "h" :spacing 18
 
-          ;; LEFT COLUMN
           (box :class "col" :orientation "v" :spacing 18
             (profile-card)
             (media-card))
 
-          ;; MIDDLE COLUMN
           (box :class "col" :orientation "v" :spacing 18
             (calendar-card)
             (actions-card))
 
-          ;; RIGHT COLUMN
           (box :class "col" :orientation "v" :spacing 18
             (controls-card)
             (stats-card)))))))
@@ -82,13 +62,10 @@
     (box :orientation "h" :spacing 12
       (image :class "avatar"
         :path "${EWW_CONFIG_DIR}/assets/avatar.svg"
-        :image-width 64
-        :image-height 64)
-
+        :image-width 64 :image-height 64)
       (box :orientation "v" :spacing 2
-        (label :class "name" :text user_name)
-        (label :class "tagline" :text user_tagline)))
-
+        (label :class "name" :text "inlinkcraft")
+        (label :class "tagline" :text "programmer")))
     (box :class "row-buttons" :orientation "h" :spacing 10
       (button :class "icon-btn" :onclick "firefox" (label :text "󰈹"))
       (button :class "icon-btn" :onclick "spotify" (label :text "󰓇"))
@@ -97,18 +74,14 @@
 (defwidget media-card []
   (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text "Media")
-
     (box :orientation "h" :spacing 12
       (image :class "cover"
         :path (if (= p_art "") "${EWW_CONFIG_DIR}/assets/cover.svg" p_art)
-        :image-width 96
-        :image-height 96)
-
+        :image-width 96 :image-height 96)
       (box :orientation "v" :spacing 4 :hexpand true
         (label :class "media-title" :text p_title)
         (label :class "media-artist" :text p_artist)
         (label :class "media-status" :text p_status)))
-
     (box :class "row-buttons" :orientation "h" :spacing 10
       (button :class "icon-btn" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard player prev" (label :text "󰒮"))
       (button :class "icon-btn primary" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard player playpause" (label :text "󰐎"))
@@ -117,16 +90,10 @@
 (defwidget calendar-card []
   (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text date_line)
-
     (calendar :class "cal"
-      :day day
-      :month month
-      :year year
-      :show-details false
-      :show-heading false
-      :show-day-names true
-      :show-week-numbers false)
-
+      :day day :month month :year year
+      :show-details false :show-heading false
+      :show-day-names true :show-week-numbers false)
     (box :class "agenda" :orientation "v" :spacing 6
       (label :class "card-title" :text "Today")
       (label :class "agenda-text" :text agenda))))
@@ -134,13 +101,11 @@
 (defwidget actions-card []
   (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text "Actions")
-
     (box :class "row-buttons" :orientation "h" :spacing 10
       (button :class "icon-btn" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard poweroff" (label :text "⏻"))
       (button :class "icon-btn" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard reboot" (label :text "󰜉"))
       (button :class "icon-btn" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard suspend" (label :text "󰒲"))
       (button :class "icon-btn" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard lock" (label :text "󰌾")))
-
     (box :class "row-buttons" :orientation "h" :spacing 10
       (button :class "icon-btn" :onclick "${EWW_CONFIG_DIR}/scripts/dashboard refresh" (label :text "󰑓"))
       (button :class "icon-btn" :onclick "${EWW_CMD} close dashboard" (label :text "󰅖")))))
@@ -150,8 +115,7 @@
     (label :class "card-title" :text "Controls")
 
     (box :orientation "h" :spacing 10
-      (button
-        :class "toggle ${wifi_on == 'true' ? 'on' : 'off'}"
+      (button :class "toggle ${wifi_on == 'true' ? 'on' : 'off'}"
         :onclick "${EWW_CONFIG_DIR}/scripts/dashboard wifi toggle"
         (label :text "${wifi_on == 'true' ? '󰖩' : '󰖪'}"))
       (box :orientation "v" :spacing 2 :hexpand true
@@ -159,33 +123,24 @@
         (label :class "muted" :text wifi_ssid)))
 
     (box :orientation "h" :spacing 10
-      (button
-        :class "toggle ${bt_on == 'true' ? 'on' : 'off'}"
+      (button :class "toggle ${bt_on == 'true' ? 'on' : 'off'}"
         :onclick "${EWW_CONFIG_DIR}/scripts/dashboard bluetooth toggle"
         (label :text "󰂯"))
       (box :orientation "v" :spacing 2 :hexpand true
         (label :class "small" :text "Bluetooth")
         (label :class "muted" :text "${bt_on == 'true' ? 'On' : 'Off'}")))
 
-    ;; Volume slider
     (box :class "slider-row" :orientation "h" :spacing 10
       (button :class "icon-btn"
         :onclick "${EWW_CONFIG_DIR}/scripts/dashboard volume mute-toggle"
         (label :text "${muted == 'true' ? '󰝟' : '󰕾'}"))
-      (scale :class "slider"
-        :min 0
-        :max 100
-        :value vol
+      (scale :class "slider" :min 0 :max 100 :value vol
         :onchange "${EWW_CONFIG_DIR}/scripts/dashboard volume set {}")
       (label :class "value" :text "${vol}%"))
 
-    ;; Brightness slider
     (box :class "slider-row" :orientation "h" :spacing 10
       (label :class "icon" :text "󰃠")
-      (scale :class "slider"
-        :min 0
-        :max 100
-        :value bri
+      (scale :class "slider" :min 0 :max 100 :value bri
         :onchange "${EWW_CONFIG_DIR}/scripts/dashboard brightness set {}")
       (label :class "value" :text "${bri}%"))))
 
@@ -199,12 +154,9 @@
 (defwidget stats-card []
   (box :class "card" :orientation "v" :spacing 12
     (label :class "card-title" :text "System")
-
     (statbar :name "CPU"  :val cpu)
     (statbar :name "MEM"  :val mem)
     (statbar :name "TEMP" :val temp)
     (statbar :name "STO"  :val disk)
-
     (label :class "uptime" :text "up for: ${uptime}")
     (label :class "muted" :text "battery: ${bat}%")))
-
