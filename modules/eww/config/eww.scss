@@ -1,6 +1,6 @@
 @import "wal.scss";
 
-/* Defaults if wal.scss is late */
+/* Defaults if wal.scss is missing */
 $bg: if(global-variable-exists(background), $background, #111111);
 $fg: if(global-variable-exists(foreground), $foreground, #eeeeee);
 $ac: if(global-variable-exists(accent), $accent, #4aa3ff);
@@ -91,4 +91,3 @@ scale slider {
 }
 
 .uptime { margin-top: 6px; font-size: 12px; color: rgba($fg, 0.80); }
-

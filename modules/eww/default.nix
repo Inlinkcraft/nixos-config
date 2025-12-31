@@ -5,6 +5,7 @@ let
   ewwCacheDir = "${config.home.homeDirectory}/.cache/eww";
 
   runtimePkgs = with pkgs; [
+    bash
     eww
     coreutils gawk gnugrep jq curl
     procps lm_sensors
@@ -19,6 +20,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    bash
     eww jq curl
     playerctl pamixer brightnessctl
     acpi lm_sensors networkmanager bluez
@@ -45,7 +47,7 @@ in
 
   systemd.user.services.eww = {
     Unit = {
-      Description = "Eww daemon";
+      Description = "Eww widget daemon";
       After = [ "graphical-session.target" "pywal.service" ];
       Wants = [ "pywal.service" ];
       PartOf = [ "graphical-session.target" ];
@@ -58,7 +60,7 @@ in
       ];
 
       ExecStartPre = [
-        "${ewwConfigDir}/scripts/dashboard wal-gen"
+        "${pkgs.bash}/bin/bash ${ewwConfigDir}/scripts/dashboard wal-gen"
       ];
 
       ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize --config ${ewwConfigDir}";
@@ -71,4 +73,3 @@ in
     };
   };
 }
-

@@ -138,19 +138,19 @@
         (label :text {muted == "true" ? "󰝟" : "󰕾"}))
       (scale :class "slider" :min 0 :max 100 :value vol
         :onchange "${EWW_CONFIG_DIR}/scripts/dashboard volume set {}")
-      (label :class "value" :text {vol + "%"}))
+      (label :class "value" :xalign 1 :text {vol + "%"}))
 
     (box :class "slider-row" :orientation "h" :spacing 10
       (label :class "icon" :text "󰃠")
       (scale :class "slider" :min 0 :max 100 :value bri
         :onchange "${EWW_CONFIG_DIR}/scripts/dashboard brightness set {}")
-      (label :class "value" :text {bri + "%"}))))
+      (label :class "value" :xalign 1 :text {bri + "%"}))))
 
 (defwidget statbar [name val]
   (box :class "stat" :orientation "v" :spacing 6
     (centerbox :orientation "h"
       (label :class "small" :text {name})
-      (label :class "small" :text {val + "%"}))
+      (label :class "small" :xalign 1 :text {val + "%"}))
     (progress :value val)))
 
 (defwidget stats-card []
