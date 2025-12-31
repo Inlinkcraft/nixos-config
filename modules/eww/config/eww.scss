@@ -1,93 +1,146 @@
-* {
-  all: unset;
-  font-family: "FiraCode Nerd Font";
-  font-size: 14px;
-  color: #eeeeee;
+* { all: unset; }
+
+@define-color fg #ffffff;
+@define-color muted rgba(255,255,255,0.65);
+@define-color border rgba(255,255,255,0.16);
+@define-color card rgba(0,0,0,0.55);
+@define-color panel rgba(0,0,0,0.72);
+@define-color scrim rgba(0,0,0,0.55);
+
+/* Highlight (replace later with pywal color4 if you want) */
+@define-color accent #4aa3ff;
+@define-color accent_bg rgba(74,163,255,0.22);
+
+window#dashboard {
+  background-color: transparent;
 }
 
 .screen {
-  background: transparent;
+  background-color: transparent;
 }
 
 .scrim-fill {
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: @scrim;
 }
 
-.stage {
-  padding: 24px;
+.center {
+  /* This makes the panel actually centered and not oversized */
+  padding: 0px;
 }
 
 .panel {
-  background-color: rgba(18, 18, 18, 0.92);
-  border: 2px solid rgba(238, 238, 238, 0.14);
-  border-radius: 22px;
-  padding: 20px;
-
-  width: 1100px;
-  max-width: 94%;
-  max-height: 92%;
+  background-color: @panel;
+  border: 1px solid @border;
+  border-radius: 18px;
+  padding: 26px;
+  /* keep it inside a 1080p monitor */
+  min-width: 1060px;
+  max-width: 1180px;
+  max-height: 820px;
+  /* nudge up a bit so the clock sits like your sketch */
+  margin-top: -40px;
 }
 
 .clock {
-  font-size: 56px;
-  font-weight: 900;
+  color: @fg;
+  font-size: 86px;
+  font-weight: 800;
   letter-spacing: 2px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.content {
+  /* 3 columns */
+}
+
+.col {
+  min-width: 340px;
 }
 
 .card {
-  background-color: rgba(18, 18, 18, 0.78);
-  border: 2px solid rgba(238, 238, 238, 0.14);
-  border-radius: 18px;
-  padding: 14px;
+  background-color: @card;
+  border: 1px solid @border;
+  border-radius: 16px;
+  padding: 16px;
 }
 
 .card-title {
+  color: @fg;
   font-size: 14px;
-  font-weight: 800;
-  color: rgba(238, 238, 238, 0.92);
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 .name {
-  font-size: 17px;
-  font-weight: 900;
+  color: @fg;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .tagline,
-.muted {
+.muted,
+.media-artist,
+.media-status,
+.agenda-text,
+.uptime {
+  color: @muted;
   font-size: 12px;
-  color: rgba(238, 238, 238, 0.65);
 }
 
-.small {
-  font-size: 12px;
-  color: rgba(238, 238, 238, 0.88);
+.avatar, .cover {
+  border-radius: 12px;
+  border: 1px solid @border;
 }
 
-.avatar-fallback {
-  font-size: 40px;
+.row-buttons button {
+  background-color: rgba(255,255,255,0.06);
+  border: 1px solid @border;
+  border-radius: 12px;
   padding: 10px 12px;
-  border-radius: 14px;
-  border: 2px solid rgba(238, 238, 238, 0.14);
-  background-color: rgba(18, 18, 18, 0.30);
+  color: @fg;
 }
 
-.icon-btn,
+.row-buttons button:hover {
+  background-color: rgba(255,255,255,0.10);
+}
+
+.icon-btn.primary {
+  background-color: @accent_bg;
+  border-color: rgba(74,163,255,0.45);
+}
+
 .toggle {
-  background-color: rgba(18, 18, 18, 0.30);
-  border: 2px solid rgba(238, 238, 238, 0.14);
-  border-radius: 14px;
-  padding: 8px 12px;
+  background-color: rgba(255,255,255,0.06);
+  border: 1px solid @border;
+  border-radius: 12px;
+  padding: 12px;
+  color: @fg;
 }
 
-.icon-btn.primary,
 .toggle.on {
-  background-color: rgba(74, 163, 255, 0.22);
-  border-color: rgba(74, 163, 255, 0.85);
+  background-color: @accent_bg;
+  border-color: rgba(74,163,255,0.45);
 }
 
-.value {
-  min-width: 52px;
+.slider-row .value {
+  color: @fg;
   font-size: 12px;
-  color: rgba(238, 238, 238, 0.85);
+  min-width: 42px;
+}
+
+progressbar progress, progress {
+  background-color: rgba(255,255,255,0.10);
+  border-radius: 999px;
+  min-height: 10px;
+}
+
+progressbar trough, trough {
+  background-color: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  min-height: 10px;
+}
+
+.stat .small {
+  color: @muted;
+  font-size: 12px;
 }
