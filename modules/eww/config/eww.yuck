@@ -1,12 +1,12 @@
 ;; -------------------------
-;; POLLS (must be plain strings)
+;; POLLS (plain strings only)
 ;; -------------------------
 
-(defpoll clock      :interval "1s"  :initial "00:00" "date +%H:%M")
-(defpoll date_line  :interval "60s" :initial ""      "date '+%a %d %b %Y'")
-(defpoll day        :interval "60s" :initial "1"     "date +%d")
-(defpoll month      :interval "3600s" :initial "1"   "date +%m")
-(defpoll year       :interval "3600s" :initial "1970" "date +%Y")
+(defpoll clock      :interval "1s"    :initial "00:00"  "date +%H:%M")
+(defpoll date_line  :interval "60s"   :initial ""       "date '+%a %d %b %Y'")
+(defpoll day        :interval "60s"   :initial "1"      "date +%d")
+(defpoll month      :interval "3600s" :initial "1"      "date +%m")
+(defpoll year       :interval "3600s" :initial "1970"   "date +%Y")
 
 (defpoll cpu     :interval "1s"  :initial "0" "$HOME/.config/eww/scripts/dashboard cpu")
 (defpoll mem     :interval "1s"  :initial "0" "$HOME/.config/eww/scripts/dashboard mem")
@@ -26,7 +26,9 @@
 (defpoll p_status :interval "1s" :initial "Stopped" "$HOME/.config/eww/scripts/dashboard player status")
 (defpoll p_title  :interval "1s" :initial "No media" "$HOME/.config/eww/scripts/dashboard player title")
 (defpoll p_artist :interval "1s" :initial ""        "$HOME/.config/eww/scripts/dashboard player artist")
-(defpoll p_art    :interval "2s" :initial "${EWW_CONFIG_DIR}/assets/cover.svg"
+
+;; IMPORTANT: initial must be a plain string, no variables
+(defpoll p_art :interval "2s" :initial "$HOME/.config/eww/assets/cover.svg"
   "$HOME/.config/eww/scripts/dashboard player art $HOME/.config/eww/assets/cover.svg")
 
 (defpoll agenda :interval "60s" :initial "No events" "$HOME/.config/eww/scripts/dashboard agenda")
@@ -44,25 +46,20 @@
   (dashboard))
 
 ;; -------------------------
-;; UI
+;; WIDGETS
 ;; -------------------------
 
 (defwidget dashboard []
   (overlay :class "screen" :hexpand true :vexpand true
-
-    ;; Scrim (click anywhere outside panel to close)
     (eventbox :class "scrim" :hexpand true :vexpand true
       :onclick "eww close dashboard"
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
-    ;; Center container so panel doesn't overflow screen
     (box :class "center" :hexpand true :vexpand true
       (box :class "panel" :orientation "v" :spacing 18
-
         (label :class "clock" :text {clock})
 
         (box :class "content" :orientation "h" :spacing 18
-
           (box :class "col" :orientation "v" :spacing 18
             (profile-card)
             (media-card))
@@ -93,9 +90,7 @@
   (box :class "card" :orientation "v" :spacing 10
     (label :class "card-title" :text "Media")
     (box :orientation "h" :spacing 12
-      (image :class "cover"
-        :path {p_art}
-        :image-width 92 :image-height 92)
+      (image :class "cover" :path {p_art} :image-width 92 :image-height 92)
       (box :orientation "v" :spacing 4 :hexpand true
         (label :class "media-title" :text {p_title})
         (label :class "media-artist" :text {p_artist})
