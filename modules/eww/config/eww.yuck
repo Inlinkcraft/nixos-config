@@ -22,6 +22,7 @@
 (defpoll p_status :interval "1s" :initial "Stopped" `${EWW_CONFIG_DIR}/scripts/dashboard player status`)
 (defpoll p_title  :interval "1s" :initial "No media" `${EWW_CONFIG_DIR}/scripts/dashboard player title`)
 (defpoll p_artist :interval "1s" :initial ""        `${EWW_CONFIG_DIR}/scripts/dashboard player artist`)
+;; p_art always returns a real path (fallback cover.svg if no art)
 (defpoll p_art    :interval "2s" :initial ""        `${EWW_CONFIG_DIR}/scripts/dashboard player art ${EWW_CONFIG_DIR}/assets/cover.svg`)
 
 (defpoll agenda :interval "60s" :initial "No events" `${EWW_CONFIG_DIR}/scripts/dashboard agenda`)
