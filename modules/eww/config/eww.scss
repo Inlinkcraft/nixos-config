@@ -109,3 +109,9 @@ trough {
 }
 
 .stat .small { color: rgba(255,255,255,0.65); font-size: 12px; }
+
+/* --- debug overrides to remove surprise spacing --- */
+.center, .panel, .content {
+  margin: 0;
+  padding: 0;
+}
