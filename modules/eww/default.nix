@@ -2,7 +2,6 @@
 
 let
   ewwConfigDir = "%h/.config/eww";
-  ewwCacheDir = "${config.home.homeDirectory}/.cache/eww";
 
   runtimePkgs = with pkgs; [
     bash
@@ -36,25 +35,16 @@ in
   systemd.user.services.eww = {
     Unit = {
       Description = "Eww widget daemon";
-      After = [ "graphical-session.target" "pywal.service" ];
-      Wants = [ "pywal.service" ];
+      After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
     };
 
     Service = {
       Type = "simple";
-
-      # Make scripts callable as `dashboard ...`
       Environment = [
         "PATH=${runtimePath}:%h/.config/eww/scripts"
         "EWW_CONFIG_DIR=%h/.config/eww"
       ];
-
-      ExecStartPre = [
-        # Generates ~/.cache/eww/wal.scss (safe even if you don't import it yet)
-        "dashboard wal-gen"
-      ];
-
       ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize --config ${ewwConfigDir}";
       Restart = "on-failure";
       RestartSec = "1s";

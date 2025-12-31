@@ -82,16 +82,14 @@ player_title()  { playerctl metadata title 2>/dev/null || echo "No media"; }
 player_artist() { playerctl metadata artist 2>/dev/null || echo ""; }
 
 player_art() {
-  # IMPORTANT: always return a real path
-  local fallback="${1:-$CONFIG_DIR/assets/cover.svg}"
-
+  local fallback="${CONFIG_DIR}/assets/cover.svg"
   url="$(playerctl metadata mpris:artUrl 2>/dev/null || true)"
   [[ -z "${url:-}" ]] && { echo "$fallback"; return; }
 
   out="$CACHE_DIR/art"
   urlfile="$CACHE_DIR/art_url"
-
   prev="$(cat "$urlfile" 2>/dev/null || true)"
+
   if [[ "$prev" == "$url" && -f "$out" ]]; then
     echo "$out"
     return
@@ -117,29 +115,7 @@ agenda_get() {
   fi
 }
 
-wal_gen() {
-  waljson="${XDG_CACHE_HOME:-$HOME/.cache}/wal/colors.json"
-  out="$CACHE_DIR/wal.scss"
-  if [[ -f "$waljson" ]] && command -v jq >/dev/null 2>&1; then
-    bg="$(jq -r '.special.background // "#111111"' "$waljson")"
-    fg="$(jq -r '.special.foreground // "#eeeeee"' "$waljson")"
-    ac="$(jq -r '.colors.color4 // "#4aa3ff"' "$waljson")"
-    {
-      echo "\$background: $bg;"
-      echo "\$foreground: $fg;"
-      echo "\$accent: $ac;"
-    } > "$out"
-  else
-    cat > "$out" <<'EOF'
-$background: #111111;
-$foreground: #eeeeee;
-$accent: #4aa3ff;
-EOF
-  fi
-}
-
 case "${1:-}" in
-  wal-gen) wal_gen ;;
   cpu) cpu_usage ;;
   mem) mem_usage ;;
   disk) clamp_0_100 "$(disk_usage)" ;;
@@ -158,7 +134,7 @@ case "${1:-}" in
       status) player_status ;;
       title) player_title ;;
       artist) player_artist ;;
-      art) player_art "${3:-}" ;;
+      art) player_art ;;
       playpause) playerctl play-pause 2>/dev/null || true ;;
       next) playerctl next 2>/dev/null || true ;;
       prev) playerctl previous 2>/dev/null || true ;;

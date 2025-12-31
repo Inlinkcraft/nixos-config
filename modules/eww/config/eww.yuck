@@ -26,7 +26,7 @@
 (defpoll p_status :interval "1s" :initial "Stopped" "dashboard player status")
 (defpoll p_title  :interval "1s" :initial "No media" "dashboard player title")
 (defpoll p_artist :interval "1s" :initial ""        "dashboard player artist")
-(defpoll p_art    :interval "2s" :initial ""        "dashboard player art")
+(defpoll p_art    :interval "2s" :initial "assets/cover.svg" "dashboard player art")
 
 (defpoll agenda :interval "60s" :initial "No events" "dashboard agenda")
 
@@ -43,7 +43,7 @@
   (dashboard))
 
 ;; -------------------------
-;; WIDGETS
+;; MAIN WIDGET
 ;; -------------------------
 
 (defwidget dashboard []
@@ -52,22 +52,25 @@
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
     (eventbox
-      (box :class "panel" :orientation "v" :spacing 18 :halign "center" :valign "center"
+      (box :class "panel" :orientation "v" :spacing 18
         (label :class "clock" :text {clock})
 
-        (scroll :vscroll true :hscroll false :hexpand true :vexpand true
-          (box :class "content" :orientation "h" :spacing 18
-            (box :class "col" :orientation "v" :spacing 18
-              (profile-card)
-              (media-card))
+        (box :class "content" :orientation "h" :spacing 18
+          (box :class "col" :orientation "v" :spacing 18
+            (profile-card)
+            (media-card))
 
-            (box :class "col" :orientation "v" :spacing 18
-              (calendar-card)
-              (actions-card))
+          (box :class "col" :orientation "v" :spacing 18
+            (calendar-card)
+            (actions-card))
 
-            (box :class "col" :orientation "v" :spacing 18
-              (controls-card)
-              (stats-card))))))))
+          (box :class "col" :orientation "v" :spacing 18
+            (controls-card)
+            (stats-card)))))))
+
+;; -------------------------
+;; CARDS
+;; -------------------------
 
 (defwidget profile-card []
   (box :class "card" :orientation "v" :spacing 12
