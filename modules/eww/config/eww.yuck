@@ -55,9 +55,8 @@
       :onclick "eww close dashboard"
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
-    (box :class "center"
-      :hexpand true :vexpand true
-      :halign "center" :valign "center"
+    (box :class "center" :orientation "v" :hexpand true :vexpand true
+      (box :vexpand true)
       (box :class "panel" :orientation "v" :spacing 18
         (label :class "clock" :text {clock})
 
@@ -72,7 +71,9 @@
 
           (box :class "col" :orientation "v" :spacing 18
             (controls-card)
-            (stats-card)))))))
+            (stats-card))))
+      (box :vexpand true))))
+
 
 (defwidget profile-card []
   (box :class "card" :orientation "v" :spacing 12
