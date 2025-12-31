@@ -101,22 +101,5 @@
         "SUPER_SHIFT,9,exec,$HOME/Configuration/scripts/hypr-keybinds.sh move 9"
       ];
     };
-
-    # RAW Hyprland lines (this avoids the “missing a value” popup)
-    extraConfig = ''
-      # Layer rules
-      layerrule = blur, waybar
-      # (ignorezero has been a frequent source of parser breakage on some builds; add it back later if you want)
-      # layerrule = ignorezero, waybar
-
-      layerrule = blur, eww
-      # layerrule = ignorezero, eww
-
-      # Window rules (use v2 only; v1 + suppressevent is what caused "type_suppressevent")
-      windowrulev2 = suppressevent maximize, class:.*
-      windowrulev2 = float, class:^(eww)$
-      windowrulev2 = nofocus, class:^(eww)$
-      windowrulev2 = noborder, class:^(eww)$
-    '';
   };
 }
