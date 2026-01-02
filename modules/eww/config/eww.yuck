@@ -55,7 +55,7 @@
       :onclick "eww close dashboard"
       (box :class "scrim-fill" :hexpand true :vexpand true))
 
-    (box :class "center" :orientation "v" :hexpand true :vexpand true
+    (centerbox :class "center" :orientation "v" :hexpand true :vexpand true
       (box :vexpand true)
       (box :class "panel" :orientation "v" :spacing 18
         (label :class "clock" :text {clock})
