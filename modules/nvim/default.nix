@@ -16,6 +16,7 @@
 	nvim-treesitter-parsers.markdown
 	nvim-treesitter-parsers.markdown_inline
 	nvim-treesitter-parsers.cmake
+    nvim-treesitter-parsers.eww
     ];
     extraLuaConfig = with pkgs.vimPlugins; 
     "
