@@ -12,4 +12,14 @@
     :focusable "ondemand"
     "Test")
 
-
+(defwidget greeter [?text name]
+    (box 
+        :orientation "horizontal"
+        :halign "center"
+        text
+        (button 
+            :onclick "notify-send 'Hello' 'Hello, ${name}'"
+            "Greet"
+        )
+    )
+)
