@@ -20,7 +20,6 @@
         (box
             :orientation "hotizontal"
             :halign "center"
-            :valign "bottom"
             "03"
             "|"
             "51"
@@ -28,7 +27,6 @@
         (box
             :orientation "horizontal"
             :halign "center"
-            :valign "top"
             (col1)
             (col2)
             (col3)
@@ -37,13 +35,25 @@
 )
 
 (defwidget col1 []
-    "Collonne 1"
+    (box
+        :orientation "vertical"
+        :valign "top"
+        "Collonne 1"
+    )
 )
 
 (defwidget col2 []
-    "Collonne 2"
+    (box
+        :orientation "vertical"
+        :valign "top"
+        "Collonne 2"
+    )
 )
 
 (defwidget col3 []
-    "Collonne 3"
+    (box
+        :orientation "vertical"
+        :valign "top"
+        "Collonne 3"
+    )
 )
