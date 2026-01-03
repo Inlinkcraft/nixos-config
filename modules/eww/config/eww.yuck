@@ -10,20 +10,38 @@
     :stacking "overlay"
     :exclusive false
     :focusable "ondemand"
-    (greeter 
-        :text "Say hello!"
-        :name "Tony"
+    (compositor)
+)
+
+(defwidget compositor
+    (box 
+        :orientation "vertical"
+        :halign "center"
+        (box
+            :orientation "hotizontal"
+            :halign "center"
+            "03"
+            "|"
+            "51"
+        )
+        (box
+            :orientation "horizontal"
+            :halign "center"
+            (col1)
+            (col2)
+            (col3)
+        )
     )
 )
 
-(defwidget greeter [?text name]
-    (box 
-        :orientation "horizontal"
-        :halign "center"
-        text
-        (button 
-            :onclick "notify-send 'Hello' 'Hello, ${name}'"
-            "Greet"
-        )
-    )
+(defwidget col1
+    "Collonne 1"
+)
+
+(defwidget col2
+    "Collonne 2"
+)
+
+(defwidget col3
+    "Collonne 3"
 )
