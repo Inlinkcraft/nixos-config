@@ -37,23 +37,26 @@
 (defwidget col1 []
     (box
         :orientation "vertical"
-        :valign "top"
         "Collonne 1"
+        "Étape 1"
+        "Étape 2"
     )
 )
 
 (defwidget col2 []
     (box
         :orientation "vertical"
-        :valign "top"
         "Collonne 2"
+        "Étape 1"
+        "Étape 2"
     )
 )
 
 (defwidget col3 []
     (box
         :orientation "vertical"
-        :valign "top"
         "Collonne 3"
+        "Étape 1"
+        "Étape 2"
     )
 )
