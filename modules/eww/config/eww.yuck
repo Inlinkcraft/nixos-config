@@ -10,7 +10,11 @@
     :stacking "overlay"
     :exclusive false
     :focusable "ondemand"
-    "Test")
+    (greeter 
+        :text "Say hello!"
+        :name "Tony"
+    )
+)
 
 (defwidget greeter [?text name]
     (box 
