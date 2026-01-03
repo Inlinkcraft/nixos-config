@@ -6,9 +6,3 @@
   :focusable "ondemand"
   (dashboard))
 
-(defwidget dashboard []
-  (overlay :class "screen" :hexpand true :vexpand true
-    (eventbox :class "scrim" :hexpand true :vexpand true
-      :onclick "eww close dashboard"
-      (box :class "scrim-fill" :hexpand true :vexpand true))
-
