@@ -13,7 +13,7 @@
     (compositor)
 )
 
-(defwidget compositor
+(defwidget compositor []
     (box 
         :orientation "vertical"
         :halign "center"
@@ -34,14 +34,14 @@
     )
 )
 
-(defwidget col1
+(defwidget col1 []
     "Collonne 1"
 )
 
-(defwidget col2
+(defwidget col2 []
     "Collonne 2"
 )
 
-(defwidget col3
+(defwidget col3 []
     "Collonne 3"
 )
