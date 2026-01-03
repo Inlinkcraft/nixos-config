@@ -20,6 +20,7 @@
         (box
             :orientation "hotizontal"
             :halign "center"
+            :valign "bottom"
             "03"
             "|"
             "51"
@@ -27,6 +28,7 @@
         (box
             :orientation "horizontal"
             :halign "center"
+            :valign "top"
             (col1)
             (col2)
             (col3)
