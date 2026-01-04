@@ -1,7 +1,4 @@
-(defvar width 1920)
-(defvar height 1080)
-
-(defwindow clock
+(defwindow clock [width height]
     :monitor 0
     :geometry (geometry 
         :x "0px" 
