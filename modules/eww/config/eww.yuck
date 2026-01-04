@@ -2,7 +2,7 @@
     :monitor 0
     :geometry (geometry 
         :x "0%" 
-        :y "25%" 
+        :y "75%" 
         :width "25%" 
         :height "25%" 
         :anchor "center"
