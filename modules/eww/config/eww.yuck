@@ -18,3 +18,41 @@
     )
 )
 
+(defwindow profile [width height spacing]
+    :monitor 0
+    :geometry (geometry 
+        :x "${(0.335 * width) - spacing}px" 
+        :y "${(0.5 * height) + spacing}px" 
+        :width "${(0.2 * width) - (spacing / 2)}px" 
+        :height "${(0.25 * height) - (spacing / 2)}px" 
+        :anchor "top left"
+    )
+    :stacking "overlay"
+    :exclusive false
+    :focusable "ondemand"
+    (box
+        :orientation "v"
+        (box
+            :orientation "h"
+            "image"
+            (box
+                :orientation "v"
+                "inlinkcraft"
+                "________________________"
+                "Programmer"
+            )
+        )
+        (box
+            :orientation "h"
+            (button
+                "youtube"
+            )
+            (button
+                "reddit"
+            )
+            (button
+                "ChatGPT"
+            )
+        )
+    )
+)
