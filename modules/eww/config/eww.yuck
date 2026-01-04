@@ -67,3 +67,21 @@
         "Étape 2"
     )
 )
+
+(defwidget block-calendar
+    (box
+        :orientation "vertical"
+        "4 jan 2026"
+        "--------------------------"
+        (calendar
+            :day 4.0
+            :month 1.0
+            :year 2026.0
+            :show-details false
+            :show-heading false
+            :show-day-name true
+            :show-week-number true
+        )
+    )
+
+)
