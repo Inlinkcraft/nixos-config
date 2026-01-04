@@ -2,9 +2,9 @@
     :monitor 0
     :geometry (geometry 
         :x "${(0.2 * width) - spacing}px" 
-        :y "${(0.25 * height) - spacing}px" 
+        :y "${(0.1 * height) - spacing}px" 
         :width "${(0.6 * width) - (spacing / 2)}px" 
-        :height "${(0.25 * height) - (spacing / 2)}px" 
+        :height "${(0.2 * height) - (spacing / 2)}px" 
         :anchor "top left"
     )
     :stacking "overlay"
@@ -22,9 +22,9 @@
     :monitor 0
     :geometry (geometry 
         :x "${(0.2 * width) - spacing}px" 
-        :y "${(0.5 * height) + spacing}px" 
+        :y "${(0.3 * height) + spacing}px" 
         :width "${(0.2 * width) - (spacing / 2)}px" 
-        :height "${(0.25 * height) - (spacing / 2)}px" 
+        :height "${(0.2 * height) - (spacing / 2)}px" 
         :anchor "top left"
     )
     :stacking "overlay"
@@ -53,6 +53,34 @@
             (button
                 "ChatGPT"
             )
+        )
+    )
+)
+
+(defwindow calendar [width height spacing]
+    :monitor 0
+    :geometry (geometry 
+        :x "${(0.4 * width) + spacing}px" 
+        :y "${(0.3 * height) + spacing}px" 
+        :width "${(0.2 * width) - (spacing / 2)}px" 
+        :height "${(0.5 * height) - (spacing / 2)}px" 
+        :anchor "top left"
+    )
+    :stacking "overlay"
+    :exclusive false
+    :focusable "ondemand"
+    (box
+        :orientation "v"
+        "25 oct. 2025"
+        "--------"
+        (calendar
+            :day 25
+            :month 01
+            :year 2026
+            :show-details false
+            :show-heading false
+            :show-day-name true
+            :show-week-numbers true
         )
     )
 )
