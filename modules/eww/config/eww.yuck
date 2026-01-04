@@ -53,9 +53,7 @@
 (defwidget col2 []
     (box
         :orientation "vertical"
-        "Collonne 2"
-        "Étape 1"
-        "Étape 2"
+        (block-calendar)
     )
 )
 
@@ -68,7 +66,7 @@
     )
 )
 
-(defwidget block-calendar
+(defwidget block-calendar []
     (box
         :orientation "vertical"
         "4 jan 2026"
