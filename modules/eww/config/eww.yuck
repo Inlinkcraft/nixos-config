@@ -1,10 +1,10 @@
 (defwindow clock [width height]
     :monitor 0
     :geometry (geometry 
-        :x "0px" 
-        :y "${height * 0.5}px" 
-        :width "${width * 0.25}px" 
-        :height "${height * 0.25}px" 
+        :x "500px" 
+        :y "500px" 
+        :width "500px" 
+        :height "$500px" 
         :anchor "center"
     )
     :stacking "overlay"
