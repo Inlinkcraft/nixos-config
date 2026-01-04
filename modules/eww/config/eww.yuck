@@ -18,11 +18,18 @@
         :orientation "vertical"
         :halign "center"
         (box
-            :orientation "hotizontal"
-            :halign "center"
-            "03"
-            "|"
-            "51"
+            :orientation "vertical"
+            :valign "bottom"
+            (box
+                :vfill true
+            )
+            (box
+                :orientation "hotizontal"
+                :halign "center"
+                "03"
+                "|"
+                "51"
+            )
         )
         (box
             :orientation "horizontal"
