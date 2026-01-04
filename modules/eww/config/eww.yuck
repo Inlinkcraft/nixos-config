@@ -1,5 +1,5 @@
-(defvar width "1920")
-(defvar height "1080")
+(defvar width 1920)
+(defvar height 1080)
 
 (defwindow clock
     :monitor 0
