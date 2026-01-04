@@ -1,85 +1,20 @@
-(defwindow dashboard
+(defwindow clock
     :monitor 0
     :geometry (geometry 
         :x "0%" 
-        :y "0%" 
-        :width "100%" 
-        :height "100%" 
-        :anchor "top left"
+        :y "25%" 
+        :width "25%" 
+        :height "25%" 
+        :anchor "center"
     )
     :stacking "overlay"
     :exclusive false
     :focusable "ondemand"
-    (compositor)
-)
-
-(defwidget compositor []
-    (box 
-        :orientation "vertical"
-        :halign "center"
-        (box
-            :orientation "vertical"
-            :valign "bottom"
-            (box
-                :vfill true
-            )
-            (box
-                :orientation "hotizontal"
-                :halign "center"
-                "03"
-                "|"
-                "51"
-            )
-        )
-        (box
-            :orientation "horizontal"
-            :halign "center"
-            (col1)
-            (col2)
-            (col3)
-        )
-    )
-)
-
-(defwidget col1 []
     (box
-        :orientation "vertical"
-        "Collonne 1"
-        "Étape 1"
-        "Étape 2"
+        :orientation "h"
+        "03"
+        "|"
+        "51"
     )
 )
 
-(defwidget col2 []
-    (box
-        :orientation "vertical"
-        (block-calendar)
-    )
-)
-
-(defwidget col3 []
-    (box
-        :orientation "vertical"
-        "Collonne 3"
-        "Étape 1"
-        "Étape 2"
-    )
-)
-
-(defwidget block-calendar []
-    (box
-        :orientation "vertical"
-        "4 jan 2026"
-        "--------------------------"
-        (calendar
-            :day 4.0
-            :month 1.0
-            :year 2026.0
-            :show-details false
-            :show-heading false
-            :show-day-name true
-            :show-week-number true
-        )
-    )
-
-)
