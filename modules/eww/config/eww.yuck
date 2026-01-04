@@ -1,7 +1,7 @@
 (defwindow clock [width height]
     :monitor 0
     :geometry (geometry 
-        :x "${0.17 * width}px" 
+        :x "${0.335 * width}px" 
         :y "${0.25 * height}px" 
         :width "${0.33 * width}px" 
         :height "${0.25 * height}px" 
