@@ -1,9 +1,9 @@
 (defwindow clock [width height spacing]
     :monitor 0
     :geometry (geometry 
-        :x "${(0.335 * width) - spacing}px" 
+        :x "${(0.2 * width) - spacing}px" 
         :y "${(0.25 * height) - spacing}px" 
-        :width "${(0.33 * width) - (spacing / 2)}px" 
+        :width "${(0.6 * width) - (spacing / 2)}px" 
         :height "${(0.25 * height) - (spacing / 2)}px" 
         :anchor "top left"
     )
@@ -21,7 +21,7 @@
 (defwindow profile [width height spacing]
     :monitor 0
     :geometry (geometry 
-        :x "${(0.335 * width) - spacing}px" 
+        :x "${(0.2 * width) - spacing}px" 
         :y "${(0.5 * height) + spacing}px" 
         :width "${(0.2 * width) - (spacing / 2)}px" 
         :height "${(0.25 * height) - (spacing / 2)}px" 
