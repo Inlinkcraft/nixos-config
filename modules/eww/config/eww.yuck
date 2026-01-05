@@ -152,7 +152,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "bash -lc 'swaylock'"
+        :onclick "bash -lc 'eww close-all; swaylock -f'"
         "lock"
     )
 )
