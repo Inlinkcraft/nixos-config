@@ -1,4 +1,5 @@
 {
+  programs.wofi.enable = true;
   home.file.".config/wofi/config".text = ''
     show=dmenu
     prompt=Select theme
