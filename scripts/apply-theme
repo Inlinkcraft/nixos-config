@@ -33,6 +33,9 @@ fi
 echo "Applying theme: $THEME"
 echo "Wallpaper: $IMAGE"
 
+# Save current wallpaper path for other scripts (lockscreen, etc.)
+ln -sf "$IMAGE" "$HOME/.cache/current_wallpaper"
+
 ########################################
 # 1️⃣ Generate pywal colors (ONLY PLACE)
 ########################################

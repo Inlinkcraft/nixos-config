@@ -88,4 +88,11 @@ in
       WantedBy = [ "graphical-session.target" ];
     };
   };
+
+  home.file.".config/eww/scripts/lock" = {
+    source = ./config/scripts/lock;
+    executable = true;
+    force = true;
+  };
+  
 }

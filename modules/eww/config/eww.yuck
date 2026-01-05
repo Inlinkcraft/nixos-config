@@ -334,5 +334,5 @@
   :stacking "overlay"
   :exclusive false
   :focusable "ondemand"
-  (button :class "card small-btn" :onclick "bash -lc 'swaylock -f'" "lock")
+  (button :class "card small-btn" :onclick "~/.config/eww/scripts/lock" "lock")
 )
