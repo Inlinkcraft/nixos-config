@@ -81,7 +81,7 @@
         # Theme switcher
         "SUPER_SHIFT,T,exec,$HOME/Configuration/scripts/theme-switcher"
 
-        # Workspaces (scripted)
+        # Go to workspaces
         "SUPER,1,exec,hyprctl dispatch workspace 1"
         "SUPER,2,exec,hyprctl dispatch workspace 2"
         "SUPER,3,exec,hyprctl dispatch workspace 3"
@@ -91,9 +91,21 @@
         "SUPER,7,exec,hyprctl dispatch workspace 7"
         "SUPER,8,exec,hyprctl dispatch workspace 8"
         "SUPER,9,exec,hyprctl dispatch workspace 9"
-        "SUPER_CTRL,9,exec,hyprctl dispatch workspace name:music"
+        "SUPER_ALT,9,exec,hyprctl dispatch workspace name:music"
 
-        # Move window to workspace
+        # Workspaces to current active monitor
+        "SUPER_CTRL,1,exec,hyprctl dispatch workspaceoncurrent 1"
+        "SUPER_CTRL,2,exec,hyprctl dispatch workspaceoncurrent 2"
+        "SUPER_CTRL,3,exec,hyprctl dispatch workspaceoncurrent 3"
+        "SUPER_CTRL,4,exec,hyprctl dispatch workspaceoncurrent 4"
+        "SUPER_CTRL,5,exec,hyprctl dispatch workspaceoncurrent 5"
+        "SUPER_CTRL,6,exec,hyprctl dispatch workspaceoncurrent 6"
+        "SUPER_CTRL,7,exec,hyprctl dispatch workspaceoncurrent 7"
+        "SUPER_CTRL,8,exec,hyprctl dispatch workspaceoncurrent 8"
+        "SUPER_CTRL,9,exec,hyprctl dispatch workspaceoncurrent 9"
+        "SUPER_CTRL_ALT,9,exec,hyprctl dispatch workspaceoncurrent name:music"
+        
+        # Move app to workspace
         "SUPER_SHIFT,1,exec,hyprctl dispatch movetoworkspace 1"
         "SUPER_SHIFT,2,exec,hyprctl dispatch movetoworkspace 2"
         "SUPER_SHIFT,3,exec,hyprctl dispatch movetoworkspace 3"
