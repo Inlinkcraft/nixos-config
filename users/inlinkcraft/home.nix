@@ -40,7 +40,6 @@
     cliphist
     swaylock-effects
     swayidle
-    hyproled
 
     # CLI / tools
     tmux
