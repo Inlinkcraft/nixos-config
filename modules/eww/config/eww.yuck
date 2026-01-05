@@ -47,7 +47,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (box :class "card clock" :orientation "h" :space-evenly true
     (label :class "clock-h" :text {time_h})
     (label :class "clock-sep" :text "|")
@@ -70,7 +70,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (box :class "card profile" :orientation "v" :spacing 10
     (box :orientation "h" :spacing 12
       (image :class "avatar" :path "~/.config/eww/assets/avatar.svg")
@@ -110,7 +110,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (box :class "card media" :orientation "v" :spacing 10
     (box :orientation "v" :spacing 2
       (label :class "media-title"  :xalign 0 :wrap false :text {p_title}  :limit-width 35 :show-truncated true)
@@ -144,7 +144,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (box :class "card calendar" :orientation "v" :spacing 10
     (label :class "date" :text {date_str})
 
@@ -180,7 +180,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (box :class "card quick" :orientation "v" :spacing 10
 
     (box :class "toggles" :orientation "h" :spacing 10
@@ -236,7 +236,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (box :class "card stats" :orientation "v" :spacing 10
 
     (box :class "stat-row" :orientation "h" :spacing 10
@@ -288,7 +288,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (button :class "card small-btn" :onclick "bash -lc 'systemctl poweroff'" "power")
 )
 
@@ -303,7 +303,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (button :class "card small-btn" :onclick "bash -lc 'systemctl reboot'" "restart")
 )
 
@@ -318,7 +318,7 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (button :class "card small-btn" :onclick "bash -lc 'hyprctl dispatch exit'" "logout")
 )
 
@@ -333,6 +333,6 @@
   )
   :stacking "overlay"
   :exclusive false
-  :focusable "ondemand"
+  :focusable "none"
   (button :class "card small-btn" :onclick "~/.config/eww/scripts/lock" "lock")
 )
