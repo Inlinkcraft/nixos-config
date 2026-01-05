@@ -99,20 +99,18 @@
   services.swayidle = {
     enable = true;
 
-    # Lock after X seconds idle
     timeouts = [
       {
-        timeout = 300; # 5 minutes (change this)
+        timeout = 300;
         command = "${config.home.homeDirectory}/.config/eww/scripts/lock";
       }
     ];
 
-    # Also lock right before suspend/sleep
-    events = [
-      {
-        event = "before-sleep";
-        command = "${config.home.homeDirectory}/.config/eww/scripts/lock";
-      }
-    ];
+    events = {
+      before-sleep = "${config.home.homeDirectory}/.config/eww/scripts/lock";
+      # optional extras:
+      # lock = "${config.home.homeDirectory}/.config/eww/scripts/lock";
+      # after-resume = "hyprctl dispatch dpms on";
+    };
   };
 }
