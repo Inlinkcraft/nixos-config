@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Close the overlay so it doesn't sit above/steal focus from lock
+command -v eww >/dev/null 2>&1 && eww close-all || true
+
+# Load pywal colors if available
+WAL="$HOME/.cache/wal/colors.sh"
+if [[ -f "$WAL" ]]; then
+  # shellcheck disable=SC1090
+  source "$WAL"
+fi
+
+# Fallbacks if pywal isn't ready for some reason
+: "${color0:=#000000}"
+: "${color1:=#ff5555}"
+: "${color2:=#50fa7b}"
+: "${color4:=#bd93f9}"
+: "${foreground:=#ffffff}"
+: "${background:=#000000}"
+
+# swaylock usually wants hex WITHOUT '#'
+strip() { echo "${1#\#}"; }
+
+FG="$(strip "$foreground")"
+BG="$(strip "$background")"
+ACCENT="$(strip "$color4")"
+WARN="$(strip "$color1")"
+
+# Alpha helper (rrggbb + aa)
+a() { echo "${1}${2}"; } # e.g. a "$BG" "cc" -> rrggbbcc
+
+# Choose background mode:
+# - If you want "current wallpaper blurred" use --image ~/.cache/current_wallpaper
+# - If you want "current screen blurred" use --screenshots
+BG_ARGS=("--screenshots")
+if [[ -e "$HOME/.cache/current_wallpaper" ]]; then
+  # Uncomment this block to blur wallpaper only instead of screenshot:
+  # BG_ARGS=(--image "$HOME/.cache/current_wallpaper")
+  :
+fi
+
+exec swaylock -f \
+  "${BG_ARGS[@]}" \
+  --effect-blur 8x6 \
+  --effect-vignette 0.25:0.25 \
+  --fade-in 0.2 \
+  --clock \
+  --indicator \
+  --timestr "%H:%M" \
+  --datestr "%a %d %b" \
+  --font "FiraCode Nerd Font" \
+  --text-color "$FG" \
+  --inside-color "$(a "$BG" "88")" \
+  --ring-color "$(a "$ACCENT" "cc")" \
+  --line-color "00000000" \
+  --separator-color "00000000" \
+  --key-hl-color "$(a "$ACCENT" "ff")" \
+  --bs-hl-color "$(a "$WARN" "ff")" \
+  --inside-ver-color "$(a "$ACCENT" "66")" \
+  --ring-ver-color "$(a "$ACCENT" "ff")" \
+  --inside-wrong-color "$(a "$WARN" "66")" \
+  --ring-wrong-color "$(a "$WARN" "ff")"
