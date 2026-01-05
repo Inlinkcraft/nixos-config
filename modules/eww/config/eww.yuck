@@ -98,7 +98,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "systemctl poweroff"
+        :onclick "bash -lc 'systemctl poweroff'"
         "power"
     )
 )
@@ -116,7 +116,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "systemctl reboot"
+        :onclick "bash -lc 'systemctl reboot'"
         "restart"
     )
 )
@@ -134,7 +134,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "systemctl suspend"
+        :onclick "bash -lc 'systemctl suspend'"
         "sleep"
     )
 )
@@ -152,7 +152,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "hyprctl dispatch exit"
+        :onclick "bash -lc 'hyprctl dispatch exit'"
         "logout"
     )
 )
