@@ -103,7 +103,7 @@
   :monitor 0
   :geometry (geometry
     :x "${(0.2 * width) - spacing}px"
-    :y "${(0.5 * height) + (spacing * 2)}px"
+    :y "${(0.5 * height) + (spacing * 3)}px"
     :width "${(0.2 * width) - (spacing / 2)}px"
     :height "${(0.2 * height) - (spacing / 2)}px"
     :anchor "top left"
