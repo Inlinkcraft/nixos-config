@@ -85,7 +85,7 @@
     )
 )
 
-(defwindow login [width height spacing]
+(defwindow power [width height spacing]
     :monitor 0
     :geometry (geometry 
         :x "${(0.4 * width) + spacing}px" 
@@ -98,6 +98,61 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        "login"
+        :onclick "systemctl poweroff"
+        "power"
+    )
+)
+
+(defwindow restart [width height spacing]
+    :monitor 0
+    :geometry (geometry 
+        :x "${(0.45 * width) + spacing}px" 
+        :y "${(0.75 * height) + spacing}px" 
+        :width "${(0.05 * width) - (spacing / 2)}px" 
+        :height "${(0.05 * height) - (spacing / 2)}px" 
+        :anchor "top left"
+    )
+    :stacking "overlay"
+    :exclusive false
+    :focusable "ondemand"
+    (button
+        onclick: "systemctl reboot"
+        "restart"
+    )
+)
+
+(defwindow sleep [width height spacing]
+    :monitor 0
+    :geometry (geometry 
+        :x "${(0.5 * width) + spacing}px" 
+        :y "${(0.75 * height) + spacing*2}px" 
+        :width "${(0.05 * width) - (spacing / 2)}px" 
+        :height "${(0.05 * height) - (spacing / 2)}px" 
+        :anchor "top left"
+    )
+    :stacking "overlay"
+    :exclusive false
+    :focusable "ondemand"
+    (button
+        :onclick "systemctl suspend"
+        "sleep"
+    )
+)
+
+(defwindow logout [width height spacing]
+    :monitor 0
+    :geometry (geometry 
+        :x "${(0.55 * width) + spacing}px" 
+        :y "${(0.75 * height) + spacing*2}px" 
+        :width "${(0.05 * width) - (spacing / 2)}px" 
+        :height "${(0.05 * height) - (spacing / 2)}px" 
+        :anchor "top left"
+    )
+    :stacking "overlay"
+    :exclusive false
+    :focusable "ondemand"
+    (button
+        :onclick "hyprctl dispatch exit"
+        "logout"
     )
 )
