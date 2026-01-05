@@ -1,12 +1,3 @@
-
-.media-title,
-.media-artist {
-  white-space: nowrap;     /* single line */
-  overflow: hidden;        /* hide overflow */
-  text-overflow: ellipsis; /* … */
-  max-width: 100%;
-}
-
 .media-cover-wrap {
   /* IMPORTANT: prevents children from forcing size */
   min-height: 0;

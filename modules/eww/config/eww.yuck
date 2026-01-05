@@ -113,8 +113,8 @@
   :focusable "ondemand"
   (box :class "card media" :orientation "v" :spacing 10
     (box :orientation "v" :spacing 2
-      (label :class "media-title" :text {p_title})
-      (label :class "media-artist" :text {p_artist})
+      (label :class "media-title"  :xalign 0 :wrap false :text {p_title}  :limit-width 35 :show-truncated true)
+      (label :class "media-artist" :xalign 0 :wrap false :text {p_artist} :limit-width 35 :show-truncated true)
     )
 
     (box :class "media-cover-wrap"
