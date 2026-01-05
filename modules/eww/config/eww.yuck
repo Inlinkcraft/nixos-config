@@ -121,7 +121,7 @@
     )
 )
 
-(defwindow sleep [width height spacing]
+(defwindow logout [width height spacing]
     :monitor 0
     :geometry (geometry 
         :x "${(0.5 * width) + spacing}px" 
@@ -134,12 +134,12 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "bash -lc 'systemctl suspend'"
-        "sleep"
+        :onclick "bash -lc 'hyprctl dispatch exit'"
+        "logout"
     )
 )
 
-(defwindow logout [width height spacing]
+(defwindow lock [width height spacing]
     :monitor 0
     :geometry (geometry 
         :x "${(0.55 * width) + spacing}px" 
@@ -152,7 +152,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        :onclick "bash -lc 'hyprctl dispatch exit'"
-        "logout"
+        :onclick "bash -lc ''"
+        "lock"
     )
 )
