@@ -94,16 +94,16 @@
         "SUPER_ALT,9,exec,hyprctl dispatch workspace name:music"
 
         # Workspaces to current active monitor
-        "SUPER_CTRL,1,exec,hyprctl dispatch workspaceoncurrent 1"
-        "SUPER_CTRL,2,exec,hyprctl dispatch workspaceoncurrent 2"
-        "SUPER_CTRL,3,exec,hyprctl dispatch workspaceoncurrent 3"
-        "SUPER_CTRL,4,exec,hyprctl dispatch workspaceoncurrent 4"
-        "SUPER_CTRL,5,exec,hyprctl dispatch workspaceoncurrent 5"
-        "SUPER_CTRL,6,exec,hyprctl dispatch workspaceoncurrent 6"
-        "SUPER_CTRL,7,exec,hyprctl dispatch workspaceoncurrent 7"
-        "SUPER_CTRL,8,exec,hyprctl dispatch workspaceoncurrent 8"
-        "SUPER_CTRL,9,exec,hyprctl dispatch workspaceoncurrent 9"
-        "SUPER_CTRL_ALT,9,exec,hyprctl dispatch workspaceoncurrent name:music"
+        "SUPER_CTRL,1,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 1"
+        "SUPER_CTRL,2,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 2"
+        "SUPER_CTRL,3,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 3"
+        "SUPER_CTRL,4,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 4"
+        "SUPER_CTRL,5,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 5"
+        "SUPER_CTRL,6,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 6"
+        "SUPER_CTRL,7,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 7"
+        "SUPER_CTRL,8,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 8"
+        "SUPER_CTRL,9,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 9"
+        "SUPER_CTRL_ALT,9,exec,hyprctl dispatch focusworkspaceoncurrentmonitor name:music"
         
         # Move app to workspace
         "SUPER_SHIFT,1,exec,hyprctl dispatch movetoworkspace 1"
