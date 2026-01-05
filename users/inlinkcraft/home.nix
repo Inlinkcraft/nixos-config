@@ -92,4 +92,27 @@
     export QT_QPA_PLATFORM=xcb
     exec ${pkgs.freecad}/bin/FreeCAD "$@"
   '';
+
+  ########################################
+  # Swayidle (auto-lock using same script)
+  ########################################
+  services.swayidle = {
+    enable = true;
+
+    # Lock after X seconds idle
+    timeouts = [
+      {
+        timeout = 300; # 5 minutes (change this)
+        command = "${config.home.homeDirectory}/.config/eww/scripts/lock";
+      }
+    ];
+
+    # Also lock right before suspend/sleep
+    events = [
+      {
+        event = "before-sleep";
+        command = "${config.home.homeDirectory}/.config/eww/scripts/lock";
+      }
+    ];
+  };
 }
