@@ -33,27 +33,6 @@
 (defpoll p_art    :interval "5s"  "bash -lc '$HOME/.config/eww/scripts/dashboard player art'")
 
 ;; ------------------------------------------------------------------
-;; BACKGROUND DIMMER (full monitor)
-;; ------------------------------------------------------------------
-
-(defwindow dimmer [width height spacing]
-  :monitor 0
-  :geometry (geometry
-    :x "0px"
-    :y "0px"
-    :width "${width}px"
-    :height "${height}px"
-    :anchor "top left"
-  )
-  ;; if your eww supports layer values: background/bottom/top/overlay
-  ;; keep overlay if you’re unsure (it will still work, just ordering depends on open-many order)
-  :stacking "background"
-  :exclusive false
-  :focusable false
-  (box :class "dimmer" "")
-)
-
-;; ------------------------------------------------------------------
 ;; CLOCK (top wide)
 ;; ------------------------------------------------------------------
 
@@ -355,5 +334,5 @@
   :stacking "overlay"
   :exclusive false
   :focusable "ondemand"
-  (button :class "card small-btn" :onclick "bash -lc 'swaylock'" "lock")
+  (button :class "card small-btn" :onclick "bash -lc 'swaylock -f'" "lock")
 )
