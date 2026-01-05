@@ -1,158 +1,359 @@
-(defwindow clock [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.2 * width) - spacing}px" 
-        :y "${(0.1 * height) - spacing}px" 
-        :width "${(0.6 * width) - (spacing / 2)}px" 
-        :height "${(0.2 * height) - (spacing / 2)}px" 
-        :anchor "top left"
-    )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (box
-        :orientation "h"
-        "03"
-        "|"
-        "51"
-    )
+;; ------------------------------------------------------------------
+;; DATA (wired to ~/.config/eww/scripts/dashboard that you already have)
+;; ------------------------------------------------------------------
+
+(defpoll time_h   :interval "1s"  "date +%H")
+(defpoll time_m   :interval "1s"  "date +%M")
+
+(defpoll date_str :interval "30s" "date '+%-d %b %Y'")
+(defpoll cal_day  :interval "10m" "date +%-d")
+(defpoll cal_mon  :interval "10m" "date +%-m")
+(defpoll cal_year :interval "10m" "date +%Y")
+
+(defpoll agenda   :interval "2m"  "bash -lc '$HOME/.config/eww/scripts/dashboard agenda'")
+
+(defpoll cpu      :interval "2s"  "bash -lc '$HOME/.config/eww/scripts/dashboard cpu'")
+(defpoll mem      :interval "2s"  "bash -lc '$HOME/.config/eww/scripts/dashboard mem'")
+(defpoll disk     :interval "30s" "bash -lc '$HOME/.config/eww/scripts/dashboard disk'")
+(defpoll temp     :interval "5s"  "bash -lc '$HOME/.config/eww/scripts/dashboard temp'")
+(defpoll uptime   :interval "30s" "bash -lc '$HOME/.config/eww/scripts/dashboard uptime'")
+(defpoll battery  :interval "30s" "bash -lc '$HOME/.config/eww/scripts/dashboard battery'")
+
+(defpoll wifi_on  :interval "5s"  "bash -lc '$HOME/.config/eww/scripts/dashboard wifi on'")
+(defpoll wifi_ssid :interval "10s" "bash -lc '$HOME/.config/eww/scripts/dashboard wifi ssid'")
+(defpoll bt_on    :interval "5s"  "bash -lc '$HOME/.config/eww/scripts/dashboard bluetooth on'")
+
+(defpoll vol      :interval "1s"  "bash -lc '$HOME/.config/eww/scripts/dashboard volume get'")
+(defpoll muted    :interval "1s"  "bash -lc '$HOME/.config/eww/scripts/dashboard volume muted'")
+(defpoll bri      :interval "2s"  "bash -lc '$HOME/.config/eww/scripts/dashboard brightness get'")
+
+(defpoll p_title  :interval "2s"  "bash -lc '$HOME/.config/eww/scripts/dashboard player title'")
+(defpoll p_artist :interval "2s"  "bash -lc '$HOME/.config/eww/scripts/dashboard player artist'")
+(defpoll p_status :interval "2s"  "bash -lc '$HOME/.config/eww/scripts/dashboard player status'")
+(defpoll p_art    :interval "5s"  "bash -lc '$HOME/.config/eww/scripts/dashboard player art'")
+
+;; ------------------------------------------------------------------
+;; BACKGROUND DIMMER (full monitor)
+;; ------------------------------------------------------------------
+
+(defwindow dimmer [width height spacing]
+  :monitor 0
+  :geometry (geometry
+    :x "0px"
+    :y "0px"
+    :width "${width}px"
+    :height "${height}px"
+    :anchor "top left"
+  )
+  ;; if your eww supports layer values: background/bottom/top/overlay
+  ;; keep overlay if you’re unsure (it will still work, just ordering depends on open-many order)
+  :stacking "background"
+  :exclusive false
+  :focusable false
+  (box :class "dimmer" "")
 )
+
+;; ------------------------------------------------------------------
+;; CLOCK (top wide)
+;; ------------------------------------------------------------------
+
+(defwindow clock [width height spacing]
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.2 * width) - spacing}px"
+    :y "${(0.1 * height) - spacing}px"
+    :width "${(0.6 * width) - (spacing / 2)}px"
+    :height "${(0.2 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "card clock" :orientation "h" :space-evenly true
+    (label :class "clock-h" :text {time_h})
+    (label :class "clock-sep" :text "|")
+    (label :class "clock-m" :text {time_m})
+  )
+)
+
+;; ------------------------------------------------------------------
+;; PROFILE (left top)
+;; ------------------------------------------------------------------
 
 (defwindow profile [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.2 * width) - spacing}px" 
-        :y "${(0.3 * height) + spacing}px" 
-        :width "${(0.2 * width) - (spacing / 2)}px" 
-        :height "${(0.2 * height) - (spacing / 2)}px" 
-        :anchor "top left"
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.2 * width) - spacing}px"
+    :y "${(0.3 * height) + spacing}px"
+    :width "${(0.2 * width) - (spacing / 2)}px"
+    :height "${(0.2 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "card profile" :orientation "v" :spacing 10
+    (box :orientation "h" :spacing 12
+      (image :class "avatar" :path "~/.config/eww/assets/avatar.svg")
+      (box :orientation "v" :spacing 4
+        (label :class "name" :text "inlinkcraft")
+        (label :class "line" :text "________________________")
+        (label :class "role" :text "Programmer")
+      )
     )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (box
-        :orientation "v"
-        (box
-            :orientation "h"
-            "image"
-            (box
-                :orientation "v"
-                "inlinkcraft"
-                "________________________"
-                "Programmer"
-            )
-        )
-        (box
-            :orientation "h"
-            (button
-                "youtube"
-            )
-            (button
-                "reddit"
-            )
-            (button
-                "ChatGPT"
-            )
-        )
+
+    (box :class "app-row" :orientation "h" :spacing 10
+      (button :class "app-btn" :onclick "bash -lc 'xdg-open https://youtube.com >/dev/null 2>&1 || true'"
+        "youtube"
+      )
+      (button :class "app-btn" :onclick "bash -lc 'xdg-open https://reddit.com >/dev/null 2>&1 || true'"
+        "reddit"
+      )
+      (button :class "app-btn" :onclick "bash -lc 'xdg-open https://chat.openai.com >/dev/null 2>&1 || true'"
+        "ChatGPT"
+      )
     )
+  )
 )
+
+;; ------------------------------------------------------------------
+;; MEDIA (left bottom) - matches your sketch "Title/Author/Image/controls"
+;; ------------------------------------------------------------------
+
+(defwindow media [width height spacing]
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.2 * width) - spacing}px"
+    :y "${(0.52 * height) + (spacing * 2)}px"
+    :width "${(0.2 * width) - (spacing / 2)}px"
+    :height "${(0.23 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "card media" :orientation "v" :spacing 10
+    (box :orientation "v" :spacing 2
+      (label :class "media-title" :text {p_title})
+      (label :class "media-artist" :text {p_artist})
+    )
+
+    (box :class "media-cover-wrap" :orientation "h"
+      (image :class "media-cover" :path {p_art})
+    )
+
+    (box :class "media-controls" :orientation "h" :space-evenly true
+      (button :class "icon-btn" :onclick "bash -lc '$HOME/.config/eww/scripts/dashboard player prev'"  "⏮")
+      (button :class "icon-btn" :onclick "bash -lc '$HOME/.config/eww/scripts/dashboard player playpause'" "⏯")
+      (button :class "icon-btn" :onclick "bash -lc '$HOME/.config/eww/scripts/dashboard player next'"  "⏭")
+    )
+  )
+)
+
+;; ------------------------------------------------------------------
+;; CALENDAR + AGENDA (middle)
+;; ------------------------------------------------------------------
 
 (defwindow calendar [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.4 * width) + spacing}px" 
-        :y "${(0.3 * height) + spacing}px" 
-        :width "${(0.2 * width) - (spacing / 2)}px" 
-        :height "${(0.45 * height) - (spacing / 2)}px" 
-        :anchor "top left"
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.4 * width) + spacing}px"
+    :y "${(0.3 * height) + spacing}px"
+    :width "${(0.2 * width) - (spacing / 2)}px"
+    :height "${(0.45 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "card calendar" :orientation "v" :spacing 10
+    (label :class "date" :text {date_str})
+
+    (calendar
+      :day {cal_day}
+      :month {cal_mon}
+      :year {cal_year}
+      :show-details false
+      :show-heading false
+      :show-day-name true
+      :show-week-numbers true
     )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (box
-        :orientation "v"
-        "25 oct. 2025"
-        "--------"
-        (calendar
-            :day 25
-            :month 01
-            :year 2026
-            :show-details false
-            :show-heading false
-            :show-day-name true
-            :show-week-numbers true
-        )
+
+    ;; simple agenda list (your script returns multiple lines)
+    (box :class "agenda" :orientation "v"
+      (label :class "agenda-text" :wrap true :text {agenda})
     )
+  )
 )
 
+;; ------------------------------------------------------------------
+;; QUICK SETTINGS (right top)
+;; ------------------------------------------------------------------
+
+(defwindow quicksettings [width height spacing]
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.6 * width) + (spacing * 2)}px"
+    :y "${(0.3 * height) + spacing}px"
+    :width "${(0.2 * width) - (spacing / 2)}px"
+    :height "${(0.2 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "card quick" :orientation "v" :spacing 10
+
+    (box :class "toggles" :orientation "h" :spacing 10
+      (button :class "toggle-btn"
+        :onclick "bash -lc '$HOME/.config/eww/scripts/dashboard wifi toggle'"
+        (label :text "wifi")
+      )
+      (button :class "toggle-btn"
+        :onclick "bash -lc '$HOME/.config/eww/scripts/dashboard bluetooth toggle'"
+        (label :text "bt")
+      )
+    )
+
+    (label :class "wifi-ssid" :text "SSID: {wifi_ssid}")
+
+    (box :class "slider-row" :orientation "h" :spacing 10
+      (button :class "icon-btn"
+        :onclick "bash -lc '$HOME/.config/eww/scripts/dashboard volume mute-toggle'"
+        (label :text "vol")
+      )
+      (scale :class "slider"
+        :min 0 :max 100
+        :value {vol}
+        :onchange "bash -lc '$HOME/.config/eww/scripts/dashboard volume set {}'"
+      )
+      (label :class "pct" :text "${vol}%")
+    )
+
+    (box :class "slider-row" :orientation "h" :spacing 10
+      (label :class "icon" :text "bri")
+      (scale :class "slider"
+        :min 0 :max 100
+        :value {bri}
+        :onchange "bash -lc '$HOME/.config/eww/scripts/dashboard brightness set {}'"
+      )
+      (label :class "pct" :text "${bri}%")
+    )
+  )
+)
+
+;; ------------------------------------------------------------------
+;; STATS (right bottom)
+;; ------------------------------------------------------------------
+
+(defwindow stats [width height spacing]
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.6 * width) + (spacing * 2)}px"
+    :y "${(0.52 * height) + (spacing * 2)}px"
+    :width "${(0.2 * width) - (spacing / 2)}px"
+    :height "${(0.23 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "card stats" :orientation "v" :spacing 10
+
+    (box :class "stat-row" :orientation "h" :spacing 10
+      (label :class "stat-name" :text "cpu")
+      (progress :class "stat-bar" :value {cpu})
+      (label :class "stat-val" :text "${cpu}%")
+    )
+
+    (box :class "stat-row" :orientation "h" :spacing 10
+      (label :class "stat-name" :text "mem")
+      (progress :class "stat-bar" :value {mem})
+      (label :class "stat-val" :text "${mem}%")
+    )
+
+    (box :class "stat-row" :orientation "h" :spacing 10
+      (label :class "stat-name" :text "tmp")
+      (progress :class "stat-bar" :value {temp})
+      (label :class "stat-val" :text "${temp}°")
+    )
+
+    (box :class "stat-row" :orientation "h" :spacing 10
+      (label :class "stat-name" :text "dsk")
+      (progress :class "stat-bar" :value {disk})
+      (label :class "stat-val" :text "${disk}%")
+    )
+
+    (box :class "stat-row" :orientation "h" :spacing 10
+      (label :class "stat-name" :text "bat")
+      (progress :class "stat-bar" :value {battery})
+      (label :class "stat-val" :text "${battery}%")
+    )
+
+    (label :class "uptime" :text "up: {uptime}")
+  )
+)
+
+;; ------------------------------------------------------------------
+;; POWER ROW (keep your separate-window workaround, unchanged)
+;; ------------------------------------------------------------------
+
 (defwindow power [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.4 * width) + spacing}px" 
-        :y "${(0.75 * height) + spacing*2}px" 
-        :width "${(0.05 * width) - (spacing / 2)}px" 
-        :height "${(0.05 * height) - (spacing / 2)}px" 
-        :anchor "top left"
-    )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (button
-        :onclick "bash -lc 'systemctl poweroff'"
-        "power"
-    )
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.4 * width) + spacing}px"
+    :y "${(0.75 * height) + spacing*2}px"
+    :width "${(0.05 * width) - (spacing / 2)}px"
+    :height "${(0.05 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (button :class "card small-btn" :onclick "bash -lc 'systemctl poweroff'" "power")
 )
 
 (defwindow restart [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.45 * width) + spacing}px" 
-        :y "${(0.75 * height) + spacing*2}px" 
-        :width "${(0.05 * width) - (spacing / 2)}px" 
-        :height "${(0.05 * height) - (spacing / 2)}px" 
-        :anchor "top left"
-    )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (button
-        :onclick "bash -lc 'systemctl reboot'"
-        "restart"
-    )
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.45 * width) + spacing}px"
+    :y "${(0.75 * height) + spacing*2}px"
+    :width "${(0.05 * width) - (spacing / 2)}px"
+    :height "${(0.05 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (button :class "card small-btn" :onclick "bash -lc 'systemctl reboot'" "restart")
 )
 
 (defwindow logout [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.5 * width) + spacing}px" 
-        :y "${(0.75 * height) + spacing*2}px" 
-        :width "${(0.05 * width) - (spacing / 2)}px" 
-        :height "${(0.05 * height) - (spacing / 2)}px" 
-        :anchor "top left"
-    )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (button
-        :onclick "bash -lc 'hyprctl dispatch exit'"
-        "logout"
-    )
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.5 * width) + spacing}px"
+    :y "${(0.75 * height) + spacing*2}px"
+    :width "${(0.05 * width) - (spacing / 2)}px"
+    :height "${(0.05 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (button :class "card small-btn" :onclick "bash -lc 'hyprctl dispatch exit'" "logout")
 )
 
 (defwindow lock [width height spacing]
-    :monitor 0
-    :geometry (geometry 
-        :x "${(0.55 * width) + spacing}px" 
-        :y "${(0.75 * height) + spacing*2}px" 
-        :width "${(0.05 * width) - (spacing / 2)}px" 
-        :height "${(0.05 * height) - (spacing / 2)}px" 
-        :anchor "top left"
-    )
-    :stacking "overlay"
-    :exclusive false
-    :focusable "ondemand"
-    (button
-        :onclick "bash -lc 'eww close-all; swaylock -f'"
-        "lock"
-    )
+  :monitor 0
+  :geometry (geometry
+    :x "${(0.55 * width) + spacing}px"
+    :y "${(0.75 * height) + spacing*2}px"
+    :width "${(0.05 * width) - (spacing / 2)}px"
+    :height "${(0.05 * height) - (spacing / 2)}px"
+    :anchor "top left"
+  )
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (button :class "card small-btn" :onclick "bash -lc 'swaylock'" "lock")
 )
