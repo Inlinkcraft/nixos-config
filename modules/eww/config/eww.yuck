@@ -117,8 +117,8 @@
       (label :class "media-artist" :text {p_artist})
     )
 
-    (box :class "media-cover-wrap" :orientation "h"
-      (image :class "media-cover" :path {p_art})
+    (box :class "media-cover-wrap"
+      (box :class "media-cover" :style "background-image: url('${p_art}');" "")
     )
 
     (box :class "media-controls" :orientation "h" :space-evenly true

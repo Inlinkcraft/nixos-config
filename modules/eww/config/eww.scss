@@ -1,0 +1,14 @@
+.media-cover-wrap {
+  /* IMPORTANT: prevents children from forcing size */
+  min-height: 0;
+}
+
+.media-cover {
+  height: 140px;      /* pick what you want */
+  width: 100%;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
