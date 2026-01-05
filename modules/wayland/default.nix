@@ -47,7 +47,7 @@
         "SUPER,N,exec,alacritty -e nvim"
 
         # Dashboard (Eww overlay toggle)
-        "SUPER,D,exec,eww open --toggle dashboard"
+        "SUPER,D,exec,eww open-many --toggle calendar profile clock power restart sleep logout --arg width=1920 --arg height=1080 --arg spacing=2"
 
         # Window management
         "SUPER,Q,killactive"

@@ -116,7 +116,7 @@
     :exclusive false
     :focusable "ondemand"
     (button
-        onclick: "systemctl reboot"
+        :onclick "systemctl reboot"
         "restart"
     )
 )
