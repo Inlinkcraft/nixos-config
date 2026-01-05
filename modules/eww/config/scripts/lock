@@ -3,6 +3,7 @@ set -euo pipefail
 
 # Close the overlay first so it doesn't stack above the lock / steal focus
 eww close-all 2>/dev/null || true
+pgrep -x swaylock >/dev/null && exit 0
 
 # Load pywal colors safely (colors.sh may reference unset vars like FZF_DEFAULT_OPTS)
 WAL="$HOME/.cache/wal/colors.sh"
