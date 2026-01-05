@@ -91,18 +91,18 @@
         "SUPER,7,exec,hyprctl dispatch workspace 7"
         "SUPER,8,exec,hyprctl dispatch workspace 8"
         "SUPER,9,exec,hyprctl dispatch workspace 9"
-        "SUPER_CTRL,9,exec,hyprctl dispatch workspace music"
+        "SUPER_CTRL,9,exec,hyprctl dispatch workspace name:music"
 
         # Move window to workspace
         "SUPER_SHIFT,1,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,2,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,3,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,4,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,5,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,6,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,7,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,8,exec,hyprctl dispatch movetoworkspace 1"
-        "SUPER_SHIFT,9,exec,hyprctl dispatch movetoworkspace 1"
+        "SUPER_SHIFT,2,exec,hyprctl dispatch movetoworkspace 2"
+        "SUPER_SHIFT,3,exec,hyprctl dispatch movetoworkspace 3"
+        "SUPER_SHIFT,4,exec,hyprctl dispatch movetoworkspace 4"
+        "SUPER_SHIFT,5,exec,hyprctl dispatch movetoworkspace 5"
+        "SUPER_SHIFT,6,exec,hyprctl dispatch movetoworkspace 6"
+        "SUPER_SHIFT,7,exec,hyprctl dispatch movetoworkspace 7"
+        "SUPER_SHIFT,8,exec,hyprctl dispatch movetoworkspace 8"
+        "SUPER_SHIFT,9,exec,hyprctl dispatch movetoworkspace 9"
       ];
 
       ####################################
