@@ -4,11 +4,13 @@ set -euo pipefail
 # Close the overlay so it doesn't sit above/steal focus from lock
 command -v eww >/dev/null 2>&1 && eww close-all || true
 
-# Load pywal colors if available
+# Load pywal colors if available (colors.sh may reference unset vars)
 WAL="$HOME/.cache/wal/colors.sh"
 if [[ -f "$WAL" ]]; then
   # shellcheck disable=SC1090
+  set +u
   source "$WAL"
+  set -u
 fi
 
 # Fallbacks if pywal isn't ready for some reason
