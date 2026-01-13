@@ -30,6 +30,7 @@
     zoom-us
     discord
     freecad
+    teams-for-linux
 
     # Wayland utils
     swww
