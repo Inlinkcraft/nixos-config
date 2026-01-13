@@ -67,6 +67,8 @@
     pavucontrol
     bluez
     curl
+
+    thunderbird
   ];
 
   ########################################
