@@ -79,11 +79,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # Allow boosting (uncomment the next line)
-    # extraConfig = "load-module module-dbus-protocol";
-    # For more aggressive boosting in wireplumber:
-    wireplumber.enable = true;
-    wireplumber.config = "context.properties = { default.clock.rate = 48000 }"; # Example
   };
 
   ###############################################################
