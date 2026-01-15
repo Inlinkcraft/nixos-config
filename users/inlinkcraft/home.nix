@@ -72,6 +72,8 @@
     thunderbird
   ];
 
+  services.tailscale.enable = true;
+
   ########################################
   # Swaylock
   ########################################
