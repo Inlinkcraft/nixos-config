@@ -70,6 +70,12 @@
     curl
 
     thunderbird
+
+    # Libre office
+    libreoffice-qt
+    hunspell
+    hunspellDicts.fr-any
+    hunspellDicts.en_CA
   ];
 
   ########################################
