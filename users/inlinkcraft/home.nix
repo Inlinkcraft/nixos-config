@@ -70,6 +70,7 @@
     curl
 
     thunderbird
+    remmina
 
     # Libre office
     libreoffice-qt
