@@ -71,6 +71,7 @@
 
     thunderbird
     remmina
+    prusa-slicer
 
     # Libre office
     libreoffice-qt
